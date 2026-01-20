@@ -58,6 +58,7 @@ export default function App() {
           <Route path="/signup" element={<SignUp />} />
 
           {/* Fallback Route */}
+          {/* Krishna Prajpati */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
