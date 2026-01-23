@@ -11,6 +11,7 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
+import { Layers } from "lucide-react";
 
 type NavItem = {
   name: string;
@@ -30,6 +31,12 @@ const navItems: NavItem[] = [
     name: "Tables",
     icon: <TableIcon />,
     subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+  },
+
+    {
+    icon: <Layers className="w-5 h-5" />, // Lucide icon for Service Features
+    name: "Service Features",
+    subItems: [{ name: "Features", path: "/service-features", pro: false }],
   },
 
 ];
@@ -261,14 +268,14 @@ const AppSidebar: React.FC = () => {
             <>
               <img
                 className="dark:hidden"
-                src="/images/logo/logo.svg"
+                src="ventexa_new_logo.png"
                 alt="Logo"
                 width={150}
                 height={40}
               />
               <img
                 className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
+                src="ventexa_new_logo.png"
                 alt="Logo"
                 width={150}
                 height={40}
@@ -276,7 +283,7 @@ const AppSidebar: React.FC = () => {
             </>
           ) : (
             <img
-              src="/images/logo/logo-icon.svg"
+              src="ventexa_new_logo.pngpng"
               alt="Logo"
               width={32}
               height={32}
