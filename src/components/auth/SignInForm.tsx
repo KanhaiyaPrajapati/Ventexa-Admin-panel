@@ -8,7 +8,6 @@ export default function SignInForm() {
   return (
     <div className="space-y-6 ">
       <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-        {/* Email Field */}
         <div className="relative group">
           <input
             type="email"
@@ -18,7 +17,6 @@ export default function SignInForm() {
           <Mail className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-300 group-focus-within:text-blue-600 transition-colors" />
         </div>
 
-        {/* Password Field */}
         <div className="relative group">
           <input
             type={showPassword ? "text" : "password"}
@@ -35,21 +33,18 @@ export default function SignInForm() {
           </button>
         </div>
 
-        {/* Forgot Password */}
         <div className="flex justify-end pt-1">
           <Link to="/forgot" className="text-[10px] font-black text-blue-600 hover:text-blue-700 uppercase tracking-widest">
             Forgot Password?
           </Link>
         </div>
 
-        {/* Action Button */}
         <button className="w-full h-15 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-[22px] shadow-[0_15px_35px_-10px_rgba(37,99,235,0.5)] transition-all active:scale-[0.97] flex items-center justify-center gap-2 group">
           Sign In
           <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
         </button>
       </form>
 
-      {/* Social Integration */}
       <div className="relative flex items-center py-4">
         <div className="flex-grow border-t border-gray-100"></div>
         <span className="flex-shrink mx-4 text-[9px] font-black text-gray-300 tracking-[0.3em] uppercase">Quick Connect</span>

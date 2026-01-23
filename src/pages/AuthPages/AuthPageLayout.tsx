@@ -9,7 +9,7 @@ import {
   Mail,
   Lock,
   ChevronRight,
-  ArrowLeft, // back icon
+  ArrowLeft, 
 } from "lucide-react";
 
 export default function VentexaAuth() {
@@ -30,19 +30,16 @@ export default function VentexaAuth() {
           relative
         "
       >
-        {/* LEFT SIDE */}
         <div className="w-full lg:w-[48%] flex flex-col bg-white overflow-y-auto relative">
-          {/* Back Button */}
           <button
             type="button"
             className="absolute top-5 left-5 text-gray-500 hover:text-gray-700 z-10"
-            onClick={() => window.history.back()} // ✅ go back in browser
-          >
+            onClick={() => window.history.back()}
+            >
             <ArrowLeft size={24} />
           </button>
 
           <div className="flex-1 flex flex-col justify-center items-center px-5 py-6 sm:px-6 sm:py-8 lg:px-10">
-            {/* Branding */}
             <div className="w-full flex flex-col items-center mb-12">
               <h1 className="text-4xl font-black tracking-tighter text-gray-900">
                 Ventexa
@@ -52,9 +49,7 @@ export default function VentexaAuth() {
               </p>
             </div>
 
-            {/* Form */}
             <div className="w-full max-w-[360px] space-y-5">
-              {/* Email Input */}
               <div className="relative group">
                 <input
                   type="email"
@@ -64,7 +59,6 @@ export default function VentexaAuth() {
                 <Mail className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-blue-600" />
               </div>
 
-              {/* Password Input */}
               <div className="relative group">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -81,12 +75,10 @@ export default function VentexaAuth() {
                 </button>
               </div>
 
-              {/* Sign In Button */}
               <button className="w-full h-16 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2 text-lg">
                 Sign In <ChevronRight size={20} />
               </button>
 
-              {/* Remember + Forgot */}
               <div className="flex items-center justify-between px-2 text-xs font-bold uppercase tracking-widest">
                 <label className="flex items-center gap-2 text-gray-400 cursor-pointer">
                   <input
@@ -101,7 +93,6 @@ export default function VentexaAuth() {
           </div>
         </div>
 
-        {/* RIGHT SIDE */}
         <div className="hidden lg:flex lg:w-[55%] relative m-6 rounded-[50px] overflow-hidden shadow-inner">
           <div
             className="absolute inset-0 bg-cover bg-center"

@@ -81,7 +81,7 @@ export default function NotificationDropdown() {
   const [loading, setLoading] = useState(true);
   const [appointments, setAppointments] = useState<typeof mockAppointments>([]);
 
-  const dropdownRef = useRef<HTMLDivElement>(null); // Ref for dropdown
+  const dropdownRef = useRef<HTMLDivElement>(null); 
 
   useEffect(() => {
     setTimeout(() => {
@@ -90,7 +90,6 @@ export default function NotificationDropdown() {
     }, 500);
   }, []);
 
-  // CLOSE DROPDOWN WHEN CLICK OUTSIDE
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -124,7 +123,6 @@ export default function NotificationDropdown() {
 
   return (
     <div className="relative">
-      {/* Bell Button */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
         className="relative flex items-center justify-center h-11 w-11 rounded-full border bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:text-white"
@@ -135,7 +133,6 @@ export default function NotificationDropdown() {
         <Bell size={20} />
       </button>
 
-      {/* Dropdown */}
       {isOpen && (
         <>
          

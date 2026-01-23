@@ -1,4 +1,3 @@
-// ServiceFeatureForm.tsx
 import React from "react";
 import Button from "../../../ui/button/Button";
 import { ServiceFeature } from "../../../../store/types/types";
@@ -9,7 +8,7 @@ interface ServiceFeatureFormProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onSubmit: () => void;
   onCancel: () => void;
-  onToggleActive: () => void; // 🔹 required toggle handler
+  onToggleActive: () => void; 
 }
 
 const ServiceFeatureForm: React.FC<ServiceFeatureFormProps> = ({

@@ -9,7 +9,6 @@ export default function SignUp() {
         description="This is React.js SignUp Tables Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
       <VentexaAuth />
-        
-          </>
+    </>
   );
 }
