@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Shield,
   Cloud,
@@ -8,132 +9,177 @@ import {
   EyeOff,
   Mail,
   Lock,
+  Unlock,
   ChevronRight,
-  ArrowLeft, 
 } from "lucide-react";
 
-export default function VentexaAuth() {
+import {
+  isValidEmail,
+  sanitizePassword,
+  isValidPassword,
+} from "../../store/validators/AuthForm";
+
+const AuthForm: React.FC = () => {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const emailValid = isValidEmail(email);
+  const passwordValid = isValidPassword(password);
+  const isFormValid = emailValid && passwordValid;
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitized = sanitizePassword(e.target.value);
+    if (sanitized.length <= 8) {
+      setPassword(sanitized);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!isFormValid) return;
+
+    const users: any[] = JSON.parse(localStorage.getItem("users") || "[]");
+    const existingUser = users.find((u) => u.email === email);
+
+    if (!existingUser) {
+      users.push({
+        email,
+        password,
+        loggedInAt: new Date().toISOString(),
+      });
+      localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    localStorage.setItem("currentUser", JSON.stringify({ email }));
+    navigate("/");
+  };
+
   return (
-    <div className="min-h-screen w-full bg-[#0a0a0a] flex items-center justify-center p-0 sm:p-6 lg:p-10 selection:bg-blue-500/30 font-sans antialiased">
-      <div
-        className="
-          w-full max-w-[990px]
-          h-auto
-          lg:h-[min(86vh,760px)]
-          bg-white
-          sm:rounded-[50px]
-          overflow-hidden
-          shadow-2xl
-          flex flex-col lg:flex-row
-          relative
-        "
-      >
-        <div className="w-full lg:w-[48%] flex flex-col bg-white overflow-y-auto relative">
-          <button
-            type="button"
-            className="absolute top-5 left-5 text-gray-500 hover:text-gray-700 z-10"
-            onClick={() => window.history.back()}
-            >
-            <ArrowLeft size={24} />
-          </button>
-
-          <div className="flex-1 flex flex-col justify-center items-center px-5 py-6 sm:px-6 sm:py-8 lg:px-10">
-            <div className="w-full flex flex-col items-center mb-12">
-              <h1 className="text-4xl font-black tracking-tighter text-gray-900">
-                Ventexa
-              </h1>
-              <p className="text-[11px] font-bold text-blue-600 tracking-[0.4em] uppercase mt-2">
-                IT Consulting
-              </p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4 font-sans">
+      <div className="w-full max-w-[900px] bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl flex flex-col lg:flex-row">
+        <div className="w-full lg:w-1/2 p-8 sm:p-12 lg:p-16 flex flex-col justify-center">
+          <div className="mb-10 flex items-center gap-2">
+            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-3 h-3 bg-white rounded-full" />
             </div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Ventexa
+            </h1>
+          </div>
 
-            <div className="w-full max-w-[360px] space-y-5">
-              <div className="relative group">
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              Welcome back
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Please enter your details.
+            </p>
+          </div>
+
+          <div className="space-y-5">
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Work Email
+              </label>
+              <div className="relative">
                 <input
                   type="email"
-                  placeholder="Email Address"
-                  className="w-full h-16 pl-14 pr-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all outline-none font-medium"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@company.com"
+                  className={`w-full pl-11 pr-4 py-3 rounded-lg border text-sm outline-none transition
+                    ${email && !emailValid
+                      ? "border-red-500"
+                      : "border-gray-200 dark:border-gray-700"
+                    } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                 />
-                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-blue-600" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               </div>
+              {email && !emailValid && (
+                <p className="text-xs text-red-500">Invalid email address</p>
+              )}
+            </div>
 
-              <div className="relative group">
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Password
+              </label>
+              <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  className="w-full h-16 pl-14 pr-14 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all outline-none font-medium"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  maxLength={8}
+                  placeholder="8 characters only"
+                  className={`w-full pl-11 pr-11 py-3 rounded-lg border text-sm outline-none transition
+                    ${password && !passwordValid
+                      ? "border-red-500"
+                      : "border-gray-200 dark:border-gray-700"
+                    } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                 />
-                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-blue-600" />
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2">
+                  {passwordValid ? (
+                    <Unlock className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <Lock className="h-4 w-4 text-gray-400" />
+                  )}
+                </div>
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400"
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
-
-              <button className="w-full h-16 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2 text-lg">
-                Sign In <ChevronRight size={20} />
-              </button>
-
-              <div className="flex items-center justify-between px-2 text-xs font-bold uppercase tracking-widest">
-                <label className="flex items-center gap-2 text-gray-400 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="rounded-sm border-gray-300 text-blue-600 focus:ring-blue-600"
-                  />
-                  Remember
-                </label>
-                <button className="text-blue-600">Forgot?</button>
-              </div>
+              <p className={`text-xs mt-1 ${passwordValid ? "text-green-600" : "text-gray-400"}`}>
+                {passwordValid ? "✓ Perfect length" : "Must be exactly 8 characters"}
+              </p>
             </div>
+
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={!isFormValid}
+              className={`w-full py-3 mt-2 font-semibold rounded-lg flex items-center justify-center gap-2 transition
+                ${isFormValid
+                  ? "bg-indigo-600 hover:bg-indigo-700 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+            >
+              Continue
+              <ChevronRight size={18} />
+            </button>
           </div>
         </div>
 
-        <div className="hidden lg:flex lg:w-[55%] relative m-6 rounded-[50px] overflow-hidden shadow-inner">
+        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center bg-gray-900">
           <div
-            className="absolute inset-0 bg-cover bg-center"
+            className="absolute inset-0 bg-cover bg-center opacity-40"
             style={{
               backgroundImage:
                 "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2672&auto=format&fit=crop')",
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-950/95 via-blue-900/40 to-transparent" />
-
-          <div className="relative h-full w-full flex flex-col justify-end p-16">
-            <div className="backdrop-blur-md bg-white/10 border border-white/20 p-10 rounded-[40px] max-w-[500px]">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="h-1 w-10 bg-blue-500 rounded-full" />
-                <span className="text-white/60 text-[10px] font-black uppercase tracking-[0.3em]">
-                  Services
-                </span>
-              </div>
-
-              <h2 className="text-4xl font-bold text-white leading-tight mb-6">
-                Redefining the <span className="text-blue-400">IT Landscape.</span>
-              </h2>
-
-              <div className="grid grid-cols-2 gap-4 text-white/80">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase">
-                  <Shield size={14} /> Cyber Security
+          <div className="relative z-10 p-12 text-center text-white">
+            <h2 className="text-3xl font-bold mb-6 max-w-xs">
+              Empowering businesses through <span className="text-indigo-400">digital intelligence.</span>
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              {[Shield, Cloud, Cpu, BarChart3].map((Icon, i) => (
+                <div key={i} className="flex items-center gap-2 text-xs">
+                  <Icon size={16} className="text-indigo-400" />
+                  Feature
                 </div>
-                <div className="flex items-center gap-2 text-xs font-bold uppercase">
-                  <Cloud size={14} /> Cloud Infrastructure
-                </div>
-                <div className="flex items-center gap-2 text-xs font-bold uppercase">
-                  <Cpu size={14} /> AI Development
-                </div>
-                <div className="flex items-center gap-2 text-xs font-bold uppercase">
-                  <BarChart3 size={14} /> Digital Strategy
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default AuthForm;

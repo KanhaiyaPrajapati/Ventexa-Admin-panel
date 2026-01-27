@@ -31,9 +31,7 @@ const ServiceFeaturesTableOne: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [currentFeature, setCurrentFeature] = useState<ServiceFeature | null>(
-    null,
-  );
+  const [currentFeature, setCurrentFeature] = useState<ServiceFeature | null>(null);
   const [mode, setMode] = useState<"create" | "edit" | "view">("create");
 
   const [formData, setFormData] = useState<ServiceFeature>({
@@ -49,7 +47,9 @@ const ServiceFeaturesTableOne: React.FC = () => {
   } | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [pendingPage, setPendingPage] = useState<number | null>(null);
   const itemsPerPage = 4;
+
   const [searchTerm, setSearchTerm] = useState("");
 
   const fetchFeatures = async () => {
@@ -67,18 +67,20 @@ const ServiceFeaturesTableOne: React.FC = () => {
     fetchFeatures();
   }, []);
 
-  const showAlert = (alertData: {
-    type: "success" | "error";
-    message: string;
-  }) => {
+  useEffect(() => {
+    if (pendingPage === null) return;
+    const timer = setTimeout(() => {
+      setCurrentPage(pendingPage);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [pendingPage]);
+
+  const showAlert = (alertData: { type: "success" | "error"; message: string }) => {
     setAlert(alertData);
     setTimeout(() => setAlert(null), 3500);
   };
 
-  const openModal = (
-    type: "create" | "edit" | "view",
-    feature?: ServiceFeature,
-  ) => {
+  const openModal = (type: "create" | "edit" | "view", feature?: ServiceFeature) => {
     setMode(type);
     if (feature) {
       setCurrentFeature(feature);
@@ -97,9 +99,7 @@ const ServiceFeaturesTableOne: React.FC = () => {
 
   const closeModal = () => setIsModalOpen(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -145,23 +145,20 @@ const ServiceFeaturesTableOne: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="py-10 text-center text-gray-900 dark:text-white">
-        Loading...
-      </div>
-    );
+    return <div className="py-10 text-center text-gray-900 dark:text-white">Loading...</div>;
   }
 
   const filteredFeatures = features.filter(
     (f) =>
       f.service_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      f.feature_title.toLowerCase().includes(searchTerm.toLowerCase()),
+      f.feature_title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredFeatures.length / itemsPerPage);
+
   const paginatedFeatures = filteredFeatures.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
+    currentPage * itemsPerPage
   );
 
   return (
@@ -170,31 +167,18 @@ const ServiceFeaturesTableOne: React.FC = () => {
         <div className="flex flex-col sm:flex-row justify-between items-center px-5 py-4 gap-3">
           <button
             onClick={() => openModal("create")}
-            className="inline-flex items-center justify-center rounded-lg bg-white p-2 text-blue-600 hover:bg-blue-50 dark:bg-gray-800 dark:hover:bg-gray-700"
+            className="inline-flex items-center justify-center rounded-lg p-2 text-blue-600 hover:bg-blue-50 dark:bg-gray-800 dark:hover:bg-gray-700"
           >
             <Plus size={20} />
           </button>
-
-          <SearchBar
-            value={searchTerm}
-            onChange={(value) => {
-              setSearchTerm(value);
-              setCurrentPage(1);
-            }}
-          />
+          <SearchBar value={searchTerm} onChange={(value) => setSearchTerm(value)} />
         </div>
 
         <div className="max-w-full overflow-x-auto">
           <Table className="min-w-[700px]">
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
-                {[
-                  "Service ID",
-                  "Title",
-                  "Description",
-                  "Status",
-                  "Actions",
-                ].map((head) => (
+                {["Service ID", "Title", "Description", "Status", "Actions"].map((head) => (
                   <TableCell
                     key={head}
                     isHeader
@@ -210,21 +194,14 @@ const ServiceFeaturesTableOne: React.FC = () => {
               {paginatedFeatures.map((f) => (
                 <TableRow key={f.id}>
                   <TableCell className="px-5 py-4 sm:px-6 text-start whitespace-nowrap">
-                    <span className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                      {f.service_id}
-                    </span>
+                    <span className="font-medium text-gray-800 text-theme-sm dark:text-white/90">{f.service_id}</span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">
-                    {f.feature_title}
-                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">{f.feature_title}</TableCell>
                   <TableCell className="px-4 py-3 text-start whitespace-nowrap">
                     <span className="text-black dark:text-gray-400">
-                      {f.feature_description.length > 20
-                        ? `${f.feature_description.slice(0, 15)}...`
-                        : f.feature_description}
+                      {f.feature_description.length > 20 ? `${f.feature_description.slice(0, 15)}...` : f.feature_description}
                     </span>
                   </TableCell>
-
                   <TableCell className="px-4 py-3 text-start whitespace-nowrap ">
                     <Badge size="sm" color={f.is_active ? "success" : "error"}>
                       {f.is_active ? "Active" : "Inactive"}
@@ -262,15 +239,14 @@ const ServiceFeaturesTableOne: React.FC = () => {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={setCurrentPage}
+            onPageChange={(page) => setPendingPage(page)}
           />
         )}
       </div>
+
       {isModalOpen && (
         <Modal isOpen onClose={closeModal} className="max-w-lg p-6">
-          {mode === "view" && currentFeature && (
-            <ServiceFeatureDetails feature={currentFeature} />
-          )}
+          {mode === "view" && currentFeature && <ServiceFeatureDetails feature={currentFeature} />}
           {(mode === "create" || mode === "edit") && (
             <ServiceFeatureForm
               mode={mode}
@@ -285,45 +261,21 @@ const ServiceFeaturesTableOne: React.FC = () => {
       )}
 
       {isDeleteModalOpen && (
-        <Modal
-          isOpen
-          onClose={() => setIsDeleteModalOpen(false)}
-          className="max-w-md p-6"
-        >
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Delete Feature
-          </h3>
+        <Modal isOpen onClose={() => setIsDeleteModalOpen(false)} className="max-w-md p-6 rounded-md bg-white dark:bg-gray-900">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Delete Feature</h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-            Are you sure you want to delete{" "}
-            <span className="font-medium">{currentFeature?.feature_title}</span>
-            ? This action cannot be undone.
+            Are you sure you want to delete <span className="font-medium text-gray-900 dark:text-white">{currentFeature?.feature_title}</span>? This action cannot be undone.
           </p>
           <div className="flex justify-end gap-3">
-            <Button
-              variant="outline"
-              color="primary"
-              onClick={() => setIsDeleteModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              color="destructive"
-              onClick={confirmDelete}
-            >
-              Delete
-            </Button>
+            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
+            <Button variant="primary" color="destructive" onClick={confirmDelete}>Delete</Button>
           </div>
         </Modal>
       )}
 
       {alert && (
         <div className="fixed bottom-5 right-2 z-50 w-70">
-          <Alert
-            variant={alert.type}
-            title={alert.type === "success" ? "Success" : "Error"}
-            message={alert.message}
-          />
+          <Alert variant={alert.type} title={alert.type === "success" ? "Success" : "Error"} message={alert.message} />
         </div>
       )}
     </>
