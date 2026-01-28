@@ -9,7 +9,6 @@ import Alerts from "./pages/UiElements/Alerts";
 import Badges from "./pages/UiElements/Badges";
 import Avatars from "./pages/UiElements/Avatars";
 import Buttons from "./pages/UiElements/Buttons";
-import ServiceFeatures from "./pages/Tables/Service-Features/ServiceFeatures"; // <-- New import
 import LineChart from "./pages/Charts/LineChart";
 import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
@@ -48,7 +47,6 @@ export default function App() {
             <Route path="/buttons" element={<Buttons />} />
             <Route path="/images" element={<Images />} />
             <Route path="/videos" element={<Videos />} />
-            <Route path="/service-features" element={<ServiceFeatures />} /> {/* <-- New Route */}
 
             {/* Charts */}
             <Route path="/line-chart" element={<LineChart />} />
