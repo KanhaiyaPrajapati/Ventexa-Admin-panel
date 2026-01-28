@@ -10,7 +10,7 @@ export default function Videos() {
   return (
     <>
       <PageMeta
-        title="VenTexa Admin Panel"
+        title="React.js Videos Tabs | TailAdmin - React.js Admin Dashboard Template"
         description="This is React.js Videos page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
       <PageBreadcrumb pageTitle="Videos" />

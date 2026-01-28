@@ -8,7 +8,7 @@ export default function Buttons() {
   return (
     <div>
       <PageMeta
-        title="VenTexa Admin Panel"
+        title="React.js Buttons Dashboard | TailAdmin - React.js Admin Dashboard Template"
         description="This is React.js Buttons Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
       <PageBreadcrumb pageTitle="Buttons" />

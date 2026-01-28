@@ -1,67 +1,49 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 
-interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-  size?: "sm" | "md";
-  variant?: "primary" | "outline";
-  color?: "primary" | "success" | "error" | "destructive";
-  startIcon?: ReactNode;
-  endIcon?: ReactNode;
-  className?: string;
+interface ButtonProps {
+  children: ReactNode; // Button text or content
+  size?: "sm" | "md"; // Button size
+  variant?: "primary" | "outline"; // Button variant
+  startIcon?: ReactNode; // Icon before the text
+  endIcon?: ReactNode; // Icon after the text
+  onClick?: () => void; // Click handler
+  disabled?: boolean; // Disabled state
+  className?: string; // Disabled state
 }
 
 const Button: React.FC<ButtonProps> = ({
   children,
   size = "md",
   variant = "primary",
-  color = "primary",
   startIcon,
   endIcon,
+  onClick,
   className = "",
   disabled = false,
-  ...props // ✅ IMPORTANT (type, onClick, etc.)
 }) => {
   // Size Classes
   const sizeClasses = {
-    sm: "px-4 py-2 text-sm",
-    md: "px-5 py-3 text-sm",
+    sm: "px-4 py-3 text-sm",
+    md: "px-5 py-3.5 text-sm",
   };
 
   // Variant Classes
   const variantClasses = {
-    primary: {
-      primary:
-        "bg-brand-500 text-white hover:bg-brand-600 disabled:bg-brand-300",
-      success:
-        "bg-green-600 text-white hover:bg-green-700 disabled:bg-green-400",
-      error: "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-400",
-      destructive:
-        "bg-red-500 text-white hover:bg-red-600 disabled:bg-red-300",
-    },
-    outline: {
-      primary:
-        "bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50",
-      success:
-        "bg-white text-green-600 ring-1 ring-green-400 hover:bg-green-50",
-      error:
-        "bg-white text-red-600 ring-1 ring-red-400 hover:bg-red-50",
-      destructive:
-        "bg-white text-red-500 ring-1 ring-red-400 hover:bg-red-50",
-    },
+    primary:
+      "bg-brand-500 text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-300",
+    outline:
+      "bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] dark:hover:text-gray-300",
   };
-
-  const appliedClasses = variantClasses[variant][color];
 
   return (
     <button
-      {...props} // ✅ allows type="submit"
+      className={`inline-flex items-center justify-center gap-2 rounded-lg transition ${className} ${
+        sizeClasses[size]
+      } ${variantClasses[variant]} ${
+        disabled ? "cursor-not-allowed opacity-50" : ""
+      }`}
+      onClick={onClick}
       disabled={disabled}
-      className={`inline-flex items-center justify-center gap-2 rounded-lg transition
-        ${sizeClasses[size]}
-        ${appliedClasses}
-        ${disabled ? "cursor-not-allowed opacity-50" : ""}
-        ${className}`}
     >
       {startIcon && <span className="flex items-center">{startIcon}</span>}
       {children}
