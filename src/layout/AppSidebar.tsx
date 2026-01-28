@@ -6,8 +6,8 @@ import {
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
-  PlugInIcon,
   TableIcon,
+  PlugInIcon
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
@@ -39,8 +39,12 @@ const navItems: NavItem[] = [
     subItems: [{ name: "Features", path: "/service-features", pro: false }],
   },
 
-];
-
+    {
+    name: "Process Steps",
+    icon: <TableIcon />,
+    subItems: [{ name: "process-steps", path: "/process-steps", pro: false }],
+  },
+]
 const othersItems: NavItem[] = [
   {
     icon: <PlugInIcon />,

@@ -19,6 +19,7 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
+import ProcessStepsTable from "./pages/Tables/ProcessStepsTable"
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
 
             {/* Tables */}
             <Route path="/basic-tables" element={<BasicTables />} />
+            <Route path="/process-steps" element={<ProcessStepsTable />} />
 
             {/* Ui Elements */}
             <Route path="/alerts" element={<Alerts />} />

@@ -1,118 +1,153 @@
-// ServiceFeatureForm.tsx
-import React from "react";
-import Button from "../../../ui/button/Button";
-import { ServiceFeature } from "../../../../store/types/types";
+// ProcessStepsForm.tsx
+import { useEffect, useState } from "react";
 
-interface ServiceFeatureFormProps {
-  mode: "create" | "edit";
-  formData: ServiceFeature;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  onSubmit: () => void;
-  onCancel: () => void;
-  onToggleActive: () => void; // 🔹 required toggle handler
+export interface Step {
+  id?: string;
+  step_number: number;
+  title: string;
+  description: string;
+  is_active: boolean;
 }
 
-const ServiceFeatureForm: React.FC<ServiceFeatureFormProps> = ({
-  mode,
-  formData,
-  onChange,
+interface Props {
+  initialData: Step | null;
+  onSubmit: (step: Step) => void;
+  onCancel: () => void;
+  readOnly?: boolean;
+}
+
+const ProcessStepsForm: React.FC<Props> = ({
+  initialData,
   onSubmit,
   onCancel,
-  onToggleActive,
+  readOnly = false,
 }) => {
+  const [stepNumber, setStepNumber] = useState<number>(
+    initialData?.step_number || 1
+  );
+  const [title, setTitle] = useState<string>(initialData?.title || "");
+  const [description, setDescription] = useState<string>(
+    initialData?.description || ""
+  );
+  const [isActive, setIsActive] = useState<boolean>(
+    initialData?.is_active ?? true
+  );
+
+  useEffect(() => {
+    if (initialData) {
+      setStepNumber(initialData.step_number);
+      setTitle(initialData.title);
+      setDescription(initialData.description);
+      setIsActive(initialData.is_active);
+    } else {
+      setStepNumber(1);
+      setTitle("");
+      setDescription("");
+      setIsActive(true);
+    }
+  }, [initialData]);
+
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); 
-    onSubmit();
+    e.preventDefault();
+    if (!stepNumber || title.trim() === "" || description.trim() === "") {
+      alert("Please fill all required fields");
+      return;
+    }
+    onSubmit({
+      id: initialData?.id,
+      step_number: stepNumber,
+      title: title.trim(),
+      description: description.trim(),
+      is_active: isActive,
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-transparent">
-      <div>
-        <label className="block text-sm font-medium text-gray-800 dark:text-white">
-          Service ID
-        </label>
-        <input
-          type="text"
-          name="service_id"
-          value={formData.service_id}
-          onChange={onChange}
-          required
-          className="mt-1 block w-full rounded-md p-2
-            bg-transparent text-gray-900 dark:text-white
-            border border-gray-300 dark:border-gray-600
-            focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-800 dark:text-white">
-          Feature Title
-        </label>
-        <input
-          type="text"
-          name="feature_title"
-          value={formData.feature_title}
-          onChange={onChange}
-          required
-          className="mt-1 block w-full rounded-md p-2
-            bg-transparent text-gray-900 dark:text-white
-            border border-gray-300 dark:border-gray-600
-            focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-800 dark:text-white">
-          Description
-        </label>
-        <textarea
-          name="feature_description"
-          value={formData.feature_description}
-          onChange={onChange}
-          rows={3}
-          required
-          className="mt-1 block w-full rounded-md p-2
-            bg-transparent text-gray-900 dark:text-white
-            border border-gray-300 dark:border-gray-600
-            focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      <div className="flex items-center gap-3">
-        <label className="text-sm font-medium text-gray-800 dark:text-white">
-          Status
-        </label>
-
-        <div
-          onClick={onToggleActive}
-          className={`w-14 h-7 flex items-center rounded-full p-1 cursor-pointer transition-colors
-            ${formData.is_active ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"}`}
-        >
-          <div
-            className={`w-5 h-5 rounded-full bg-white shadow-md transform transition-transform
-              ${formData.is_active ? "translate-x-7" : "translate-x-0"}`}
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col min-h-[300px] max-h-[80vh] sm:max-h-[70vh] md:max-h-[60vh] overflow-hidden space-y-4"
+    >
+      {/* ===== Scrollable Content ===== */}
+      <div className="flex-1 overflow-y-auto pr-2 space-y-4">
+        {/* Step Number */}
+        <div>
+          <label className="block text-gray-700 dark:text-white mb-1">
+            Step Number <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="number"
+            value={stepNumber}
+            onChange={(e) => setStepNumber(Number(e.target.value))}
+            className="w-full border rounded px-3 py-2 dark:bg-gray-700 dark:text-white"
+            required
+            disabled={readOnly}
           />
         </div>
 
-        <span
-          className={`text-sm font-medium
-            ${formData.is_active
-              ? "text-green-600 dark:text-green-400"
-              : "text-gray-500 dark:text-gray-300"}`}
-        >
-          {formData.is_active ? "Active" : "Inactive"}
-        </span>
+        {/* Title */}
+        <div>
+          <label className="block text-gray-700 dark:text-white mb-1">
+            Title <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full border rounded px-3 py-2 dark:bg-gray-700 dark:text-white"
+            required
+            disabled={readOnly}
+          />
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className="block text-gray-700 dark:text-white mb-1">
+            Description <span className="text-red-500">*</span>
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full border rounded px-3 py-2 dark:bg-gray-700 dark:text-white resize-none"
+            required
+            disabled={readOnly}
+          />
+        </div>
+
+        {/* Active Checkbox */}
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={isActive}
+            onChange={() => setIsActive(!isActive)}
+            disabled={readOnly}
+            id="isActive"
+          />
+          <label htmlFor="isActive" className="text-gray-700 dark:text-white">
+            Active
+          </label>
+        </div>
       </div>
 
-      <div className="flex justify-end gap-2 pt-3">
-        <Button type="submit">
-          {mode === "create" ? "Create" : "Update"}
-        </Button>
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-      </div>
+      {/* ===== Fixed Footer ===== */}
+      {!readOnly && (
+        <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 border rounded bg-gray-200 dark:bg-gray-700 dark:text-white"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 border rounded bg-blue-600 text-white"
+          >
+            Submit
+          </button>
+        </div>
+      )}
     </form>
   );
 };
 
-export default ServiceFeatureForm;
+export default ProcessStepsForm;

@@ -17,13 +17,13 @@ const api = axios.create({
   },
 });
 
-// GET all features
+
 export const getAllServiceFeatures = async (): Promise<ServiceFeature[]> => {
   const res = await api.get<ServiceFeature[]>("/");
   return res.data;
 };
 
-// CREATE new feature
+
 export const createServiceFeature = async (
   data: ServiceFeature
 ): Promise<ServiceFeature> => {
@@ -31,7 +31,6 @@ export const createServiceFeature = async (
   return res.data;
 };
 
-// UPDATE feature by ID
 export const updateServiceFeature = async (
   id: string,
   data: ServiceFeature
@@ -40,7 +39,7 @@ export const updateServiceFeature = async (
   return res.data;
 };
 
-// DELETE feature by ID
+
 export const deleteServiceFeature = async (id: string): Promise<void> => {
   await api.delete(`/${id}`);
 };
