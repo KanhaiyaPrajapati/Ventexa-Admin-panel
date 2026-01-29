@@ -106,7 +106,6 @@ export default function BusinessMetrics() {
           </div>
         ))}
       </div>
-      {/* <!-- Metric Item End --> */}
     </div>
   );
 }
