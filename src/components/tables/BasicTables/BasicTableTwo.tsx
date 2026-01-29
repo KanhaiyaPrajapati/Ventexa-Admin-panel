@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   Table,
@@ -13,7 +12,6 @@ import Alert from "../../ui/alert/Alert";
 import Button from "../../ui/button/Button";
 import { Trash2, Eye, Edit, Plus } from "lucide-react";
 import Pagination from "../../ui/Pagination/Pagination";
-import { SearchBar } from "../../../hooks/SearchBar.tsx";
 
 import {
   fetchAllFeatures,
@@ -26,36 +24,47 @@ import ServiceForm from "./form/ServiceForm";
 import ServiceFormDetails from "./Details/ServiceFormDetails";
 import { ServiceFeature } from "../../../store/api/service-features-api";
 
+// 🔹 LOCAL SearchBar COMPONENT (no import issues)
+const SearchBar = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) => (
+  <input
+    type="text"
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    placeholder="Search..."
+    className="w-full sm:w-64 rounded-lg border border-gray-300 px-3 py-2 text-sm
+               focus:outline-none focus:ring-1 focus:ring-blue-500
+               dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+  />
+);
+
 const BasicTableTwo: React.FC = () => {
   const [features, setFeatures] = useState<ServiceFeature[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-  const [currentFeature, setCurrentFeature] =
-    useState<ServiceFeature | null>(null);
+  const [currentFeature, setCurrentFeature] = useState<ServiceFeature | null>(null);
   const [mode, setMode] = useState<"create" | "edit" | "view">("create");
-
   const [formData, setFormData] = useState<ServiceFeature>({
-    service_id: "",
-    feature_title: "",
-    feature_description: "",
+    title: "",
+    slug: "",
+    short_description: "",
     is_active: true,
   });
-
-  const [alert, setAlert] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
-
+  const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
   const [searchTerm, setSearchTerm] = useState("");
 
-  
+  // Load features
   const loadFeatures = async () => {
     try {
+      setLoading(true);
       const data = await fetchAllFeatures();
       setFeatures(data);
     } catch {
@@ -69,67 +78,87 @@ const BasicTableTwo: React.FC = () => {
     loadFeatures();
   }, []);
 
- 
-  const showAlert = (alertData: {
-    type: "success" | "error";
-    message: string;
-  }) => {
+  const showAlert = (alertData: { type: "success" | "error"; message: string }) => {
     setAlert(alertData);
     setTimeout(() => setAlert(null), 3500);
   };
 
-  const openModal = (
-    type: "create" | "edit" | "view",
-    feature?: ServiceFeature,
-  ) => {
+  // Open modal - FIXED: Properly handle different modes
+  const openModal = (type: "create" | "edit" | "view", feature?: ServiceFeature) => {
     setMode(type);
+    
     if (feature) {
       setCurrentFeature(feature);
-      setFormData({ ...feature });
+      
+      // Only populate formData for edit mode
+      if (type === "edit") {
+        setFormData({ 
+          title: feature.title || "",
+          slug: feature.slug || "",
+          short_description: feature.short_description || "",
+          is_active: feature.is_active || true,
+        });
+      } else {
+        // For view mode, don't touch formData
+        // For create mode with feature (shouldn't happen), reset formData
+        setFormData({
+          title: "",
+          slug: "",
+          short_description: "",
+          is_active: true,
+        });
+      }
     } else {
+      // Create mode without existing feature
       setCurrentFeature(null);
       setFormData({
-        service_id: "",
-        feature_title: "",
-        feature_description: "",
+        title: "",
+        slug: "",
+        short_description: "",
         is_active: true,
       });
     }
+    
     setIsModalOpen(true);
   };
 
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setCurrentFeature(null);
+    // Reset form data when closing modal
+    setFormData({
+      title: "",
+      slug: "",
+      short_description: "",
+      is_active: true,
+    });
+  };
 
- 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  // Form handlers
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const toggleActive = () =>
-    setFormData((prev) => ({ ...prev, is_active: !prev.is_active }));
+  const toggleActive = () => setFormData((prev) => ({ ...prev, is_active: !prev.is_active }));
 
   const handleSubmit = async () => {
     try {
       if (mode === "create") {
         await addFeature(formData);
         showAlert({ type: "success", message: "Feature created successfully" });
-      }
-
-      if (mode === "edit" && currentFeature?.id) {
+      } else if (mode === "edit" && currentFeature?.id) {
         await modifyFeature(currentFeature.id, formData);
         showAlert({ type: "success", message: "Feature updated successfully" });
       }
-
-      loadFeatures();
+      await loadFeatures();
       closeModal();
     } catch {
       showAlert({ type: "error", message: "Operation failed" });
     }
   };
 
+  // Delete
   const openDeleteModal = (feature: ServiceFeature) => {
     setCurrentFeature(feature);
     setIsDeleteModalOpen(true);
@@ -138,12 +167,10 @@ const BasicTableTwo: React.FC = () => {
   const confirmDelete = async () => {
     if (!currentFeature?.id) return;
     try {
-   await removeFeature(currentFeature.id);
-showAlert({ type: "success", message: "Feature deleted successfully" });
-
-setCurrentPage((prev) => (prev > 1 ? prev - 1 : 1));
-loadFeatures();
-
+      await removeFeature(currentFeature.id);
+      showAlert({ type: "success", message: "Feature deleted successfully" });
+      setCurrentPage((prev) => (prev > 1 ? prev - 1 : 1));
+      await loadFeatures();
     } catch {
       showAlert({ type: "error", message: "Delete failed" });
     } finally {
@@ -152,25 +179,22 @@ loadFeatures();
     }
   };
 
+  // Loading
   if (loading) {
-    return (
-      <div className="py-10 text-center text-gray-900 dark:text-white">
-        Loading...
-      </div>
-    );
+    return <div className="py-10 text-center text-gray-900 dark:text-white">Loading...</div>;
   }
 
-  
+  // Filter and paginate
   const filteredFeatures = features.filter(
     (f) =>
-      f.service_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      f.feature_title.toLowerCase().includes(searchTerm.toLowerCase()),
+      (f.title ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (f.slug ?? "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredFeatures.length / itemsPerPage);
   const paginatedFeatures = filteredFeatures.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
+    currentPage * itemsPerPage
   );
 
   return (
@@ -197,13 +221,7 @@ loadFeatures();
           <Table className="min-w-175">
             <TableHeader className="border-b border-gray-100 dark:border-white/5">
               <TableRow>
-                {[    
-                  "Title",
-                  "Slug",
-                  "Short_Description",
-                  "Status",
-                  "Actions",
-                ].map((head) => (
+                {["Title", "Slug", "Short_Description", "Status", "Actions"].map((head) => (
                   <TableCell
                     key={head}
                     isHeader
@@ -220,19 +238,19 @@ loadFeatures();
                 <TableRow key={f.id}>
                   <TableCell className="px-5 py-4 sm:px-6 text-start whitespace-nowrap">
                     <span className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                      {f.service_id}
+                      {f.title}
                     </span>
                   </TableCell>
 
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">
-                    {f.feature_title}
+                    {f.slug}
                   </TableCell>
 
                   <TableCell className="px-4 py-3 text-start whitespace-nowrap">
                     <span className="text-black dark:text-gray-400">
-                      {f.feature_description.length > 20
-                        ? `${f.feature_description.slice(0, 15)}...`
-                        : f.feature_description}
+                      {(f.short_description ?? "").length > 20
+                        ? `${f.short_description.slice(0, 20)}...`
+                        : f.short_description}
                     </span>
                   </TableCell>
 
@@ -273,20 +291,15 @@ loadFeatures();
         </div>
 
         {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         )}
       </div>
 
       {isModalOpen && (
         <Modal isOpen onClose={closeModal} className="max-w-lg p-6">
-          {mode === "view" && currentFeature && (
-            <ServiceFormDetails feature={currentFeature} />
-          )}
-          {(mode === "create" || mode === "edit") && (
+          {mode === "view" && currentFeature ? (
+            <ServiceFormDetails feature={currentFeature} onClose={closeModal} />
+          ) : (
             <ServiceForm
               mode={mode}
               formData={formData}
@@ -300,31 +313,14 @@ loadFeatures();
       )}
 
       {isDeleteModalOpen && (
-        <Modal
-          isOpen
-          onClose={() => setIsDeleteModalOpen(false)}
-          className="max-w-md p-6"
-        >
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Delete Feature
-          </h3>
+        <Modal isOpen onClose={() => setIsDeleteModalOpen(false)} className="max-w-md p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Delete Feature</h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-            Are you sure you want to delete{" "}
-            <span className="font-medium">
-              {currentFeature?.feature_title}
-            </span>
-            ?
+            Are you sure you want to delete <span className="font-medium">{currentFeature?.title}</span>?
           </p>
           <div className="flex justify-end gap-3">
-            <Button
-              variant="outline"
-              onClick={() => setIsDeleteModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button color="destructive" onClick={confirmDelete}>
-              Delete
-            </Button>
+            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
+            <Button color="destructive" onClick={confirmDelete}>Delete</Button>
           </div>
         </Modal>
       )}
@@ -343,4 +339,3 @@ loadFeatures();
 };
 
 export default BasicTableTwo;
-

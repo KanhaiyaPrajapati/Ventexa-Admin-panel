@@ -1,45 +1,55 @@
 {
   "service-features": [
     {
-      "id": "0",
-      "service_id": "prajval",
-      "feature_title": "Consequatur est et a",
-      "feature_description": "DJSNJFDNJDNJHJDJFJJF",
+      "title": "prajval Zare",
+      "slug": "Natus repudiandae ma",
+      "short_description": "fejkfsdsdgdggdg",
+      "is_active": true,
+      "id": "49b7"
+    },
+    {
+      "id": "bd1c",
+      "service_id": "",
+      "feature_title": "",
+      "feature_description": "",
+      "is_active": true,
+      "title": "ffdf",
+      "short_description": "fdffdfd",
+      "slug": "fdfdfd"
+    },
+    {
+      "title": "prajval",
+      "slug": "zare",
+      "short_description": "dsddfdf",
+      "is_active": true,
+      "id": "c1d1"
+    },
+    {
+      "id": "8e81",
+      "title": "ujwal",
+      "slug": "Anim earum quis inci",
+      "short_description": "sfddfdgfddd",
       "is_active": true
     },
     {
-      "id": "c6b4",
-      "service_id": "vikas",
-      "feature_title": "Consequatur est et a",
-      "feature_description": "helsdjkfhdlfkhnjgfkbnfjf",
-      "is_active": false
+      "title": "kishan",
+      "slug": " zare",
+      "short_description": "fsdggdgdg",
+      "is_active": true,
+      "id": "f08f"
     },
     {
-      "id": "a26a",
-      "service_id": "Dolor nihil quaerat ",
-      "feature_title": "Consequatur est et a",
-      "feature_description": "fdgfghfhgbhgbfhgfg",
-      "is_active": true
+      "title": "vxscbsncc",
+      "slug": "yadav",
+      "short_description": "axxcscdcxcxcxc",
+      "is_active": true,
+      "id": "1668"
     },
     {
-      "id": "69c5",
-      "service_id": "sam",
-      "feature_title": "sam",
-      "feature_description": "sam",
-      "is_active": false
-    },
-    {
-      "id": "a50d",
-      "service_id": "ujwal",
-      "feature_title": "cfdfdfgdgf",
-      "feature_description": "sdfdfdgfgfdfg",
-      "is_active": true
-    },
-    {
-      "id": "58be",
-      "service_id": "Virat",
-      "feature_title": "Cumque sit voluptat",
-      "feature_description": "wrfesgtferdgtrfdgfdgdggd",
+      "id": "bc27",
+      "title": "rahul",
+      "slug": "patil",
+      "short_description": "xsgfffhhghh",
       "is_active": true
     }
   ]

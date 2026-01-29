@@ -1,126 +1,83 @@
-import Button from "../../../ui/button/Button";
-import Badge from "../../../ui/badge/Badge";
-import {
-  Layers,
-  FileText,
-  AlignLeft,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import React from "react";
+import { ServiceFeature } from "../../../store/api/service-features-api";
 
-import { ServiceFeature } from "../../../../store/types/types";
-
-/* ================================
-   Props Interface
-================================ */
 interface ServiceFormDetailsProps {
   feature: ServiceFeature;
-  onClose?: () => void;
+  onClose: () => void;
 }
 
-/* ================================
-   Component
-================================ */
-const ServiceFormDetails: React.FC<ServiceFormDetailsProps> = ({
-  feature,
-  onClose,
-}) => {
+const ServiceFormDetails: React.FC<ServiceFormDetailsProps> = ({ feature, onClose }) => {
   return (
-    <div className="space-y-4 sm:space-y-6 bg-transparent">
-      {/* Header */}
-      <div>
-        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-white mb-2">
-          Service Feature Details
-        </h2>
-        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-          View complete information about this service feature
-        </p>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+          Feature Details
+        </h3>
+        <button
+          onClick={onClose}
+          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
-      <div className="space-y-3 sm:space-y-4">
-        {/* Service ID */}
-        <div className="flex items-start gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <div className="w-10 h-10 rounded-full bg-indigo-100/10 dark:bg-indigo-400/20 flex items-center justify-center">
-            <Layers className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 uppercase mb-1">
-              Service ID
-            </p>
-            <p className="text-base font-semibold text-gray-900 dark:text-white">
-              {feature?.service_id || "N/A"}
-            </p>
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Title
+          </label>
+          <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
+            <span className="text-gray-900 dark:text-white">{feature.title || "Not provided"}</span>
           </div>
         </div>
-
-        {/* Feature Title */}
-        <div className="flex items-start gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <div className="w-10 h-10 rounded-full bg-blue-100/10 dark:bg-blue-400/20 flex items-center justify-center">
-            <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 uppercase mb-1">
-              Feature Title
-            </p>
-            <p className="text-base font-semibold text-gray-900 dark:text-white">
-              {feature?.feature_title || "N/A"}
-            </p>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Slug
+          </label>
+          <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
+            <span className="text-gray-900 dark:text-white">{feature.slug || "Not provided"}</span>
           </div>
         </div>
-
-        {/* Description */}
-        <div className="flex items-start gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <div className="w-10 h-10 rounded-full bg-purple-100/10 dark:bg-purple-400/20 flex items-center justify-center">
-            <AlignLeft className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 uppercase mb-1">
-              Description
-            </p>
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {feature?.feature_description
-                ? feature.feature_description.length > 20
-                  ? `${feature.feature_description.slice(0, 20)}...`
-                  : feature.feature_description
-                : "N/A"}
-            </p>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Description
+          </label>
+          <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700 min-h-20">
+            <span className="text-gray-900 dark:text-white">
+              {feature.short_description || "No description provided"}
+            </span>
           </div>
         </div>
-
-        {/* Status */}
-        <div className="flex items-start gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              feature?.is_active
-                ? "bg-green-100/10 dark:bg-green-400/20"
-                : "bg-red-100/10 dark:bg-red-400/20"
-            }`}
-          >
-            {feature?.is_active ? (
-              <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
-            ) : (
-              <XCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
-            )}
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 uppercase mb-2">
-              Status
-            </p>
-            <Badge color={feature?.is_active ? "success" : "error"}>
-              {feature?.is_active ? "Active" : "Inactive"}
-            </Badge>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Status
+          </label>
+          <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              feature.is_active 
+                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" 
+                : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+            }`}>
+              {feature.is_active ? "Active" : "Inactive"}
+            </span>
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      {onClose && (
-        <div className="flex justify-end pt-3 border-t border-gray-200 dark:border-gray-700">
-          <Button variant="primary" onClick={onClose}>
-            Close
-          </Button>
-        </div>
-      )}
+      
+      <div className="pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+        <button
+          type="button"
+          onClick={onClose}
+          className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Close
+        </button>
+      </div>
     </div>
   );
 };

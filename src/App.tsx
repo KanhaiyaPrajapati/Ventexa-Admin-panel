@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
@@ -19,7 +19,7 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
-import { Toaster } from "react-hot-toast";
+import BasicTableTwo from "./components/tables/BasicTables/BasicTableTwo";
 
 export default function App() {
   return (
@@ -41,6 +41,7 @@ export default function App() {
 
             {/* Tables */}
             <Route path="/basic-tables" element={<BasicTables />} />
+            <Route path="/BasicTableTwo" element={<BasicTableTwo />} />
 
             {/* Ui Elements */}
             <Route path="/alerts" element={<Alerts />} />
@@ -64,7 +65,6 @@ export default function App() {
           {/* Krishna Prajpati */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <Toaster position="bottom-right" />
       </Router>
     </>
   );

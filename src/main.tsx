@@ -6,7 +6,6 @@ import "flatpickr/dist/flatpickr.css";
 import App from "./App.tsx";
 import { AppWrapper } from "./components/common/PageMeta.tsx";
 import { ThemeProvider } from "./context/ThemeContext.tsx";
-import { Toaster } from "react-hot-toast";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -14,7 +13,6 @@ createRoot(document.getElementById("root")!).render(
       <AppWrapper>
         <App />
       </AppWrapper>
-     </ThemeProvider>
-     <Toaster position="bottom-right" />
-     </StrictMode>,
+    </ThemeProvider>
+  </StrictMode>,
 );

@@ -31,7 +31,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <label className="block text-sm font-medium text-gray-800 dark:text-white">
-          Title
+          Tital
         </label>
         <input
           type="text"
@@ -115,3 +115,4 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
 };
 
 export default ServiceForm;
+
