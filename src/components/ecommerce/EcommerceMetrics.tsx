@@ -53,7 +53,6 @@ export default function EcommerceMetrics() {
           </Badge>
         </div>
       </div>
-      {/* <!-- Metric Item End --> */}
     </div>
   );
 }

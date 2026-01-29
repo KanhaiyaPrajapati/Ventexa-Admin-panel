@@ -51,7 +51,6 @@ const othersItems: NavItem[] = [
     name: "Authentication",
     subItems: [
       { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
     ],
   },
 ];
@@ -287,9 +286,9 @@ const AppSidebar: React.FC = () => {
             </>
           ) : (
             <img
-              src="ventexa_new_logo.pngpng"
+              src="ventexa_new_logo.png"
               alt="Logo"
-              width={32}
+              width={150}
               height={32}
             />
           )}
