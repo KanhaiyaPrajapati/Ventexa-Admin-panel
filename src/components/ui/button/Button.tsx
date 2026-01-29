@@ -12,6 +12,7 @@ interface ButtonProps
 }
 
 const Button: React.FC<ButtonProps> = ({
+   type = "button",
   children,
   size = "md",
   variant = "primary",
@@ -55,6 +56,7 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
+     type={type}
       {...props} // ✅ allows type="submit"
       disabled={disabled}
       className={`inline-flex items-center justify-center gap-2 rounded-lg transition

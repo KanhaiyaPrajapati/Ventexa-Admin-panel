@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import {
   Table,
@@ -10,30 +11,30 @@ import { Modal } from "../../ui/modal";
 import Badge from "../../ui/badge/Badge";
 import Alert from "../../ui/alert/Alert";
 import Button from "../../ui/button/Button";
-
 import { Trash2, Eye, Edit, Plus } from "lucide-react";
 import Pagination from "../../ui/Pagination/Pagination";
 import { SearchBar } from "../../../hooks/SearchBar.tsx";
 
 import {
-  getAllServiceFeatures,
-  createServiceFeature,
-  updateServiceFeature,
-  deleteServiceFeature,
-} from "../../../store/api/service-features-api";
+  fetchAllFeatures,
+  addFeature,
+  modifyFeature,
+  removeFeature,
+} from "../../../store/api/categories-api";
 
-import ServiceFeatureForm from "./form/ServiceFeatureForm";
-import ServiceFeatureDetails from "./Details/ServiceFeatureDetails";
-import { ServiceFeature } from "../../../store/types/types";
+import ServiceForm from "./form/ServiceForm";
+import ServiceFormDetails from "./Details/ServiceFormDetails";
+import { ServiceFeature } from "../../../store/api/service-features-api";
 
-const ServiceFeaturesTableOne: React.FC = () => {
+const BasicTableTwo: React.FC = () => {
   const [features, setFeatures] = useState<ServiceFeature[]>([]);
   const [loading, setLoading] = useState(true);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [currentFeature, setCurrentFeature] = useState<ServiceFeature | null>(
-    null,
-  );
+
+  const [currentFeature, setCurrentFeature] =
+    useState<ServiceFeature | null>(null);
   const [mode, setMode] = useState<"create" | "edit" | "view">("create");
 
   const [formData, setFormData] = useState<ServiceFeature>({
@@ -52,9 +53,10 @@ const ServiceFeaturesTableOne: React.FC = () => {
   const itemsPerPage = 4;
   const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchFeatures = async () => {
+  
+  const loadFeatures = async () => {
     try {
-      const data = await getAllServiceFeatures();
+      const data = await fetchAllFeatures();
       setFeatures(data);
     } catch {
       showAlert({ type: "error", message: "Failed to load features" });
@@ -64,9 +66,10 @@ const ServiceFeaturesTableOne: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchFeatures();
+    loadFeatures();
   }, []);
 
+ 
   const showAlert = (alertData: {
     type: "success" | "error";
     message: string;
@@ -97,6 +100,7 @@ const ServiceFeaturesTableOne: React.FC = () => {
 
   const closeModal = () => setIsModalOpen(false);
 
+ 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -104,21 +108,22 @@ const ServiceFeaturesTableOne: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const toggleActive = () => {
+  const toggleActive = () =>
     setFormData((prev) => ({ ...prev, is_active: !prev.is_active }));
-  };
 
   const handleSubmit = async () => {
     try {
       if (mode === "create") {
-        await createServiceFeature(formData);
+        await addFeature(formData);
         showAlert({ type: "success", message: "Feature created successfully" });
       }
+
       if (mode === "edit" && currentFeature?.id) {
-        await updateServiceFeature(currentFeature.id, formData);
+        await modifyFeature(currentFeature.id, formData);
         showAlert({ type: "success", message: "Feature updated successfully" });
       }
-      fetchFeatures();
+
+      loadFeatures();
       closeModal();
     } catch {
       showAlert({ type: "error", message: "Operation failed" });
@@ -133,9 +138,12 @@ const ServiceFeaturesTableOne: React.FC = () => {
   const confirmDelete = async () => {
     if (!currentFeature?.id) return;
     try {
-      await deleteServiceFeature(currentFeature.id);
-      showAlert({ type: "success", message: "Feature deleted successfully" });
-      fetchFeatures();
+   await removeFeature(currentFeature.id);
+showAlert({ type: "success", message: "Feature deleted successfully" });
+
+setCurrentPage((prev) => (prev > 1 ? prev - 1 : 1));
+loadFeatures();
+
     } catch {
       showAlert({ type: "error", message: "Delete failed" });
     } finally {
@@ -152,6 +160,7 @@ const ServiceFeaturesTableOne: React.FC = () => {
     );
   }
 
+  
   const filteredFeatures = features.filter(
     (f) =>
       f.service_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -188,10 +197,10 @@ const ServiceFeaturesTableOne: React.FC = () => {
           <Table className="min-w-175">
             <TableHeader className="border-b border-gray-100 dark:border-white/5">
               <TableRow>
-                {[
-                  "Service ID",
+                {[    
                   "Title",
-                  "Description",
+                  "Slug",
+                  "Short_Description",
                   "Status",
                   "Actions",
                 ].map((head) => (
@@ -214,9 +223,11 @@ const ServiceFeaturesTableOne: React.FC = () => {
                       {f.service_id}
                     </span>
                   </TableCell>
+
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">
                     {f.feature_title}
                   </TableCell>
+
                   <TableCell className="px-4 py-3 text-start whitespace-nowrap">
                     <span className="text-black dark:text-gray-400">
                       {f.feature_description.length > 20
@@ -225,11 +236,12 @@ const ServiceFeaturesTableOne: React.FC = () => {
                     </span>
                   </TableCell>
 
-                  <TableCell className="px-4 py-3 text-start whitespace-nowrap ">
+                  <TableCell className="px-4 py-3 text-start whitespace-nowrap">
                     <Badge size="sm" color={f.is_active ? "success" : "error"}>
                       {f.is_active ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
+
                   <TableCell className="px-4 py-3 whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       <button
@@ -238,12 +250,14 @@ const ServiceFeaturesTableOne: React.FC = () => {
                       >
                         <Eye size={16} />
                       </button>
+
                       <button
                         onClick={() => openModal("edit", f)}
                         className="p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400"
                       >
                         <Edit size={16} />
                       </button>
+
                       <button
                         onClick={() => openDeleteModal(f)}
                         className="p-2 text-red-500 hover:text-red-600 dark:text-red-400"
@@ -266,13 +280,14 @@ const ServiceFeaturesTableOne: React.FC = () => {
           />
         )}
       </div>
+
       {isModalOpen && (
         <Modal isOpen onClose={closeModal} className="max-w-lg p-6">
           {mode === "view" && currentFeature && (
-            <ServiceFeatureDetails feature={currentFeature} />
+            <ServiceFormDetails feature={currentFeature} />
           )}
           {(mode === "create" || mode === "edit") && (
-            <ServiceFeatureForm
+            <ServiceForm
               mode={mode}
               formData={formData}
               onChange={handleChange}
@@ -295,22 +310,19 @@ const ServiceFeaturesTableOne: React.FC = () => {
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
             Are you sure you want to delete{" "}
-            <span className="font-medium">{currentFeature?.feature_title}</span>
-            ? This action cannot be undone.
+            <span className="font-medium">
+              {currentFeature?.feature_title}
+            </span>
+            ?
           </p>
           <div className="flex justify-end gap-3">
             <Button
               variant="outline"
-              color="primary"
               onClick={() => setIsDeleteModalOpen(false)}
             >
               Cancel
             </Button>
-            <Button
-              variant="primary"
-              color="destructive"
-              onClick={confirmDelete}
-            >
+            <Button color="destructive" onClick={confirmDelete}>
               Delete
             </Button>
           </div>
@@ -330,4 +342,5 @@ const ServiceFeaturesTableOne: React.FC = () => {
   );
 };
 
-export default ServiceFeaturesTableOne;
+export default BasicTableTwo;
+

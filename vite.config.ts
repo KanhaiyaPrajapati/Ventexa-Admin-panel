@@ -14,5 +14,11 @@ export default defineConfig({
         namedExport: "ReactComponent",
       },
     }),
+
   ],
+  server: {
+    watch: {
+      ignored: ['**/db.json'],
+    },
+  },
 });

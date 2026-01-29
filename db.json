@@ -1,0 +1,46 @@
+{
+  "service-features": [
+    {
+      "id": "0",
+      "service_id": "prajval",
+      "feature_title": "Consequatur est et a",
+      "feature_description": "DJSNJFDNJDNJHJDJFJJF",
+      "is_active": true
+    },
+    {
+      "id": "c6b4",
+      "service_id": "vikas",
+      "feature_title": "Consequatur est et a",
+      "feature_description": "helsdjkfhdlfkhnjgfkbnfjf",
+      "is_active": false
+    },
+    {
+      "id": "a26a",
+      "service_id": "Dolor nihil quaerat ",
+      "feature_title": "Consequatur est et a",
+      "feature_description": "fdgfghfhgbhgbfhgfg",
+      "is_active": true
+    },
+    {
+      "id": "69c5",
+      "service_id": "sam",
+      "feature_title": "sam",
+      "feature_description": "sam",
+      "is_active": false
+    },
+    {
+      "id": "a50d",
+      "service_id": "ujwal",
+      "feature_title": "cfdfdfgdgf",
+      "feature_description": "sdfdfdgfgfdfg",
+      "is_active": true
+    },
+    {
+      "id": "58be",
+      "service_id": "Virat",
+      "feature_title": "Cumque sit voluptat",
+      "feature_description": "wrfesgtferdgtrfdgfdgdggd",
+      "is_active": true
+    }
+  ]
+}
