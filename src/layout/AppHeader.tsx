@@ -98,21 +98,8 @@ const AppHeader: React.FC = () => {
           </button>
 
           <Link to="/" className="lg:hidden">
-<<<<<<< Updated upstream
-            <img
-              className="dark:hidden"
-              src="./images/logo/logo.svg"
-              alt="Logo"
-            />
-            <img
-              className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
-              alt="Logo"
-            />
-=======
             <img className="w-32 h-auto dark:hidden" src="ventexa_new_logo.png" alt="Logo" />
             <img className="w-32 h-auto hidden dark:block" src="ventexa_new_logo.png" alt="Logo" />
->>>>>>> Stashed changes
           </Link>
         </div>
 
