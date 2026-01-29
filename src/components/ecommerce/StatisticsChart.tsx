@@ -1,175 +1,111 @@
-import { useEffect, useRef } from "react";
-import Chart from "react-apexcharts";
-import { ApexOptions } from "apexcharts";
-import flatpickr from "flatpickr";
-import ChartTab from "../common/ChartTab";
-import { CalenderIcon } from "../../icons";
+import { useState } from "react";
+import { LineChart } from "@mui/x-charts/LineChart";
+import { Dropdown } from "../ui/dropdown/Dropdown";
+import { DropdownItem } from "../ui/dropdown/DropdownItem";
+import { MoreDotIcon } from "../../icons";
 
-export default function StatisticsChart() {
-  const datePickerRef = useRef<HTMLInputElement>(null);
+export default function ITConsultingDashboard() {
+  const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    if (!datePickerRef.current) return;
+  const toggleDropdown = () => setIsOpen(!isOpen);
+  const closeDropdown = () => setIsOpen(false);
 
-    const today = new Date();
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(today.getDate() - 6);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct","Nov", "Dec"];
+  const revenueData = [4500, 3500, 9000, 5500, 8500, 8000, 10500, 10500, 15000, 19000, 20600, 28000];
 
-    const fp = flatpickr(datePickerRef.current, {
-      mode: "range",
-      static: true,
-      monthSelectorType: "static",
-      dateFormat: "M d",
-      defaultDate: [sevenDaysAgo, today],
-      clickOpens: true,
-      prevArrow:
-        '<svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 15L7.5 10L12.5 5" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      nextArrow:
-        '<svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 15L12.5 10L7.5 5" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    });
-
-    return () => {
-      if (!Array.isArray(fp)) {
-        fp.destroy();
-      }
-    };
-  }, []);
-
-  const options: ApexOptions = {
-    legend: {
-      show: false, 
-      position: "top",
-      horizontalAlign: "left",
-    },
-    colors: ["#465FFF", "#9CB9FF"],
-    chart: {
-      fontFamily: "Outfit, sans-serif",
-      height: 310,
-      type: "line", 
-      toolbar: {
-        show: false,
-      },
-    },
-    stroke: {
-      curve: "straight", 
-      width: [2, 2], 
-    },
-
-    fill: {
-      type: "gradient",
-      gradient: {
-        opacityFrom: 0.55,
-        opacityTo: 0,
-      },
-    },
-    markers: {
-      size: 0, 
-      strokeColors: "#fff", 
-      strokeWidth: 2,
-      hover: {
-        size: 6, 
-      },
-    },
-    grid: {
-      xaxis: {
-        lines: {
-          show: false,
-        },
-      },
-      yaxis: {
-        lines: {
-          show: true, 
-        },
-      },
-    },
-    dataLabels: {
-      enabled: false, 
-    },
-    tooltip: {
-      enabled: true, 
-      x: {
-        format: "dd MMM yyyy", 
-      },
-    },
-    xaxis: {
-      type: "category",
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
-      axisBorder: {
-        show: false, 
-      },
-      axisTicks: {
-        show: false, 
-      },
-      tooltip: {
-        enabled: false, 
-      },
-    },
-    yaxis: {
-      labels: {
-        style: {
-          fontSize: "12px", 
-          colors: ["#6B7280"], 
-        },
-      },
-      title: {
-        text: "",
-        style: {
-          fontSize: "0px",
-        },
-      },
-    },
-  };
-
-  const series = [
-    {
-      name: "Sales",
-      data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
-    },
-    {
-      name: "Revenue",
-      data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
-    },
+  const services = [
+    { name: "Cloud Migration", count: 12, growth: "+14%", color: "bg-blue-500" },
+    { name: "Cyber Security", count: 8, growth: "+5%", color: "bg-purple-500" },
+    { name: "AI Strategy", count: 15, growth: "+22%", color: "bg-indigo-500" },
   ];
+
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-      <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
-        <div className="w-full">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Statistics
-          </h3>
-          <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-            Target you've set for each month
-          </p>
-        </div>
-        <div className="flex items-center gap-3 sm:justify-end">
-          <ChartTab />
-          <div className="relative inline-flex items-center">
-            <CalenderIcon className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:left-3 lg:top-1/2 lg:translate-x-0 lg:-translate-y-1/2 size-5 text-gray-500 dark:text-gray-400 pointer-events-none z-10" />
-            <input
-              ref={datePickerRef}
-              className="h-10 w-10 lg:w-40 lg:h-auto  lg:pl-10 lg:pr-3 lg:py-2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-transparent lg:text-gray-700 outline-none dark:border-gray-700 dark:bg-gray-800 dark:lg:text-gray-300 cursor-pointer"
-              placeholder="Select date range"
-            />
+    <div className="w-full space-y-6">
+      <div className="group relative overflow-hidden rounded-[32px] border border-slate-200/60 bg-white shadow-2xl transition-all duration-300 dark:border-slate-800/60 dark:bg-[#0B1120]">
+        <div className="absolute -left-24 -top-24 h-64 w-64 rounded-full bg-indigo-500/10 blur-[80px]" />
+
+        <div className="relative z-10 p-6 sm:p-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
+            <div className="space-y-1">
+              <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+                Revenue & Growth
+              </h2>
+              <p className="text-sm font-medium text-slate-500">Global IT Consulting Performance</p>
+            </div>
+
+            <div className="relative flex items-center gap-3">
+               <button onClick={toggleDropdown} className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 dark:border-slate-800 dark:bg-slate-900 transition-hover hover:bg-slate-100">
+                <MoreDotIcon className="size-5 text-slate-500" />
+              </button>
+              <Dropdown isOpen={isOpen} onClose={closeDropdown} className="right-0 top-14 w-52 rounded-2xl shadow-xl">
+                <DropdownItem onItemClick={closeDropdown}>Generate Invoice</DropdownItem>
+                <DropdownItem onItemClick={closeDropdown}>Client Portfolio</DropdownItem>
+              </Dropdown>
+            </div>
+          </div>
+
+          <div className="mt-4 h-[350px] w-full">
+            <LineChart
+              series={[{ 
+                data: revenueData, 
+                area: true, 
+                color: '#6366F1', 
+                showMark: true, 
+                curve: "catmullRom",
+                valueFormatter: (val) => `$${val?.toLocaleString()}`
+              }]}
+              xAxis={[{ 
+                data: months, 
+                scaleType: 'point',
+                tickLabelStyle: {
+                    fontSize: 12,
+                    fontWeight: 600,
+                    fill: '#94a3b8', 
+                },
+              }]}
+              yAxis={[{ 
+                tickLabelStyle: {
+                    fontSize: 12,
+                    fontWeight: 600,
+                    fill: '#94a3b8',
+                },
+                valueFormatter: (val: number) => `$${val / 1000}k` 
+              }]}
+              slots={{ legend: undefined }}
+              margin={{ left: 10, right:10, top: 20, bottom: 40 }}
+              sx={{
+                '.MuiAreaElement-root': { fill: 'url(#premium-gradient)', fillOpacity: 1 },
+                '.MuiLineElement-root': { strokeWidth: 4 },
+                '& .MuiChartsAxis-line': { stroke: '#e2e8f0', strokeWidth: 1 },
+                '& .MuiChartsAxis-tick': { stroke: '#e2e8f0', strokeWidth: 1 },
+                '.dark & .MuiChartsAxis-line': { stroke: '#1e293b' },
+                '.dark & .MuiChartsAxis-tick': { stroke: '#1e293b' },
+              }}
+            >
+              <defs>
+                <linearGradient id="premium-gradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#6366F1" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="#6366F1" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+            </LineChart>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-full overflow-x-auto custom-scrollbar">
-        <div className="min-w-[1000px] xl:min-w-full">
-          <Chart options={options} series={series} type="area" height={310} />
+         <div className="grid grid-cols-1 gap-px border-t border-slate-100 bg-slate-100 dark:border-slate-800 dark:bg-slate-800 sm:grid-cols-3 mt-6">
+          {[
+            { label: "Active Clients", value: "42", detail: "+4 this month" },
+            { label: "Project Margin", value: "32.4%", detail: "Optimized" },
+            { label: "Billable Hours", value: "1,840", detail: "92% Capacity" },
+          ].map((stat) => (
+            <div key={stat.label} className="bg-white px-8 py-6 dark:bg-[#0B1120]">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{stat.label}</p>
+              <div className="mt-1 flex items-baseline gap-2">
+                <span className="text-2xl font-black text-slate-900 dark:text-white">{stat.value}</span>
+                <span className="text-[10px] font-bold text-emerald-500">{stat.detail}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
