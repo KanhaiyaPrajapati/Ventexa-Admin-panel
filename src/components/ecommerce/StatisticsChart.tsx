@@ -21,8 +21,8 @@ export default function ITConsultingDashboard() {
 
   return (
     <div className="w-full space-y-6">
-      <div className="group relative overflow-hidden rounded-[32px] border border-slate-200/60 bg-white shadow-2xl transition-all duration-300 dark:border-slate-800/60 dark:bg-[#0B1120]">
-        <div className="absolute -left-24 -top-24 h-64 w-64 rounded-full bg-indigo-500/10 blur-[80px]" />
+      <div className="group relative overflow-hidden rounded-[32px] border border-slate-300/90 bg-white transition-all duration-300 dark:border-slate-800/60 dark:bg-[#0B1120]">
+        <div className="absolute -left-24 -top-24 h-64 w-64 rounded-full bg-indigo-500/20 blur-[80px]" />
 
         <div className="relative z-10 p-6 sm:p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
@@ -49,7 +49,7 @@ export default function ITConsultingDashboard() {
               series={[{ 
                 data: revenueData, 
                 area: true, 
-                color: '#6366F1', 
+                color: '#6c6afa', 
                 showMark: true, 
                 curve: "catmullRom",
                 valueFormatter: (val) => `$${val?.toLocaleString()}`
@@ -69,13 +69,13 @@ export default function ITConsultingDashboard() {
                     fontWeight: 600,
                     fill: '#94a3b8',
                 },
-                valueFormatter: (val: number) => `$${val / 1000}k` 
+                valueFormatter: (val: number) => `$${val /1000}k` 
               }]}
               slots={{ legend: undefined }}
               margin={{ left: 10, right:10, top: 20, bottom: 40 }}
               sx={{
                 '.MuiAreaElement-root': { fill: 'url(#premium-gradient)', fillOpacity: 1 },
-                '.MuiLineElement-root': { strokeWidth: 4 },
+                '.MuiLineElement-root': { strokeWidth: 2 },
                 '& .MuiChartsAxis-line': { stroke: '#e2e8f0', strokeWidth: 1 },
                 '& .MuiChartsAxis-tick': { stroke: '#e2e8f0', strokeWidth: 1 },
                 '.dark & .MuiChartsAxis-line': { stroke: '#1e293b' },
@@ -84,8 +84,8 @@ export default function ITConsultingDashboard() {
             >
               <defs>
                 <linearGradient id="premium-gradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#6366F1" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="#6366F1" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#8587e0" stopOpacity={0.8} />
+                  <stop offset="100%" stopColor="#8587e0" stopOpacity={0} />
                 </linearGradient>
               </defs>
             </LineChart>

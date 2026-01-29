@@ -7,7 +7,7 @@ import {
   GridIcon,
 } from "../../icons";
 import Badge from "../ui/badge/Badge";
-import { Loader } from "../ui/Loader/Loader";
+import Loader from "../ui/Loader/Loader";
 
 export default function BusinessMetrics() {
   const [loading, setLoading] = useState(true);
@@ -65,11 +65,13 @@ export default function BusinessMetrics() {
               p-1 transition-all duration-300
             "
           >
+            {/* Hover Gradient */}
             <div
               className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
             />
 
             <div className="relative flex flex-col h-full bg-white/90 dark:bg-[#111827]/80 backdrop-blur-xl rounded-[22px] p-6">
+              {/* Top Section */}
               <div className="flex items-start justify-between mb-6">
                 <div className="flex items-center justify-center size-12 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white">
                   {item.icon}
@@ -87,16 +89,20 @@ export default function BusinessMetrics() {
                 </Badge>
               </div>
 
+              {/* Bottom Section */}
               <div className="mt-auto">
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2 text-center">
                   {item.title}
                 </p>
 
-                <div className="h-[40px] flex items-center">
+                {/* CENTERED VALUE / LOADER */}
+                <div className="h-[60px] flex items-center justify-center text-center">
                   {loading ? (
-                    <Loader />
+                    <div className="flex items-center justify-center">
+                      <Loader />
+                    </div>
                   ) : (
-                    <h4 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    <h4 className="text-3xl font-bold text-gray-900 dark:text-white text-center">
                       {item.value}
                     </h4>
                   )}

@@ -71,7 +71,7 @@ export default function MonthlySalesChart() {
   ];
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-[#f8fafc] p-1 dark:border-white/10 dark:bg-[#0f172a]">
+    <div className="relative overflow-hidden rounded-xl mb-10  border border-gray-200 bg-[#f8fafc] p-1 dark:border-white/10 dark:bg-[#0f172a]">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="flex h-2 w-2 items-center justify-center">
