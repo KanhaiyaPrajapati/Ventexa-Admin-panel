@@ -8,7 +8,7 @@ import {
 } from "../../ui/table";
 import { Modal } from "../../ui/modal";
 import Badge from "../../ui/badge/Badge";
-import Alert from "../../ui/alert/Alert";
+import Alert from "../../ui/alert/Alert.tsx";
 import Button from "../../ui/button/Button";
 
 import { Trash2, Eye, Edit, Plus } from "lucide-react";
@@ -25,6 +25,7 @@ import {
 import ServiceFeatureForm from "./form/ServiceFeatureForm";
 import ServiceFeatureDetails from "./Details/ServiceFeatureDetails";
 import { ServiceFeature } from "../../../store/types/types";
+import Loader from "../../ui/Loader/Loader.tsx";
 
 const ServiceFeaturesTableOne: React.FC = () => {
   const [features, setFeatures] = useState<ServiceFeature[]>([]);
@@ -49,13 +50,21 @@ const ServiceFeaturesTableOne: React.FC = () => {
   } | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [pendingPage, setPendingPage] = useState<number | null>(null);
   const itemsPerPage = 4;
+
   const [searchTerm, setSearchTerm] = useState("");
 
   const fetchFeatures = async () => {
     try {
-      const data = await getAllServiceFeatures();
-      setFeatures(data);
+      setLoading(true);
+
+      const timer = new Promise((resolve) => setTimeout(resolve, 1500)); // loader delay
+      const apiCall = getAllServiceFeatures();
+
+      const [, data] = await Promise.all([timer, apiCall]);
+
+      setFeatures(data as ServiceFeature[]);
     } catch {
       showAlert({ type: "error", message: "Failed to load features" });
     } finally {
@@ -67,6 +76,15 @@ const ServiceFeaturesTableOne: React.FC = () => {
     fetchFeatures();
   }, []);
 
+  useEffect(() => {
+    if (pendingPage === null) return;
+    const timer = setTimeout(() => {
+      setCurrentPage(pendingPage);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [pendingPage]);
+
+  // ================= ALERT =================
   const showAlert = (alertData: {
     type: "success" | "error";
     message: string;
@@ -75,6 +93,7 @@ const ServiceFeaturesTableOne: React.FC = () => {
     setTimeout(() => setAlert(null), 3500);
   };
 
+  // ================= MODAL =================
   const openModal = (
     type: "create" | "edit" | "view",
     feature?: ServiceFeature,
@@ -97,6 +116,7 @@ const ServiceFeaturesTableOne: React.FC = () => {
 
   const closeModal = () => setIsModalOpen(false);
 
+  // ================= FORM =================
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -108,16 +128,19 @@ const ServiceFeaturesTableOne: React.FC = () => {
     setFormData((prev) => ({ ...prev, is_active: !prev.is_active }));
   };
 
+  // ================= SUBMIT =================
   const handleSubmit = async () => {
     try {
       if (mode === "create") {
         await createServiceFeature(formData);
         showAlert({ type: "success", message: "Feature created successfully" });
       }
+
       if (mode === "edit" && currentFeature?.id) {
         await updateServiceFeature(currentFeature.id, formData);
         showAlert({ type: "success", message: "Feature updated successfully" });
       }
+
       fetchFeatures();
       closeModal();
     } catch {
@@ -125,6 +148,7 @@ const ServiceFeaturesTableOne: React.FC = () => {
     }
   };
 
+  // ================= DELETE =================
   const openDeleteModal = (feature: ServiceFeature) => {
     setCurrentFeature(feature);
     setIsDeleteModalOpen(true);
@@ -144,14 +168,16 @@ const ServiceFeaturesTableOne: React.FC = () => {
     }
   };
 
+  // ================= LOADER =================
   if (loading) {
     return (
-      <div className="py-10 text-center text-gray-900 dark:text-white">
-        Loading...
+      <div className="flex items-center justify-center h-[90vh] w-full">
+        <Loader />
       </div>
     );
   }
 
+  // ================= FILTER + PAGINATION =================
   const filteredFeatures = features.filter(
     (f) =>
       f.service_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -159,6 +185,7 @@ const ServiceFeaturesTableOne: React.FC = () => {
   );
 
   const totalPages = Math.ceil(filteredFeatures.length / itemsPerPage);
+
   const paginatedFeatures = filteredFeatures.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
@@ -170,17 +197,14 @@ const ServiceFeaturesTableOne: React.FC = () => {
         <div className="flex flex-col sm:flex-row justify-between items-center px-5 py-4 gap-3">
           <button
             onClick={() => openModal("create")}
-            className="inline-flex items-center justify-center rounded-lg bg-white p-2 text-blue-600 hover:bg-blue-50 dark:bg-gray-800 dark:hover:bg-gray-700"
+            className="inline-flex items-center justify-center rounded-lg p-2 text-blue-600 hover:bg-blue-50 dark:bg-gray-800 dark:hover:bg-gray-700"
           >
             <Plus size={20} />
           </button>
 
           <SearchBar
             value={searchTerm}
-            onChange={(value) => {
-              setSearchTerm(value);
-              setCurrentPage(1);
-            }}
+            onChange={(value) => setSearchTerm(value)}
           />
         </div>
 
@@ -214,9 +238,11 @@ const ServiceFeaturesTableOne: React.FC = () => {
                       {f.service_id}
                     </span>
                   </TableCell>
+
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">
                     {f.feature_title}
                   </TableCell>
+
                   <TableCell className="px-4 py-3 text-start whitespace-nowrap">
                     <span className="text-black dark:text-gray-400">
                       {f.feature_description.length > 20
@@ -225,28 +251,31 @@ const ServiceFeaturesTableOne: React.FC = () => {
                     </span>
                   </TableCell>
 
-                  <TableCell className="px-4 py-3 text-start whitespace-nowrap ">
+                  <TableCell className="px-4 py-3 text-start whitespace-nowrap">
                     <Badge size="sm" color={f.is_active ? "success" : "error"}>
                       {f.is_active ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
+
                   <TableCell className="px-4 py-3 whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => openModal("view", f)}
-                        className="p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400"
+                        className="p-2 text-blue-500"
                       >
                         <Eye size={16} />
                       </button>
+
                       <button
                         onClick={() => openModal("edit", f)}
-                        className="p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400"
+                        className="p-2 text-amber-500"
                       >
                         <Edit size={16} />
                       </button>
+
                       <button
                         onClick={() => openDeleteModal(f)}
-                        className="p-2 text-red-500 hover:text-red-600 dark:text-red-400"
+                        className="p-2 text-red-500"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -262,15 +291,18 @@ const ServiceFeaturesTableOne: React.FC = () => {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={setCurrentPage}
+            onPageChange={(page) => setPendingPage(page)}
           />
         )}
       </div>
+
+      {/* ===== MODALS ===== */}
       {isModalOpen && (
         <Modal isOpen onClose={closeModal} className="max-w-lg p-6">
           {mode === "view" && currentFeature && (
             <ServiceFeatureDetails feature={currentFeature} />
           )}
+
           {(mode === "create" || mode === "edit") && (
             <ServiceFeatureForm
               mode={mode}
@@ -288,20 +320,23 @@ const ServiceFeaturesTableOne: React.FC = () => {
         <Modal
           isOpen
           onClose={() => setIsDeleteModalOpen(false)}
-          className="max-w-md p-6"
+          className="max-w-md p-6 rounded-md bg-white dark:bg-gray-900"
         >
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 className="text-lg font-semibold mb-2 text-black dark:text-white">
             Delete Feature
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+
+          <p className="text-sm mb-6 text-gray-700 dark:text-gray-300">
             Are you sure you want to delete{" "}
-            <span className="font-medium">{currentFeature?.feature_title}</span>
-            ? This action cannot be undone.
+            <span className="font-medium text-black dark:text-white">
+              {currentFeature?.feature_title}
+            </span>
+            ?
           </p>
+
           <div className="flex justify-end gap-3">
             <Button
               variant="outline"
-              color="primary"
               onClick={() => setIsDeleteModalOpen(false)}
             >
               Cancel
@@ -317,8 +352,9 @@ const ServiceFeaturesTableOne: React.FC = () => {
         </Modal>
       )}
 
+      {/* ===== ALERT ===== */}
       {alert && (
-        <div className="fixed bottom-5 right-2 z-50 w-70">
+        <div className="fixed bottom-5 right-2 z-50 w-72">
           <Alert
             variant={alert.type}
             title={alert.type === "success" ? "Success" : "Error"}

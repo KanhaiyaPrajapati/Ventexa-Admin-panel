@@ -21,7 +21,6 @@ const ServiceFeatureDetails: React.FC<ServiceFeatureDetailsProps> = ({
 }) => {
   return (
     <div className="space-y-4 sm:space-y-6 bg-transparent">
-      {/* Header */}
       <div>
         <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-white mb-2">
           Service Feature Details
