@@ -6,9 +6,9 @@ import axios from "axios";
 ================================ */
 export interface ServiceFeature {
   id?: string | number;
-  service_id: string;
-  feature_title: string;
-  feature_description: string;
+  title: string;
+  slug: string;
+  short_description: string;
   is_active: boolean;
 }
 

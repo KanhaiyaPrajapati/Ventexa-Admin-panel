@@ -28,7 +28,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 bg-transparent">
       <div>
         <label className="block text-sm font-medium text-gray-800 dark:text-white">
           Tital

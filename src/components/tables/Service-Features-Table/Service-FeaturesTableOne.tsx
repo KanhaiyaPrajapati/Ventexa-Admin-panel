@@ -193,7 +193,7 @@ const ServiceFeaturesTableOne: React.FC = () => {
 
   return (
     <>
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
         <div className="flex flex-col sm:flex-row justify-between items-center px-5 py-4 gap-3">
           <button
             onClick={() => openModal("create")}
@@ -209,8 +209,8 @@ const ServiceFeaturesTableOne: React.FC = () => {
         </div>
 
         <div className="max-w-full overflow-x-auto">
-          <Table className="min-w-[700px]">
-            <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+          <Table className="min-w-175">
+            <TableHeader className="border-b border-gray-100 dark:border-white/5">
               <TableRow>
                 {[
                   "Service ID",
@@ -230,7 +230,7 @@ const ServiceFeaturesTableOne: React.FC = () => {
               </TableRow>
             </TableHeader>
 
-            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+            <TableBody className="divide-y divide-gray-100 dark:divide-white/5">
               {paginatedFeatures.map((f) => (
                 <TableRow key={f.id}>
                   <TableCell className="px-5 py-4 sm:px-6 text-start whitespace-nowrap">

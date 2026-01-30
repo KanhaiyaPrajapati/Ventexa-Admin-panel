@@ -1,23 +1,6 @@
 {
   "service-features": [
     {
-      "title": "prajval Zare",
-      "slug": "Natus repudiandae ma",
-      "short_description": "fejkfsdsdgdggdg",
-      "is_active": true,
-      "id": "49b7"
-    },
-    {
-      "id": "bd1c",
-      "service_id": "",
-      "feature_title": "",
-      "feature_description": "",
-      "is_active": true,
-      "title": "ffdf",
-      "short_description": "fdffdfd",
-      "slug": "fdfdfd"
-    },
-    {
       "title": "prajval",
       "slug": "zare",
       "short_description": "dsddfdf",
@@ -25,31 +8,31 @@
       "id": "c1d1"
     },
     {
-      "id": "8e81",
-      "title": "ujwal",
-      "slug": "Anim earum quis inci",
-      "short_description": "sfddfdgfddd",
+      "id": "7dd9",
+      "title": "prajval",
+      "slug": "zare",
+      "short_description": "etgdegdtsg",
       "is_active": true
     },
     {
-      "title": "kishan",
-      "slug": " zare",
-      "short_description": "fsdggdgdg",
-      "is_active": true,
-      "id": "f08f"
+      "id": "dc2f",
+      "title": "prajval",
+      "slug": "zare",
+      "short_description": "wedwrfdsfdfdfdfd",
+      "is_active": true
     },
     {
-      "title": "vxscbsncc",
-      "slug": "yadav",
-      "short_description": "axxcscdcxcxcxc",
-      "is_active": true,
-      "id": "1668"
+      "id": "6a4b",
+      "title": "ujwal",
+      "slug": "zare",
+      "short_description": "dhjsfsdfhbjdfhdjfd",
+      "is_active": false
     },
     {
-      "id": "bc27",
-      "title": "rahul",
-      "slug": "patil",
-      "short_description": "xsgfffhhghh",
+      "id": "e194",
+      "title": "raj",
+      "slug": "raj",
+      "short_description": "raj",
       "is_active": true
     }
   ]
