@@ -19,6 +19,8 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
+import ProcessStepsTable from "./pages/Tables/ProcessStepsTable"
+import BasicTables from "./pages/Tables/ProcessStepsTable";
 
 export default function App() {
   return (
@@ -33,6 +35,12 @@ export default function App() {
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
             <Route path="/form-elements" element={<FormElements />} />
+
+            {/* Tables */}
+            <Route path="/basic-tables" element={<BasicTables />} />
+            <Route path="/process-steps" element={<ProcessStepsTable />} />
+
+            {/* Ui Elements */}
             {/* <Route path="/basic-tables" element={<BasicTables />} /> */}
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/avatars" element={<Avatars />} />

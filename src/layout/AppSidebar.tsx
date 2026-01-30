@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { ChevronDownIcon, GridIcon, TableIcon, HorizontaLDots } from "../icons";
+
+// Assume these icons are imported from an icon library
+import {
+  ChevronDownIcon,
+  GridIcon,
+  HorizontaLDots,
+  TableIcon,
+  PlugInIcon
+} from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
 import { Layers } from "lucide-react";

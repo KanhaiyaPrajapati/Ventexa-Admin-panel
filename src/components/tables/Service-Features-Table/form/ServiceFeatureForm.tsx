@@ -1,6 +1,7 @@
-import React from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Button from "../../../ui/button/Button";
 import { ServiceFeature } from "../../../../store/types/types";
+import { Step } from "../../ProcessSteps/ProcessStepsForm";
 
 interface ServiceFeatureFormProps {
   mode: "create" | "edit";
@@ -13,18 +14,56 @@ interface ServiceFeatureFormProps {
   onToggleActive: () => void;
 }
 
-const ServiceFeatureForm: React.FC<ServiceFeatureFormProps> = ({
-  mode,
-  formData,
-  onChange,
+interface Props {
+  initialData: Step | null;
+  onSubmit: (step: Step) => void;
+  onCancel: () => void;
+  readOnly?: boolean;
+}
+
+const ProcessStepsForm: React.FC<Props> = ({
+  initialData,
   onSubmit,
   onCancel,
-  onToggleActive,
+  readOnly = false,
 }) => {
+  const [stepNumber, setStepNumber] = useState<number>(
+    initialData?.step_number || 1
+  );
+  const [title, setTitle] = useState<string>(initialData?.title || "");
+  const [description, setDescription] = useState<string>(
+    initialData?.description || ""
+  );
+  const [isActive, setIsActive] = useState<boolean>(
+    initialData?.is_active ?? true
+  );
+
+  useEffect(() => {
+    if (initialData) {
+      setStepNumber(initialData.step_number);
+      setTitle(initialData.title);
+      setDescription(initialData.description);
+      setIsActive(initialData.is_active);
+    } else {
+      setStepNumber(1);
+      setTitle("");
+      setDescription("");
+      setIsActive(true);
+    }
+  }, [initialData]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit();
   };
+
+  function onChange(event: ChangeEvent<HTMLTextAreaElement>): void {
+    throw new Error("Function not implemented.");
+  }
+
+  function onToggleActive(event: MouseEvent<HTMLDivElement, MouseEvent>): void {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <div className="relative rounded-sm p-2 bg-white dark:bg-gray-900">
@@ -36,7 +75,7 @@ const ServiceFeatureForm: React.FC<ServiceFeatureFormProps> = ({
           <input
             type="text"
             name="service_id"
-            value={formData.service_id}
+            value={FormData.service_id}
             onChange={onChange}
             required
             className="mt-1 block w-full rounded-md p-2 bg-white dark:bg-transparent
@@ -51,7 +90,7 @@ const ServiceFeatureForm: React.FC<ServiceFeatureFormProps> = ({
           <input
             type="text"
             name="feature_title"
-            value={formData.feature_title}
+            value={FormData.feature_title}
             onChange={onChange}
             required
             className="mt-1 block w-full rounded-md p-2 bg-white dark:bg-transparent
@@ -65,7 +104,7 @@ const ServiceFeatureForm: React.FC<ServiceFeatureFormProps> = ({
           </label>
           <textarea
             name="feature_description"
-            value={formData.feature_description}
+            value={FormData.feature_description}
             onChange={onChange}
             rows={3}
             required
@@ -81,21 +120,21 @@ const ServiceFeatureForm: React.FC<ServiceFeatureFormProps> = ({
           <div
             onClick={onToggleActive}
             className={`w-12 h-6 flex items-center rounded-full p-0.5 cursor-pointer transition-colors
-      ${formData.is_active ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"}`}
+      ${FormData.is_active ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"}`}
           >
             <div
               className={`w-4 h-4 rounded-full bg-white shadow-md transform transition-transform
-        ${formData.is_active ? "translate-x-6" : "translate-x-0"}`}
+        ${FormData.is_active ? "translate-x-6" : "translate-x-0"}`}
             />
           </div>
           <span
             className={`text-sm font-medium ${
-              formData.is_active
+              FormData.is_active
                 ? "text-green-600 dark:text-green-400"
                 : "text-gray-500 dark:text-gray-300"
             }`}
           >
-            {formData.is_active ? "Active" : "Inactive"}
+            {FormData.is_active ? "Active" : "Inactive"}
           </span>
         </div>
         <div className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -118,4 +157,4 @@ const ServiceFeatureForm: React.FC<ServiceFeatureFormProps> = ({
   );
 };
 
-export default ServiceFeatureForm;
+export default ProcessStepsForm;
