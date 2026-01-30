@@ -31,6 +31,11 @@ const navItems: NavItem[] = [
     name: "Service Features",
     path: "/service-features", 
   },
+  {
+     icon: <Layers className="w-5 h-5" />,
+    name: "Process Steps",
+    path: "/process-steps",
+   },
 ];
 
 
