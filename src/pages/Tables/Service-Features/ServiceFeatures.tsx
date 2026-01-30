@@ -1,10 +1,9 @@
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import ComponentCard from "../../../components/common/ComponentCard";
 import PageMeta from "../../../components/common/PageMeta";
-// Import your Service Features table
 import ServiceFeaturesTable  from "../../../components/tables/Service-Features-Table/Service-FeaturesTableOne";
 
-export default function BasicTables() {
+export default function ServiceFeaturesPage() {
   return (
     <>
       <PageMeta

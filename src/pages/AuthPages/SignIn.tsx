@@ -1,5 +1,4 @@
 import PageMeta from "../../components/common/PageMeta";
-// import SignInForm from "../../components/auth/SignInForm";
 import VentexaAuth from "./AuthPageLayout";
 
 export default function SignIn() {
