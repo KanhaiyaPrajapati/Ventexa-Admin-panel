@@ -12,8 +12,7 @@ export interface ServiceFeature {
   is_active: boolean;
 }
 
-const API_URL = "http://localhost:5000/service-features";
-// const API_URL = "https://68df8fea898434f413581df6.mockapi.io/service_features";
+const API_URL = "https://697d82c597386252a2684fc3.mockapi.io/categories-api";
 
 /* ================================
    GET ALL
@@ -48,3 +47,4 @@ export const modifyFeature = async (
 export const removeFeature = async (id: string) => {
   await axios.delete(`${API_URL}/${id}`);
 };
+

@@ -40,6 +40,11 @@ const navItems: NavItem[] = [
     name: "Process Steps",
     path: "/process-steps",
    },
+   { 
+    icon: <Layers className="w-5 h-5" />,
+    name: "Team Members",
+    path: "/team-section",
+   },
 ];
 
 

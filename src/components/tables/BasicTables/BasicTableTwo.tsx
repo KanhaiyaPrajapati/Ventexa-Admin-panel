@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+
+import { useEffect, useState, useCallback, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -72,15 +73,15 @@ const BasicTableTwo: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   /* 🔹 ALERT */
-  const showAlert = (alertData: {
+  const showAlert = useCallback((alertData: {
     type: "success" | "error";
     message: string;
   }) => {
     setAlert(alertData);
     setTimeout(() => setAlert(null), 3500);
-  };
+  }, []);
 
-  const loadFeatures = async () => {
+  const loadFeatures = useCallback(async () => {
     try {
       setLoading(true);
       const data = await fetchAllFeatures();
@@ -89,23 +90,18 @@ const BasicTableTwo: React.FC = () => {
         id: feature.id ? String(feature.id) : undefined,
       }));
       setFeatures(normalizedData);
-
-      const totalPages = Math.ceil(data.length / itemsPerPage);
-      if (currentPage > totalPages && totalPages > 0) {
-        setCurrentPage(totalPages);
-      }
     } catch {
       showAlert({ type: "error", message: "Failed to load features" });
     } finally {
       setLoading(false);
     }
-  };
+  }, [showAlert]);
 
   useEffect(() => {
     loadFeatures();
-  }, []);
+  }, [loadFeatures]);
 
-  const openModal = (
+  const openModal = useCallback((
     type: "create" | "edit" | "view",
     feature?: ServiceFeature
   ) => {
@@ -133,9 +129,9 @@ const BasicTableTwo: React.FC = () => {
     }
 
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setCurrentFeature(null);
     setFormData({
@@ -144,77 +140,133 @@ const BasicTableTwo: React.FC = () => {
       short_description: "",
       is_active: true,
     });
-  };
+  }, []);
 
   /* 🔹 FORM */
-  const handleChange = (
+  const handleChange = useCallback((
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  }, []);
 
-  const toggleActive = () =>
-    setFormData((prev) => ({ ...prev, is_active: !prev.is_active }));
+  const toggleActive = useCallback(() =>
+    setFormData((prev) => ({ ...prev, is_active: !prev.is_active })), []);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     try {
       if (mode === "create") {
-        await addFeature(formData);
+        const newFeature = await addFeature(formData);
+        setFeatures(prev => {
+          const updatedFeatures = [...prev, {
+            ...newFeature,
+            id: newFeature.id ? String(newFeature.id) : undefined
+          }];
+          return updatedFeatures;
+        });
         showAlert({ type: "success", message: "Feature created successfully" });
       } else if (mode === "edit" && currentFeature?.id) {
-        await modifyFeature(currentFeature.id, formData);
+        const updatedFeature = await modifyFeature(currentFeature.id, formData);
+        setFeatures(prev => prev.map(f => 
+          f.id === currentFeature.id ? {
+            ...updatedFeature,
+            id: updatedFeature.id ? String(updatedFeature.id) : undefined
+          } : f
+        ));
         showAlert({ type: "success", message: "Feature updated successfully" });
       }
 
-      await loadFeatures();
       closeModal();
     } catch {
       showAlert({ type: "error", message: "Operation failed" });
     }
-  };
+  }, [mode, formData, currentFeature, showAlert, closeModal]);
 
-  const openDeleteModal = (feature: ServiceFeature) => {
+  const openDeleteModal = useCallback((feature: ServiceFeature) => {
     setCurrentFeature(feature);
     setIsDeleteModalOpen(true);
-  };
+  }, []);
 
-  const confirmDelete = async () => {
+  // Memoized search function
+  const applySearchTerm = useCallback((data: ServiceFeature[], term: string) => {
+    if (!term.trim()) return data;
+    
+    return data.filter(
+      (f) =>
+        (f.title ?? "").toLowerCase().includes(term.toLowerCase()) ||
+        (f.slug ?? "").toLowerCase().includes(term.toLowerCase())
+    );
+  }, []);
+
+  const confirmDelete = useCallback(async () => {
     if (!currentFeature?.id) return;
 
     try {
-      await removeFeature(currentFeature.id);
+      await removeFeature(currentFeature?.id || "");
+      
+      // Remove the feature from state without reloading
+      setFeatures(prev => {
+        const updatedFeatures = prev.filter(f => f.id !== currentFeature.id);
+        
+        // Calculate if we need to adjust the current page
+        const filtered = applySearchTerm(updatedFeatures, searchTerm);
+        const totalPages = Math.ceil(filtered.length / itemsPerPage);
+        
+        // If current page is empty after deletion and not page 1, go to previous page
+        if (currentPage > totalPages && totalPages > 0) {
+          setCurrentPage(totalPages);
+        }
+        
+        return updatedFeatures;
+      });
+      
       showAlert({ type: "success", message: "Feature deleted successfully" });
-      await loadFeatures();
     } catch {
       showAlert({ type: "error", message: "Delete failed" });
     } finally {
       setIsDeleteModalOpen(false);
       setCurrentFeature(null);
     }
-  };
+  }, [applySearchTerm, currentFeature?.id, currentPage, searchTerm, showAlert]);
+
+  // Memoized filtered features
+  const filteredFeatures = useMemo(() => {
+    return applySearchTerm(features, searchTerm);
+  }, [features, searchTerm, applySearchTerm]);
+
+  // Memoized paginated features
+  const paginatedFeatures = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredFeatures.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredFeatures, currentPage, itemsPerPage]);
+
+  const totalPages = useMemo(() => {
+    return Math.ceil(filteredFeatures.length / itemsPerPage);
+  }, [filteredFeatures.length, itemsPerPage]);
+
+  // Handle page change with boundary checks
+  const handlePageChange = useCallback((page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  }, [totalPages]);
+
+  // Effect to adjust current page when filtered results change
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    } else if (currentPage < 1 && totalPages > 0) {
+      setCurrentPage(1);
+    }
+  }, [totalPages, currentPage]);
 
   /* 🔹 LOADING */
-  if (loading) {
+  if (loading && features.length === 0) {
     return (
       <div className="py-10 text-center text-gray-900 dark:text-white">
         Loading...
       </div>
     );
   }
-
-  const filteredFeatures = features.filter(
-    (f) =>
-      (f.title ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (f.slug ?? "").toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const totalPages = Math.ceil(filteredFeatures.length / itemsPerPage);
-
-  const paginatedFeatures = filteredFeatures.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
 
   return (
     <>
@@ -231,7 +283,7 @@ const BasicTableTwo: React.FC = () => {
             value={searchTerm}
             onChange={(value) => {
               setSearchTerm(value);
-              setCurrentPage(1);
+              setCurrentPage(1); // Reset to page 1 only on search, not on delete
             }}
           />
         </div>
@@ -255,58 +307,68 @@ const BasicTableTwo: React.FC = () => {
             </TableHeader>
 
             <TableBody className="divide-y divide-gray-100 dark:divide-white/5">
-              {paginatedFeatures.map((f) => (
-                <TableRow key={f.id}>
-                  <TableCell className="px-5 py-4 sm:px-6 text-start whitespace-nowrap">
-                    <span className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                      {f.title}
-                    </span>
-                  </TableCell>
+              {paginatedFeatures.length > 0 ? (
+                paginatedFeatures.map((f) => (
+                  <TableRow key={f.id}>
+                    <TableCell className="px-5 py-4 sm:px-6 text-start whitespace-nowrap">
+                      <span className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                        {f.title}
+                      </span>
+                    </TableCell>
 
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">
-                    {f.slug}
-                  </TableCell>
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">
+                      {f.slug}
+                    </TableCell>
 
-                  <TableCell className="px-4 py-3 text-start whitespace-nowrap">
-                    <span className="text-black dark:text-gray-400">
-                      {(f.short_description ?? "").length > 20
-                        ? `${f.short_description.slice(0, 20)}...`
-                        : f.short_description}
-                    </span>
-                  </TableCell>
+                    <TableCell className="px-4 py-3 text-start whitespace-nowrap">
+                      <span className="text-black dark:text-gray-400">
+                        {(f.short_description ?? "").length > 20
+                          ? `${f.short_description.slice(0, 20)}...`
+                          : f.short_description}
+                      </span>
+                    </TableCell>
 
-                  <TableCell className="px-4 py-3 text-start whitespace-nowrap">
-                    <Badge size="sm" color={f.is_active ? "success" : "error"}>
-                      {f.is_active ? "Active" : "Inactive"}
-                    </Badge>
-                  </TableCell>
+                    <TableCell className="px-4 py-3 text-start whitespace-nowrap">
+                      <Badge size="sm" color={f.is_active ? "success" : "error"}>
+                        {f.is_active ? "Active" : "Inactive"}
+                      </Badge>
+                    </TableCell>
 
-                  <TableCell className="px-4 py-3 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => openModal("view", f)}
-                        className="p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400"
-                      >
-                        <Eye size={16} />
-                      </button>
+                    <TableCell className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => openModal("view", f)}
+                          className="p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400"
+                        >
+                          <Eye size={16} />
+                        </button>
 
-                      <button
-                        onClick={() => openModal("edit", f)}
-                        className="p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400"
-                      >
-                        <Edit size={16} />
-                      </button>
+                        <button
+                          onClick={() => openModal("edit", f)}
+                          className="p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400"
+                        >
+                          <Edit size={16} />
+                        </button>
 
-                      <button
-                        onClick={() => openDeleteModal(f)}
-                        className="p-2 text-red-500 hover:text-red-600 dark:text-red-400"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                        <button
+                          onClick={() => openDeleteModal(f)}
+                          className="p-2 text-red-500 hover:text-red-600 dark:text-red-400"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell className="px-5 py-8">
+                    <div className="text-center text-gray-500 dark:text-gray-400">
+                      {searchTerm ? "No features found matching your search." : "No features available."}
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </div>
@@ -315,7 +377,7 @@ const BasicTableTwo: React.FC = () => {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={setCurrentPage}
+            onPageChange={handlePageChange}
           />
         )}
       </div>
@@ -381,6 +443,3 @@ const BasicTableTwo: React.FC = () => {
 };
 
 export default BasicTableTwo;
-
-
-
