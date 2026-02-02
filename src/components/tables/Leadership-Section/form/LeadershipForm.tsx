@@ -29,7 +29,6 @@ const LeadershipForm: React.FC<LeadershipFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 bg-transparent">
-      {/* Full Name */}
       <div>
         <label className="block text-sm font-medium text-gray-800 dark:text-white">
           Full Name
@@ -47,7 +46,6 @@ const LeadershipForm: React.FC<LeadershipFormProps> = ({
         />
       </div>
 
-      {/* Designation */}
       <div>
         <label className="block text-sm font-medium text-gray-800 dark:text-white">
           Designation
@@ -65,7 +63,6 @@ const LeadershipForm: React.FC<LeadershipFormProps> = ({
         />
       </div>
 
-      {/* Bio */}
       <div>
         <label className="block text-sm font-medium text-gray-800 dark:text-white">
           Bio
@@ -83,7 +80,6 @@ const LeadershipForm: React.FC<LeadershipFormProps> = ({
         />
       </div>
 
-      {/* Profile Image */}
       <div>
         <label className="block text-sm font-medium text-gray-800 dark:text-white">
           Profile Image URL
@@ -100,7 +96,6 @@ const LeadershipForm: React.FC<LeadershipFormProps> = ({
         />
       </div>
 
-      {/* LinkedIn URL */}
       <div>
         <label className="block text-sm font-medium text-gray-800 dark:text-white">
           LinkedIn URL
@@ -117,7 +112,6 @@ const LeadershipForm: React.FC<LeadershipFormProps> = ({
         />
       </div>
 
-      {/* Status */}
       <div className="flex items-center gap-3">
         <label className="text-sm font-medium text-gray-800 dark:text-white">
           Status
@@ -154,7 +148,6 @@ const LeadershipForm: React.FC<LeadershipFormProps> = ({
         </span>
       </div>
 
-      {/* Actions */}
       <div className="flex justify-end gap-2 pt-3">
         <Button type="submit">
           {mode === "create" ? "Add" : "Update"}

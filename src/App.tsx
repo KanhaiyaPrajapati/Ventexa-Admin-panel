@@ -34,22 +34,18 @@ export default function App() {
       <ScrollToTop />
       <Routes>
         <Route element={<AppLayout />}>
-          {/* Dashboard */}
           <Route index path="/" element={<Home />} />
 
-          {/* Pages */}
           <Route path="/profile" element={<UserProfiles />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/blank" element={<Blank />} />
           <Route path="/form-elements" element={<FormElements />} />
 
-          {/* Tables */}
           <Route path="/basic-tables" element={<BasicTables />} />
           <Route path="/process-steps" element={<ProcessStepsTable />} />
           <Route path="/team-section" element={<TeamSection />} />
           <Route path="/service-features" element={<ServiceFeatures />} />
 
-          {/* UI Elements */}
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/avatars" element={<Avatars />} />
           <Route path="/badge" element={<Badges />} />
@@ -57,16 +53,13 @@ export default function App() {
           <Route path="/images" element={<Images />} />
           <Route path="/videos" element={<Videos />} />
 
-          {/* Charts */}
           <Route path="/line-chart" element={<LineChart />} />
           <Route path="/bar-chart" element={<BarChart />} />
         </Route>
 
-        {/* Auth */}
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
 
-        {/* 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

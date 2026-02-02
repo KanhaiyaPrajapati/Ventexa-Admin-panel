@@ -12,16 +12,13 @@ const LeadershipDetails: React.FC<LeadershipDetailsProps> = ({
 }) => {
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center">
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
           Leadership Details
         </h3>
       </div>
 
-      {/* Details */}
       <div className="space-y-4">
-        {/* Full Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Full Name
@@ -33,7 +30,6 @@ const LeadershipDetails: React.FC<LeadershipDetailsProps> = ({
           </div>
         </div>
 
-        {/* Designation */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Designation
@@ -45,7 +41,6 @@ const LeadershipDetails: React.FC<LeadershipDetailsProps> = ({
           </div>
         </div>
 
-        {/* Bio */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Bio
@@ -57,7 +52,6 @@ const LeadershipDetails: React.FC<LeadershipDetailsProps> = ({
           </div>
         </div>
 
-        {/* Profile Image */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Profile Image
@@ -77,7 +71,6 @@ const LeadershipDetails: React.FC<LeadershipDetailsProps> = ({
           </div>
         </div>
 
-        {/* LinkedIn */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             LinkedIn URL
@@ -100,7 +93,6 @@ const LeadershipDetails: React.FC<LeadershipDetailsProps> = ({
           </div>
         </div>
 
-        {/* Status */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Status
@@ -119,7 +111,6 @@ const LeadershipDetails: React.FC<LeadershipDetailsProps> = ({
         </div>
       </div>
 
-      {/* Footer */}
       <div className="pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-end">
         <button
           type="button"

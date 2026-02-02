@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import Pagination from "../../ui/Pagination/Pagination";
 
-/* 🔹 API */
 import {
   fetchAllTeamMembers,
   addTeamMember,
@@ -29,14 +28,11 @@ import {
   deleteTeamMember,
 } from "../../../store/api/team-api";
 
-/* 🔹 FORMS */
 import TeamMemberForm from "./form/LeadershipForm";
 import TeamMemberDetails from "./Details/LeadershipDetails";
 
-/* 🔹 TYPES */
 import { TeamMember } from "../../../store/types/team-types";
 
-/* 🔹 SEARCH */
 const SearchBar = ({
   value,
   onChange,
@@ -83,7 +79,6 @@ const LeadershipTableOne: React.FC = () => {
   const itemsPerPage = 4;
   const [searchTerm, setSearchTerm] = useState("");
 
-  /* 🔹 ALERT */
   const showAlert = useCallback((alertData: {
     type: "success" | "error";
     message: string;
@@ -92,7 +87,6 @@ const LeadershipTableOne: React.FC = () => {
     setTimeout(() => setAlert(null), 3500);
   }, []);
 
-  /* 🔹 LOAD */
   const loadMembers = useCallback(async () => {
     try {
       setLoading(true);
@@ -109,7 +103,6 @@ const LeadershipTableOne: React.FC = () => {
     loadMembers();
   }, [loadMembers]);
 
-  /* 🔹 MODAL OPEN */
   const openModal = useCallback((
     type: "create" | "edit" | "view",
     member?: TeamMember
@@ -149,7 +142,6 @@ const LeadershipTableOne: React.FC = () => {
     setCurrentMember(null);
   }, []);
 
-  /* 🔹 FORM */
   const handleChange = useCallback((
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -166,7 +158,6 @@ const LeadershipTableOne: React.FC = () => {
         const response = await addTeamMember(formData);
         showAlert({ type: "success", message: "Team member added" });
         
-        // Add new member to state without reloading
         if (response && typeof response === 'object' && 'id' in response) {
           setMembers(prev => [...prev, response as TeamMember]);
         }
@@ -174,7 +165,6 @@ const LeadershipTableOne: React.FC = () => {
         const response = await updateTeamMember(currentMember.id, formData);
         showAlert({ type: "success", message: "Team member updated" });
         
-        // Update member in state without reloading
         if (response && typeof response === 'object') {
           setMembers(prev => prev.map(member => 
             member.id === currentMember.id ? { ...member, ...formData } : member
@@ -188,7 +178,6 @@ const LeadershipTableOne: React.FC = () => {
     }
   }, [mode, formData, currentMember, showAlert, closeModal]);
 
-  /* 🔹 DELETE */
   const openDeleteModal = useCallback((member: TeamMember) => {
     setCurrentMember(member);
     setIsDeleteModalOpen(true);
@@ -201,11 +190,9 @@ const LeadershipTableOne: React.FC = () => {
       await deleteTeamMember(currentMember.id);
       showAlert({ type: "success", message: "Team member deleted" });
       
-      // Remove member from state without reloading
       setMembers(prev => {
         const newMembers = prev.filter(member => member.id !== currentMember.id);
         
-        // Adjust current page if the current page becomes empty
         const remainingFilteredMembers = newMembers.filter(
           m => (m.full_name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
                (m.designation?.toLowerCase() || '').includes(searchTerm.toLowerCase())
@@ -226,7 +213,6 @@ const LeadershipTableOne: React.FC = () => {
     }
   }, [currentMember, showAlert, searchTerm, currentPage, itemsPerPage]);
 
-  /* 🔹 FILTER */
   const filteredMembers = members.filter(
     (m) =>
       (m.full_name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
@@ -235,7 +221,6 @@ const LeadershipTableOne: React.FC = () => {
 
   const totalPages = Math.max(1, Math.ceil(filteredMembers.length / itemsPerPage));
 
-  // Adjust current page if it's beyond total pages
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0 && filteredMembers.length > 0) {
       setCurrentPage(totalPages);
@@ -249,7 +234,6 @@ const LeadershipTableOne: React.FC = () => {
     currentPage * itemsPerPage
   );
 
-  // Handle search term change
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
     setCurrentPage(1);
@@ -419,7 +403,6 @@ const LeadershipTableOne: React.FC = () => {
         )}
       </div>
 
-      {/* CREATE / EDIT / VIEW MODAL */}
       {isModalOpen && (
         <Modal isOpen onClose={closeModal} className="max-w-lg p-6">
           {mode === "view" && currentMember ? (
@@ -437,7 +420,6 @@ const LeadershipTableOne: React.FC = () => {
         </Modal>
       )}
 
-      {/* DELETE MODAL — SAME UI */}
       {isDeleteModalOpen && (
         <Modal
           isOpen
@@ -472,7 +454,6 @@ const LeadershipTableOne: React.FC = () => {
         </Modal>
       )}
 
-      {/* ALERT */}
       {alert && (
         <div className="fixed bottom-5 right-2 z-50 w-70">
           <Alert
@@ -487,4 +468,6 @@ const LeadershipTableOne: React.FC = () => {
 };
 
 export default LeadershipTableOne;
+
+
 

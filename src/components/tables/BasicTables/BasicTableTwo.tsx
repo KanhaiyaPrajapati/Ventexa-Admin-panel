@@ -72,7 +72,6 @@ const BasicTableTwo: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  /* 🔹 ALERT */
   const showAlert = useCallback((alertData: {
     type: "success" | "error";
     message: string;
@@ -142,7 +141,6 @@ const BasicTableTwo: React.FC = () => {
     });
   }, []);
 
-  /* 🔹 FORM */
   const handleChange = useCallback((
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -187,7 +185,6 @@ const BasicTableTwo: React.FC = () => {
     setIsDeleteModalOpen(true);
   }, []);
 
-  // Memoized search function
   const applySearchTerm = useCallback((data: ServiceFeature[], term: string) => {
     if (!term.trim()) return data;
     
@@ -204,15 +201,12 @@ const BasicTableTwo: React.FC = () => {
     try {
       await removeFeature(currentFeature?.id || "");
       
-      // Remove the feature from state without reloading
       setFeatures(prev => {
         const updatedFeatures = prev.filter(f => f.id !== currentFeature.id);
         
-        // Calculate if we need to adjust the current page
         const filtered = applySearchTerm(updatedFeatures, searchTerm);
         const totalPages = Math.ceil(filtered.length / itemsPerPage);
         
-        // If current page is empty after deletion and not page 1, go to previous page
         if (currentPage > totalPages && totalPages > 0) {
           setCurrentPage(totalPages);
         }
@@ -229,12 +223,10 @@ const BasicTableTwo: React.FC = () => {
     }
   }, [applySearchTerm, currentFeature?.id, currentPage, searchTerm, showAlert]);
 
-  // Memoized filtered features
   const filteredFeatures = useMemo(() => {
     return applySearchTerm(features, searchTerm);
   }, [features, searchTerm, applySearchTerm]);
 
-  // Memoized paginated features
   const paginatedFeatures = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filteredFeatures.slice(startIndex, startIndex + itemsPerPage);
@@ -244,13 +236,11 @@ const BasicTableTwo: React.FC = () => {
     return Math.ceil(filteredFeatures.length / itemsPerPage);
   }, [filteredFeatures.length, itemsPerPage]);
 
-  // Handle page change with boundary checks
   const handlePageChange = useCallback((page: number) => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
   }, [totalPages]);
 
-  // Effect to adjust current page when filtered results change
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
       setCurrentPage(totalPages);
@@ -259,7 +249,6 @@ const BasicTableTwo: React.FC = () => {
     }
   }, [totalPages, currentPage]);
 
-  /* 🔹 LOADING */
   if (loading && features.length === 0) {
     return (
       <div className="py-10 text-center text-gray-900 dark:text-white">
@@ -283,7 +272,7 @@ const BasicTableTwo: React.FC = () => {
             value={searchTerm}
             onChange={(value) => {
               setSearchTerm(value);
-              setCurrentPage(1); // Reset to page 1 only on search, not on delete
+              setCurrentPage(1); 
             }}
           />
         </div>
