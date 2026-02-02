@@ -37,9 +37,7 @@ const ServiceFeaturesTable: React.FC = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 max-w-6xl mx-auto">
-      {/* LEFT SIDE → TABLE */}
       <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#111827] shadow-sm overflow-hidden">
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/5">
           <h2 className="text-lg font-bold text-gray-900 dark:text-white">
             Service Features Table
@@ -77,8 +75,6 @@ const ServiceFeaturesTable: React.FC = () => {
           )}
         </div>
       </div>
-
-      {/* RIGHT SIDE → BLACK PANEL */}
       <div
         className="
   rounded-xl p-6 shadow-sm flex items-center justify-center
