@@ -1,7 +1,7 @@
 
 
 import { BrowserRouter as Router, Routes, Route } from "react-router";
-import { Toaster } from "react-hot-toast"; // ✅ IMPORT TOASTER
+import { Toaster } from "react-hot-toast"; 
 
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
@@ -17,17 +17,18 @@ import ServiceFeatures from "./pages/Tables/Service-Features/ServiceFeatures";
 import LineChart from "./pages/Charts/LineChart";
 import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
-
-import ContactLeads  from "../src/pages/Tables/ContactLeads/ContactLeads";
+import BasicTables from "./pages/Tables/BasicTables";
+import ContactLeads from "../src/pages/Tables/ContactLeads/ContactLeads";
 // import BasicTables from "./pages/Tables/BasicTables";
+
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
-
+import ProcessStepsTable from "./pages/Tables/ProcessStepsTable"
 // import BasicTables from "./pages/Tables/ProcessStepsTable";
-import BasicTables from "./pages/Tables/BasicTables";
+
 
 export default function App() {
   return (
@@ -47,6 +48,10 @@ export default function App() {
             <Route path="/basic-tables" element={<BasicTables />} />
             <Route path="/contact-leads" element={<ContactLeads />} />
 
+            <Route path="/process-steps" element={<ProcessStepsTable />} /> 
+
+            {/* Ui Elements */}
+            {/* <Route path="/basic-tables" element={<BasicTables />} /> */}
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/avatars" element={<Avatars />} />
             <Route path="/badge" element={<Badges />} />
@@ -65,7 +70,6 @@ export default function App() {
         </Routes>
       </Router>
 
-      {/* ✅ TOASTER GOES HERE (OUTSIDE ROUTER) */}
       <Toaster position="top-right" />
     </>
   );

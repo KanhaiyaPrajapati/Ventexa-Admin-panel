@@ -29,7 +29,6 @@ export const getContactLead = async (id: string): Promise<ContactLead> => {
   return res.data;
 };
 
-// ADD THIS CREATE FUNCTION
 export const createContactLead = async (
   data: ContactLead
 ): Promise<ContactLead> => {

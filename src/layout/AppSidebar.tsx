@@ -1,17 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 
-// Assume these icons are imported from an icon library
 import {
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
-  PlugInIcon,
   TableIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { Layers } from "lucide-react";
+import { Info, Layers } from "lucide-react";
 
 type NavItem = {
   name: string;
@@ -19,25 +17,22 @@ type NavItem = {
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
-
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    path: "/", 
+    path: "/",
   },
-    {
-    icon: <Layers className="w-5 h-5" />, 
-    name: "basic-tables",
-    path: "/basic-tables", 
+  {
+    icon: <Layers className="w-5 h-5" />,
+    name: "Basic Tables",
+    path: "/basic-tables",
   },
-
-    {
-    icon: <Layers className="w-5 h-5" />, 
+  {
+    icon: <Layers className="w-5 h-5" />,
     name: "Service Features",
-    path: "/service-features", 
+    path: "/service-features",
   },
-
   {
     name: "Contact Leads",
     icon: <TableIcon />,
@@ -49,11 +44,26 @@ const navItems: NavItem[] = [
       },
     ],
   },
-
+  {
+    icon: <Layers className="w-5 h-5" />,
+    name: "Process Steps",
+    path: "/process-steps",
+  },
+  {
+    icon: <Layers className="w-5 h-5" />,
+    name: "Team Members",
+    path: "/team-section",
+  },
+  {
+    icon: <Info className="w-5 h-5" />,
+    name: "About Company",
+    path: "/about-company",
+  },
 ];
+
 const othersItems: NavItem[] = [
   {
-    icon: <Layers className="w-5 h-5" />, // Replaced PlugInIcon with Layers as a placeholder
+    icon: <Layers className="w-5 h-5" />, 
     name: "Authentication",
     subItems: [
       {
@@ -68,18 +78,6 @@ const othersItems: NavItem[] = [
 
     ];
     
-
-    // const othersItems: NavItem[] = [
-    //   {
-    //     icon: <PlugInIcon />,
-    //     name: "Authentication",
-    //     subItems: [
-    //       { name: "Sign In", path: "/signin", pro: false },
-    //       { name: "Sign Up", path: "/signup", pro: false },
-    //     ],
-    //   },
-    // ];
-
     const AppSidebar: React.FC = () => {
       const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
       const location = useLocation();
@@ -93,7 +91,6 @@ const othersItems: NavItem[] = [
       );
       const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-      // const isActive = (path: string) => location.pathname === path;
       const isActive = useCallback(
         (path: string) => location.pathname === path,
         [location.pathname]

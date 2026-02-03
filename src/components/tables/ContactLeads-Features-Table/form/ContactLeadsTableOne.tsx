@@ -48,9 +48,10 @@ const ContactLeadsTableOne: React.FC = () => {
   const fetchLeads = useCallback(async () => {
     try {
       const data = await getAllContactLeads();
-      // Sort by created_at ASCENDING (oldest first, newest last)
+
       const sortedData = data.sort(
-        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        (a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
       );
       setLeads(sortedData);
     } catch {
@@ -64,7 +65,10 @@ const ContactLeadsTableOne: React.FC = () => {
     fetchLeads();
   }, [fetchLeads]);
 
-  const showAlert = (alertData: { type: "success" | "error"; message: string }) => {
+  const showAlert = (alertData: {
+    type: "success" | "error";
+    message: string;
+  }) => {
     setAlert(alertData);
     setTimeout(() => setAlert(null), 3500);
   };
@@ -90,7 +94,9 @@ const ContactLeadsTableOne: React.FC = () => {
   const closeModal = () => setIsModalOpen(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -100,19 +106,26 @@ const ContactLeadsTableOne: React.FC = () => {
     try {
       if (mode === "create") {
         await createContactLead(formData);
-        showAlert({ type: "success", message: "Contact lead created successfully" });
+        showAlert({
+          type: "success",
+          message: "Contact lead created successfully",
+        });
       } else if (mode === "edit" && currentLead?.id) {
         await updateContactLead(currentLead.id, formData);
-        showAlert({ type: "success", message: "Contact lead updated successfully" });
+        showAlert({
+          type: "success",
+          message: "Contact lead updated successfully",
+        });
       }
-      
+
       await fetchLeads();
       closeModal();
     } catch (error) {
       console.error("Operation failed:", error);
-      showAlert({ 
-        type: "error", 
-        message: mode === "create" ? "Failed to create lead" : "Failed to update lead" 
+      showAlert({
+        type: "error",
+        message:
+          mode === "create" ? "Failed to create lead" : "Failed to update lead",
       });
     }
   };
@@ -136,7 +149,6 @@ const ContactLeadsTableOne: React.FC = () => {
     }
   };
 
-  // Memoized filtered leads for better performance
   const filteredLeads = useMemo(() => {
     if (!searchTerm.trim()) {
       return leads;
@@ -146,25 +158,26 @@ const ContactLeadsTableOne: React.FC = () => {
       (lead) =>
         lead.name.toLowerCase().includes(term) ||
         lead.email.toLowerCase().includes(term) ||
-        lead.message.toLowerCase().includes(term)
+        lead.message.toLowerCase().includes(term),
     );
   }, [leads, searchTerm]);
 
-  // Calculate total pages based on filtered leads
   const totalPages = useMemo(() => {
     return Math.max(1, Math.ceil(filteredLeads.length / itemsPerPage));
   }, [filteredLeads.length, itemsPerPage]);
 
-  // Adjust current page if it's out of bounds (only when search changes)
   useEffect(() => {
     if (searchTerm.trim() && currentPage > totalPages) {
       setCurrentPage(1);
-    } else if (!searchTerm.trim() && currentPage > totalPages && totalPages > 0) {
+    } else if (
+      !searchTerm.trim() &&
+      currentPage > totalPages &&
+      totalPages > 0
+    ) {
       setCurrentPage(totalPages);
     }
   }, [filteredLeads, currentPage, totalPages, searchTerm]);
 
-  // Get paginated leads
   const paginatedLeads = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -173,7 +186,6 @@ const ContactLeadsTableOne: React.FC = () => {
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
-    // Only reset to page 1 when search term actually changes (not on every keystroke)
     setCurrentPage(1);
   }, []);
 
@@ -192,35 +204,35 @@ const ContactLeadsTableOne: React.FC = () => {
   return (
     <>
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-        {/* Header with Create button */}
         <div className="flex flex-col sm:flex-row justify-between items-center px-5 py-4 gap-3">
-          {/* Create Button - Same as ServiceFeatures */}
-          <button 
+          <button
             onClick={() => openModal("create")}
             className="inline-flex items-center justify-center rounded-lg bg-white p-2 text-blue-600 hover:bg-blue-50 dark:bg-gray-800 dark:hover:bg-gray-700"
           >
             <Plus size={20} />
           </button>
-          <SearchBar
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
+          <SearchBar value={searchTerm} onChange={handleSearchChange} />
         </div>
         <div className="max-w-full overflow-x-auto">
           <Table className="min-w-[700px]">
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
-                {["Name", "Email", "Message", "Status", "Created", "Actions"].map(
-                  (head) => (
-                    <TableCell
-                      key={head}
-                      isHeader
-                      className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 whitespace-nowrap"
-                    >
-                      {head}
-                    </TableCell>
-                  )
-                )}
+                {[
+                  "Name",
+                  "Email",
+                  "Message",
+                  "Status",
+                  "Created",
+                  "Actions",
+                ].map((head) => (
+                  <TableCell
+                    key={head}
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 whitespace-nowrap"
+                  >
+                    {head}
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
@@ -245,16 +257,18 @@ const ContactLeadsTableOne: React.FC = () => {
                     <TableCell className="px-4 py-3 text-start whitespace-nowrap">
                       <Badge
                         size="sm"
-                        color={lead.status === "contacted" ? "success" : "warning"}
+                        color={
+                          lead.status === "contacted" ? "success" : "warning"
+                        }
                       >
                         {lead.status === "contacted" ? "Contacted" : "New"}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">
-                      {new Date(lead.created_at).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
+                      {new Date(lead.created_at).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
                       })}
                     </TableCell>
                     <TableCell className="px-4 py-3 whitespace-nowrap">
@@ -283,8 +297,11 @@ const ContactLeadsTableOne: React.FC = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell className="px-4 py-8 text-center text-gray-500 dark:text-gray-400" style={{ gridColumn: 'span 6' }}>
-                    No contact leads found {searchTerm ? `for "${searchTerm}"` : ""}
+                  <TableCell className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                    <div style={{ gridColumn: "span 6" }}>
+                      No contact leads found{" "}
+                      {searchTerm ? `for "${searchTerm}"` : ""}
+                    </div>
                   </TableCell>
                 </TableRow>
               )}
@@ -328,8 +345,8 @@ const ContactLeadsTableOne: React.FC = () => {
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
             Are you sure you want to delete{" "}
-            <span className="font-medium">{currentLead?.name}</span>? This action
-            cannot be undone.
+            <span className="font-medium">{currentLead?.name}</span>? This
+            action cannot be undone.
           </p>
           <div className="flex justify-end gap-3">
             <Button
@@ -364,7 +381,3 @@ const ContactLeadsTableOne: React.FC = () => {
 };
 
 export default ContactLeadsTableOne;
-
-
-
-
