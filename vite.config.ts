@@ -17,7 +17,7 @@ export default defineConfig({
   ],
     server: {
     watch: {
-      ignored: ['**/db.json'],
+      ignored: ['**/categories-api.ts'],
     },
   },
 });

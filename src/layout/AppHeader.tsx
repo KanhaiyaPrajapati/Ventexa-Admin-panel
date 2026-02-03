@@ -42,6 +42,13 @@ const AppHeader: React.FC = () => {
       name: "Service Features",
       subItems: [{ name: "Features", path: "/service-features" }],
     },
+
+    {
+      icon: <Layers className="w-5 h-5" />,
+      name: "About Company",
+      subItems: [{ name: "Company Info", path: "/about-company" }],
+    },
+
   ];
 
   const searchItems: SearchItem[] = navItems.flatMap(
@@ -101,7 +108,6 @@ const AppHeader: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 w-full bg-white dark:bg-[#111827] border-b border-gray-200 dark:border-white/10 font-mono">
       <div className="flex items-center justify-between px-4 py-3 lg:px-6 lg:py-4">
-        {/* Left: Sidebar Toggle & Logo */}
         <div className="flex items-center gap-2">
           <button
             onClick={handleToggleSidebar}
@@ -129,8 +135,7 @@ const AppHeader: React.FC = () => {
           </Link>
         </div>
 
-        {/* Center: Search */}
-        <div className="hidden lg:flex flex-1 max-w-[430px]">
+        <div className="hidden lg:flex flex-1 max-w-107.5">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -173,7 +178,6 @@ const AppHeader: React.FC = () => {
           </form>
         </div>
 
-        {/* Right: Theme & User */}
         <div className="flex items-center gap-2">
           <button
             onClick={toggleApplicationMenu}
@@ -190,7 +194,6 @@ const AppHeader: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Application Menu */}
       {isApplicationMenuOpen && (
         <div
           ref={mobileMenuRef}

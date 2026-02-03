@@ -275,7 +275,7 @@ const ProcessStepsTableOne: React.FC = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
+                  <TableCell  className="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
                     No process steps found. Click the "+" button to create one.
                   </TableCell>
                 </TableRow>
