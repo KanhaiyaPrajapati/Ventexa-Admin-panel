@@ -9,7 +9,7 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { Layers } from "lucide-react";
+import { Info, Layers } from "lucide-react";
 
 type NavItem = {
   name: string;
@@ -40,6 +40,13 @@ const navItems: NavItem[] = [
     name: "Process Steps",
     path: "/process-steps",
    },
+
+{
+  icon: <Info className="w-5 h-5" />,
+  name: "About Company",
+  path: "/about-company",
+}
+
 ];
 
 

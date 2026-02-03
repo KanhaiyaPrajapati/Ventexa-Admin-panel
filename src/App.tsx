@@ -22,6 +22,7 @@ import Home from "./pages/Dashboard/Home";
 import ProcessStepsTable from "./pages/Tables/ProcessStepsTable"
 // import BasicTables from "./pages/Tables/ProcessStepsTable";
 import BasicTables from "./pages/Tables/BasicTables";
+import AboutCompany from "./pages/Tables/about-company/AboutCompany"
 
 export default function App() {
   return (
@@ -50,7 +51,7 @@ export default function App() {
             <Route path="/images" element={<Images />} />
             <Route path="/videos" element={<Videos />} />
             <Route path="/service-features" element={<ServiceFeatures />} />
-
+            <Route path="/about-company" element={<AboutCompany />} />
             <Route path="/line-chart" element={<LineChart />} />
             <Route path="/bar-chart" element={<BarChart />} />
           </Route>

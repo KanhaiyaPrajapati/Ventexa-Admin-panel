@@ -42,6 +42,13 @@ const AppHeader: React.FC = () => {
       name: "Service Features",
       subItems: [{ name: "Features", path: "/service-features" }],
     },
+
+    {
+      icon: <Layers className="w-5 h-5" />,
+      name: "About Company",
+      subItems: [{ name: "Company Info", path: "/about-company" }],
+    },
+
   ];
 
   const searchItems: SearchItem[] = navItems.flatMap(
