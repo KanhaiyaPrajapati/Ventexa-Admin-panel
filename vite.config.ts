@@ -15,15 +15,6 @@ export default defineConfig({
       },
     }),
   ],
-<<<<<<< HEAD
-
-=======
-    server: {
-    watch: {
-      ignored: ['**/db.json'],
-    },
-  },
->>>>>>> 2569b38340278d1d83714839fa6874d00038de19
 });
 
 

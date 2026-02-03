@@ -48,3 +48,5 @@ export const updateContactLead = async (
 export const deleteContactLead = async (id: string): Promise<void> => {
   await api.delete(`/${id}`);
 };
+
+

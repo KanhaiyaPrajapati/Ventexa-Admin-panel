@@ -1,6 +1,4 @@
-
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Table,
   TableBody,
@@ -47,12 +45,12 @@ const ContactLeadsTableOne: React.FC = () => {
   const itemsPerPage = 4;
   const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchLeads = async () => {
+  const fetchLeads = useCallback(async () => {
     try {
       const data = await getAllContactLeads();
-      // Sort by created_at descending (newest first)
+      // Sort by created_at ASCENDING (oldest first, newest last)
       const sortedData = data.sort(
-        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
       );
       setLeads(sortedData);
     } catch {
@@ -60,11 +58,11 @@ const ContactLeadsTableOne: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchLeads();
-  }, []);
+  }, [fetchLeads]);
 
   const showAlert = (alertData: { type: "success" | "error"; message: string }) => {
     setAlert(alertData);
@@ -108,7 +106,7 @@ const ContactLeadsTableOne: React.FC = () => {
         showAlert({ type: "success", message: "Contact lead updated successfully" });
       }
       
-      fetchLeads();
+      await fetchLeads();
       closeModal();
     } catch (error) {
       console.error("Operation failed:", error);
@@ -129,7 +127,7 @@ const ContactLeadsTableOne: React.FC = () => {
     try {
       await deleteContactLead(currentLead.id);
       showAlert({ type: "success", message: "Lead deleted successfully" });
-      fetchLeads();
+      await fetchLeads();
     } catch {
       showAlert({ type: "error", message: "Delete failed" });
     } finally {
@@ -138,6 +136,51 @@ const ContactLeadsTableOne: React.FC = () => {
     }
   };
 
+  // Memoized filtered leads for better performance
+  const filteredLeads = useMemo(() => {
+    if (!searchTerm.trim()) {
+      return leads;
+    }
+    const term = searchTerm.toLowerCase();
+    return leads.filter(
+      (lead) =>
+        lead.name.toLowerCase().includes(term) ||
+        lead.email.toLowerCase().includes(term) ||
+        lead.message.toLowerCase().includes(term)
+    );
+  }, [leads, searchTerm]);
+
+  // Calculate total pages based on filtered leads
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(filteredLeads.length / itemsPerPage));
+  }, [filteredLeads.length, itemsPerPage]);
+
+  // Adjust current page if it's out of bounds (only when search changes)
+  useEffect(() => {
+    if (searchTerm.trim() && currentPage > totalPages) {
+      setCurrentPage(1);
+    } else if (!searchTerm.trim() && currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [filteredLeads, currentPage, totalPages, searchTerm]);
+
+  // Get paginated leads
+  const paginatedLeads = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredLeads.slice(startIndex, endIndex);
+  }, [filteredLeads, currentPage, itemsPerPage]);
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchTerm(value);
+    // Only reset to page 1 when search term actually changes (not on every keystroke)
+    setCurrentPage(1);
+  }, []);
+
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
+  }, []);
+
   if (loading) {
     return (
       <div className="py-10 text-center text-gray-900 dark:text-white">
@@ -145,19 +188,6 @@ const ContactLeadsTableOne: React.FC = () => {
       </div>
     );
   }
-
-  const filteredLeads = leads.filter(
-    (lead) =>
-      lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.message.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const totalPages = Math.ceil(filteredLeads.length / itemsPerPage);
-  const paginatedLeads = filteredLeads.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
 
   return (
     <>
@@ -173,10 +203,7 @@ const ContactLeadsTableOne: React.FC = () => {
           </button>
           <SearchBar
             value={searchTerm}
-            onChange={(value) => {
-              setSearchTerm(value);
-              setCurrentPage(1);
-            }}
+            onChange={handleSearchChange}
           />
         </div>
         <div className="max-w-full overflow-x-auto">
@@ -197,62 +224,70 @@ const ContactLeadsTableOne: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {paginatedLeads.map((lead) => (
-                <TableRow key={lead.id}>
-                  <TableCell className="px-5 py-4 sm:px-6 text-start whitespace-nowrap">
-                    <span className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                      {lead.name}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">
-                    {lead.email}
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-start whitespace-nowrap">
-                    <span className="text-black dark:text-gray-400">
-                      {lead.message.length > 30
-                        ? `${lead.message.slice(0, 30)}...`
-                        : lead.message}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-start whitespace-nowrap">
-                    <Badge
-                      size="sm"
-                      color={lead.status === "contacted" ? "success" : "warning"}
-                    >
-                      {lead.status === "contacted" ? "Contacted" : "New"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">
-                    {new Date(lead.created_at).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}
-                  </TableCell>
-                  <TableCell className="px-4 py-3 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => openModal("view", lead)}
-                        className="p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400"
+              {paginatedLeads.length > 0 ? (
+                paginatedLeads.map((lead) => (
+                  <TableRow key={lead.id}>
+                    <TableCell className="px-5 py-4 sm:px-6 text-start whitespace-nowrap">
+                      <span className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                        {lead.name}
+                      </span>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">
+                      {lead.email}
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-start whitespace-nowrap">
+                      <span className="text-black dark:text-gray-400">
+                        {lead.message.length > 30
+                          ? `${lead.message.slice(0, 30)}...`
+                          : lead.message}
+                      </span>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-start whitespace-nowrap">
+                      <Badge
+                        size="sm"
+                        color={lead.status === "contacted" ? "success" : "warning"}
                       >
-                        <Eye size={16} />
-                      </button>
-                      <button
-                        onClick={() => openModal("edit", lead)}
-                        className="p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        onClick={() => openDeleteModal(lead)}
-                        className="p-2 text-red-500 hover:text-red-600 dark:text-red-400"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+                        {lead.status === "contacted" ? "Contacted" : "New"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">
+                      {new Date(lead.created_at).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </TableCell>
+                    <TableCell className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => openModal("view", lead)}
+                          className="p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400"
+                        >
+                          <Eye size={16} />
+                        </button>
+                        <button
+                          onClick={() => openModal("edit", lead)}
+                          className="p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400"
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button
+                          onClick={() => openDeleteModal(lead)}
+                          className="p-2 text-red-500 hover:text-red-600 dark:text-red-400"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell className="px-4 py-8 text-center text-gray-500 dark:text-gray-400" style={{ gridColumn: 'span 6' }}>
+                    No contact leads found {searchTerm ? `for "${searchTerm}"` : ""}
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </div>
@@ -260,7 +295,7 @@ const ContactLeadsTableOne: React.FC = () => {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={setCurrentPage}
+            onPageChange={handlePageChange}
           />
         )}
       </div>
@@ -329,3 +364,7 @@ const ContactLeadsTableOne: React.FC = () => {
 };
 
 export default ContactLeadsTableOne;
+
+
+
+
