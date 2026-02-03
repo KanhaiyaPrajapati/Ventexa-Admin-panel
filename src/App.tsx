@@ -13,20 +13,18 @@ import ServiceFeatures from "./pages/Tables/Service-Features/ServiceFeatures";
 import LineChart from "./pages/Charts/LineChart";
 import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
-// import BasicTables from "./pages/Tables/BasicTables";
+
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
-import ProcessStepsTable from "./pages/Tables/ProcessStepsTable"
-// import BasicTables from "./pages/Tables/ProcessStepsTable";
-import BasicTables from "./pages/Tables/BasicTables";
+import ProcessSteps from "../src/pages/Tables/ProcessSteps/ProcessSteps"
 
 export default function App() {
   return (
     <>
-      <Router>
+      <Router>0
         <ScrollToTop />
         <Routes>
           <Route element={<AppLayout />}>
@@ -38,11 +36,11 @@ export default function App() {
             <Route path="/form-elements" element={<FormElements />} />
 
             {/* Tables */}
-            <Route path="/basic-tables" element={<BasicTables />} />
-            <Route path="/process-steps" element={<ProcessStepsTable />} /> 
+            
+            <Route path="/process-steps" element={<ProcessSteps/>} />
 
             {/* Ui Elements */}
-            {/* <Route path="/basic-tables" element={<BasicTables />} /> */}
+         
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/avatars" element={<Avatars />} />
             <Route path="/badge" element={<Badges />} />

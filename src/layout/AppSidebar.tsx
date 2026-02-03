@@ -206,7 +206,7 @@ const AppSidebar: React.FC = () => {
           ) : (
             <img
               className="block m-0 p-0 leading-none"
-              src="ventexa_new_logo.png"
+             src="ventexa_new_logo.png"
               alt="Logo"
               width={150}
               height={32}
