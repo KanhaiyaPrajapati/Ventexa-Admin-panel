@@ -802,3 +802,11 @@ span.flatpickr-weekday,
 .simplebar-scrollbar.simplebar-visible:before {
   @apply opacity-100;
 }
+
+/* You can add this in globals.css if you want hover effect */
+.scrollbar-thumb {
+  transition: background-color 0.3s ease;
+}
+.scrollbar-thumb:hover {
+  background-color: rgba(59, 130, 246, 0.6); /* blue with more opacity on hover */
+}
