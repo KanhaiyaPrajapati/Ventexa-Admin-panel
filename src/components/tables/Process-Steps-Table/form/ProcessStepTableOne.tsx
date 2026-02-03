@@ -1,4 +1,3 @@
-// components/tables/Process-Steps-Table/ProcessStepsTableOne.tsx
 import React, { useState, useEffect } from "react";
 import {
   Table,
@@ -7,11 +6,11 @@ import {
   TableHeader,
   TableRow,
 } from "../../../ui/table";
-import { Modal } from "../../../ui/modal";
+
 import Badge from "../../../ui/badge/Badge";
 import Alert from "../../../ui/alert/Alert";
 import Button from "../../../ui/button/Button";
-import { Trash2, Eye, Edit, Plus } from "lucide-react";
+import { Trash2, Eye, Edit, Plus, X } from "lucide-react";
 import Pagination from "../../../ui/Pagination/Pagination";
 import { SearchBar } from "../../../../hooks/SearchBar.tsx";
 
@@ -54,12 +53,11 @@ const ProcessStepsTableOne: React.FC = () => {
     try {
       setLoading(true);
       const data = await getAllProcessSteps();
-      // Ensure data is always an array even if API returns undefined/null
       setSteps(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching steps:", error);
       showAlert({ type: "error", message: "Failed to load process steps" });
-      setSteps([]); // Set empty array on error
+      setSteps([]);
     } finally {
       setLoading(false);
     }
@@ -112,7 +110,6 @@ const ProcessStepsTableOne: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      // Validate step number is at least 1
       if (formData.step_number < 1) {
         showAlert({ type: "error", message: "Step number must be at least 1" });
         return;
@@ -162,7 +159,6 @@ const ProcessStepsTableOne: React.FC = () => {
     );
   }
 
-  // Ensure steps is always an array before filtering
   const safeSteps = Array.isArray(steps) ? steps : [];
   
   const filteredSteps = safeSteps.filter(
@@ -185,6 +181,7 @@ const ProcessStepsTableOne: React.FC = () => {
           <button
             onClick={() => openModal("create")}
             className="inline-flex items-center justify-center rounded-lg p-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+            aria-label="Add new process step"
           >
             <Plus size={20} />
           </button>
@@ -250,22 +247,25 @@ const ProcessStepsTableOne: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => openModal("view", step)}
-                          className="p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
+                          className="p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors"
                           title="View"
+                          aria-label={`View ${step.title}`}
                         >
                           <Eye size={16} />
                         </button>
                         <button
                           onClick={() => openModal("edit", step)}
-                          className="p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded"
+                          className="p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded transition-colors"
                           title="Edit"
+                          aria-label={`Edit ${step.title}`}
                         >
                           <Edit size={16} />
                         </button>
                         <button
                           onClick={() => openDeleteModal(step)}
-                          className="p-2 text-red-500 hover:text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                          className="p-2 text-red-500 hover:text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
                           title="Delete"
+                          aria-label={`Delete ${step.title}`}
                         >
                           <Trash2 size={16} />
                         </button>
@@ -275,7 +275,7 @@ const ProcessStepsTableOne: React.FC = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell  className="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
+                  <TableCell colSpan={5} className="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
                     No process steps found. Click the "+" button to create one.
                   </TableCell>
                 </TableRow>
@@ -296,60 +296,115 @@ const ProcessStepsTableOne: React.FC = () => {
       </div>
 
       {isModalOpen && (
-        <Modal isOpen onClose={closeModal} className="max-w-lg p-6">
-          {mode === "view" && currentStep && (
-            <ProcessStepDetails step={currentStep} onClose={closeModal} />
-          )}
-          {(mode === "create" || mode === "edit") && (
-            <ProcessStepForm
-              mode={mode}
-              formData={formData}
-              onChange={handleChange}
-              onToggleActive={toggleActive}
-              onSubmit={handleSubmit}
-              onCancel={closeModal}
-            />
-          )}
-        </Modal>
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+            onClick={closeModal}
+          />
+          
+          <div className="flex min-h-full items-center justify-center p-2 sm:p-4">
+            <div className="relative w-full max-w-lg mx-auto my-8">
+              <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
+                <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+                  <div className="min-w-0 flex-1">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
+                      {mode === 'view' ? 'View Process Step' : 
+                       mode === 'edit' ? 'Edit Process Step' : 'Add New Process Step'}
+                    </h2>
+                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
+                      {mode === 'view' ? '' : 
+                       mode === 'edit' ? '' : ''}
+                    </p>
+                  </div>
+                  <button
+                    onClick={closeModal}
+                    className="ml-4 flex-shrink-0 p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+                    aria-label="Close modal"
+                  >
+                    <X size={20} className="text-gray-500 dark:text-gray-400" />
+                  </button>
+                </div>
+
+                <div className="p-4 sm:p-6">
+                  {mode === "view" && currentStep && (
+                    <ProcessStepDetails step={currentStep} />
+                  )}
+                  {(mode === "create" || mode === "edit") && (
+                    <ProcessStepForm
+                      mode={mode}
+                      formData={formData}
+                      onChange={handleChange}
+                      onToggleActive={toggleActive}
+                      onSubmit={handleSubmit}
+                      onCancel={closeModal}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {isDeleteModalOpen && (
-        <Modal
-          isOpen
-          onClose={() => setIsDeleteModalOpen(false)}
-          className="max-w-md p-6"
-        >
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Delete Process Step
-          </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-            Are you sure you want to delete{" "}
-            <span className="font-medium">"{currentStep?.title}"</span>?
-            This action cannot be undone.
-          </p>
-          <div className="flex justify-end gap-3">
-            <Button
-              variant="outline"
-              color="primary"
-              onClick={() => setIsDeleteModalOpen(false)}
-              className="px-4 py-2 text-sm"
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              color="destructive"
-              onClick={confirmDelete}
-              className="px-4 py-2 text-sm"
-            >
-              Delete
-            </Button>
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div 
+            className="fixed inset-0  "
+            onClick={() => setIsDeleteModalOpen(false)}
+          />
+          
+          <div className="flex min-h-full items-center justify-center p-2 sm:p-4">
+            <div className="relative w-full max-w-md mx-auto my-8">
+              <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
+                <div className="p-4 sm:p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
+                        Delete Process Step
+                      </h3>
+                    </div>
+                    <button
+                      onClick={() => setIsDeleteModalOpen(false)}
+                      className="ml-4 flex-shrink-0 p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
+                      aria-label="Close"
+                    >
+                      <X size={18} className="text-gray-500 dark:text-gray-400" />
+                    </button>
+                  </div>
+                  
+                  <div className="my-4 sm:my-6">
+                    <p className="text-sm text-gray-700 dark:text-gray-300 text-left">
+                      Are you sure you want to delete?
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <Button
+                      variant="outline"
+                      color="primary"
+                      onClick={() => setIsDeleteModalOpen(false)}
+                      className="w-full sm:w-auto min-w-[120px] text-sm sm:text-base"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      color="destructive"
+                      onClick={confirmDelete}
+                      className="w-full sm:w-auto min-w-[120px] text-sm sm:text-base"
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </Modal>
+        </div>
       )}
 
       {alert && (
-        <div className="fixed bottom-5 right-5 z-50 w-80">
+        <div className="fixed bottom-4 right-4 left-4 sm:left-auto sm:right-4 z-[100] w-auto sm:w-full max-w-xs sm:max-w-sm">
           <Alert
             variant={alert.type}
             title={alert.type === "success" ? "Success" : "Error"}

@@ -1,4 +1,3 @@
-// store/api/process-steps-api.ts
 import axios from "axios";
 
 const BASE_URL = "https://69784290cd4fe130e3d84c74.mockapi.io/steps-api";
