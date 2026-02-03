@@ -12,16 +12,13 @@ const ServiceFormDetails: React.FC<ServiceFormDetailsProps> = ({
 }) => {
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center">
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
           Feature Details
         </h3>
       </div>
 
-      {/* Details */}
       <div className="space-y-4">
-        {/* Title */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Title
@@ -33,7 +30,6 @@ const ServiceFormDetails: React.FC<ServiceFormDetailsProps> = ({
           </div>
         </div>
 
-        {/* Slug */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Slug
@@ -45,7 +41,6 @@ const ServiceFormDetails: React.FC<ServiceFormDetailsProps> = ({
           </div>
         </div>
 
-        {/* Description */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Description
@@ -57,7 +52,6 @@ const ServiceFormDetails: React.FC<ServiceFormDetailsProps> = ({
           </div>
         </div>
 
-        {/* Status */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Status
@@ -76,7 +70,6 @@ const ServiceFormDetails: React.FC<ServiceFormDetailsProps> = ({
         </div>
       </div>
 
-      {/* Footer */}
       <div className="pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-end">
         <button
           type="button"
@@ -91,3 +84,5 @@ const ServiceFormDetails: React.FC<ServiceFormDetailsProps> = ({
 };
 
 export default ServiceFormDetails;
+
+

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 
-// Assume these icons are imported from an icon library
 import {
   ChevronDownIcon,
   GridIcon,
@@ -39,6 +38,11 @@ const navItems: NavItem[] = [
      icon: <Layers className="w-5 h-5" />,
     name: "Process Steps",
     path: "/process-steps",
+   },
+   { 
+    icon: <Layers className="w-5 h-5" />,
+    name: "Team Members",
+    path: "/team-section",
    },
 
 {
