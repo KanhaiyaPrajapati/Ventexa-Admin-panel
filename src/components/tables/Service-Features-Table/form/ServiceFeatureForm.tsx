@@ -46,7 +46,7 @@ const ServiceFeatureForm: React.FC<ServiceFeatureFormProps> = ({
 
       <div>
         <label className="block text-sm font-medium text-gray-800 dark:text-white">
-          Feature Title
+          Feature Title 
         </label>
         <input
           type="text"

@@ -39,45 +39,47 @@ const navItems: NavItem[] = [
     subItems: [{ name: "Features", path: "/service-features", pro: false }],
   },
 
+  {
+    name: "Contact Leads",
+    icon: <TableIcon />,
+    subItems: [
+      {
+        name: "Contact Leads",
+        path: "/contact-leads",
+        pro: false,
+      },
+    ],
+  },
+
 ];
 
-// const othersItems: NavItem[] = [
-//   {
-//     icon: <PlugInIcon />,
-//     name: "Authentication",
-//     subItems: [
-//       {
-//         name: "Basic Tables",
-//         path: "/basic-tables",
-//         pro: false,
-//       },
-//     ],
-//   },
-  
-//    {
-//     name: "Contact Leads",
-//     icon: <TableIcon />,
-//     subItems: [
-//       {
-//         name: "Contact Leads",
-//         path: "/contact-leads",
-//         pro: false,
-//       },
-//     ],
-//   },  
-
-//     ];
-
-    const othersItems: NavItem[] = [
+const othersItems: NavItem[] = [
+  {
+    icon: <PlugInIcon />,
+    name: "Authentication",
+    subItems: [
       {
-        icon: <PlugInIcon />,
-        name: "Authentication",
-        subItems: [
-          { name: "Sign In", path: "/signin", pro: false },
-          { name: "Sign Up", path: "/signup", pro: false },
-        ],
+        name: "Basic Tables",
+        path: "/basic-tables",
+        pro: false,
       },
+    ],
+  },
+  
+     
+
     ];
+
+    // const othersItems: NavItem[] = [
+    //   {
+    //     icon: <PlugInIcon />,
+    //     name: "Authentication",
+    //     subItems: [
+    //       { name: "Sign In", path: "/signin", pro: false },
+    //       { name: "Sign Up", path: "/signup", pro: false },
+    //     ],
+    //   },
+    // ];
 
     const AppSidebar: React.FC = () => {
       const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
@@ -284,14 +286,14 @@ const navItems: NavItem[] = [
                 <>
                   <img
                     className="dark:hidden"
-                    src="/images/logo/logo.svg"
+                    src="/ventexa_new_logo.png"
                     alt="Logo"
                     width={150}
                     height={40}
                   />
                   <img
                     className="hidden dark:block"
-                    src="/images/logo/logo-dark.svg"
+                    src="/ventexa_new_logo.png"
                     alt="Logo"
                     width={150}
                     height={40}
@@ -299,7 +301,7 @@ const navItems: NavItem[] = [
                 </>
               ) : (
                 <img
-                  src="/images/logo/logo-icon.svg"
+                  src="/ventexa_new_logo.png"
                   alt="Logo"
                   width={32}
                   height={32}
