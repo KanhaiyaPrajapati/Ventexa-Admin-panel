@@ -20,7 +20,6 @@ import Calendar from "./pages/Calendar";
 import BasicTables from "./pages/Tables/BasicTables";
 import ContactLeads from "../src/pages/Tables/ContactLeads/ContactLeads";
 import FaqTable from "../src/pages/Tables/FaqTable/FaqTable";
-// import BasicTables from "./pages/Tables/BasicTables";
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
