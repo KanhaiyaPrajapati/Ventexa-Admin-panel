@@ -19,14 +19,13 @@ import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
 import BasicTables from "./pages/Tables/BasicTables";
 import ContactLeads from "../src/pages/Tables/ContactLeads/ContactLeads";
+import FaqTable from "../src/pages/Tables/FaqTable/FaqTable";
 // import BasicTables from "./pages/Tables/BasicTables";
-
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
-import AboutCompany from "./pages/Tables/about-company/AboutCompany";
 import ProcessSteps from "./pages/Tables/ProcessSteps/ProcessSteps";
 import ProcessStepsTableOne from "./components/tables/Process-Steps-Table/form/ProcessStepTableOne";
 
@@ -50,7 +49,7 @@ export default function App() {
             <Route path="/process-steps" element={<ProcessSteps/>} />
             <Route path="/basic-tables" element={<BasicTables />} />
             <Route path="/contact-leads" element={<ContactLeads />} />
-
+            <Route path="/faqs" element={<FaqTable />} />
             <Route path="/process-steps" element={<ProcessStepsTableOne />} /> 
 
             {/* Ui Elements */}

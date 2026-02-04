@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import { ChevronDownIcon, GridIcon, HorizontaLDots, TableIcon } from "../icons";
+import { ChevronDownIcon, GridIcon, HorizontaLDots,} from "../icons";
 
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
@@ -40,16 +40,17 @@ const navItems: NavItem[] = [
     name: "Service Features",
     path: "/service-features",
   },
-  {
-    name: "Contact Leads",
-    icon: <TableIcon />,
-    subItems: [
-      {
-        name: "Contact Leads",
-        path: "/contact-leads",
-      },
-    ],
+ {
+  icon: <Layers className="w-5 h-5" />,
+  name: "Contact Leads",
+  path: "/contact-leads",
+},
+ {
+    icon: <Layers className="w-5 h-5" />,
+    name: "FAQs",
+    path: "/faqs",
   },
+  
   {
     icon: <Layers className="w-5 h-5" />,
     name: "Process Steps",
