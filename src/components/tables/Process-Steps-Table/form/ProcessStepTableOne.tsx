@@ -306,7 +306,7 @@ const ProcessStepsTableOne: React.FC = () => {
                 <TableRow>
                   <TableCell
                     className="px-4 py-8 text-center text-gray-500 dark:text-gray-400"
-                    colSpan={5}
+                  
                   >
                     <div>
                       No process steps found{" "}
