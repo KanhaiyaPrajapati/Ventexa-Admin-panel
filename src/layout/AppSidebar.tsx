@@ -270,6 +270,47 @@ const othersItems: NavItem[] = [
             }
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
+      onMouseEnter={() => !isExpanded && setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div
+        className={`py-8 flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"}`}
+      >
+        <Link to="/" className="flex items-center p-0 m-0 leading-none">
+          {isExpanded || isHovered || isMobileOpen ? (
+            <>
+              <img
+                className="dark:hidden block m-0 p-0 leading-none"
+                src="ventexa_new_logo.png"
+                alt="Logo"
+                width={150}
+                height={40}
+              />
+              <img
+                className="hidden dark:block m-0 p-0 leading-none"
+                src="ventexa_new_logo.png"
+                alt="Logo"
+                width={150}
+                height={40}
+              />
+            </>
+          ) : (
+            <img
+              className="block m-0 p-0 leading-none"
+             src="ventexa_new_logo.png"
+              alt="Logo"
+              width={150}
+              height={32}
+            />
+          )}
+        </Link>
+      </div>
+      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
+        <nav className="mb-6">
+          <h2
+            className={`mb-4 text-xs uppercase flex leading-5 text-gray-400 ${
+              !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+            }`}
           onMouseEnter={() => !isExpanded && setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
