@@ -6,7 +6,7 @@ import { ChevronDownIcon, GridIcon, HorizontaLDots, TableIcon } from "../icons";
 
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { Info, Layers } from "lucide-react";
+import { Info, Layers, MessageSquare } from "lucide-react";
 
 /* ---------------- TYPES ---------------- */
 
@@ -64,6 +64,11 @@ const navItems: NavItem[] = [
     icon: <Info className="w-5 h-5" />,
     name: "About Company",
     path: "/about-company",
+  },
+  {
+    icon: <MessageSquare className="w-5 h-5" />,
+    name: "Testimonials",
+    path: "/testimonials",
   },
 ];
 
@@ -232,7 +237,7 @@ const AppSidebar: React.FC = () => {
   return (
     <aside
       className={`fixed top-0 left-0 z-50 h-screen px-5 bg-white dark:bg-gray-900 border-r transition-all duration-300
-        ${isExpanded || isHovered || isMobileOpen ? "w-[290px]" : "w-[90px]"}
+        ${isExpanded || isHovered || isMobileOpen ? "w-72.5" : "w-22.5"}
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}

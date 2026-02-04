@@ -10,30 +10,31 @@ import { Modal } from "../../../ui/modal";
 import Badge from "../../../ui/badge/Badge";
 import Alert from "../../../ui/alert/Alert";
 import Button from "../../../ui/button/Button";
-import { Trash2, Eye, Edit, Plus } from "lucide-react";
+import { Trash2, Eye, Edit, Plus, Star } from "lucide-react";
 import Pagination from "../../../ui/Pagination/Pagination";
 import { SearchBar } from "../../../../hooks/SearchBar.tsx";
 import {
-  getAllProcessSteps,
-  createProcessStep,
-  updateProcessStep,
-  deleteProcessStep,
-  ProcessStep,
-} from "../../../../store/api/process-steps-api";
-import ProcessStepForm from "../form/ProcessStepForm";
-import ProcessStepDetails from "../Details/ProcessStepDetails";
+  getAllTestimonials,
+  createTestimonial,
+  updateTestimonial,
+  deleteTestimonial,
+  Testimonial,
+} from "../../../../store/api/testimonials-api";
+import TestimonialForm from "./TestimonialForm";
+import TestimonialDetails from "../Details/TestimonialDetails";
 
-const ProcessStepsTableOne: React.FC = () => {
-  const [steps, setSteps] = useState<ProcessStep[]>([]);
+const TestimonialTableOne: React.FC = () => {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [currentStep, setCurrentStep] = useState<ProcessStep | null>(null);
+  const [currentTestimonial, setCurrentTestimonial] = useState<Testimonial | null>(null);
   const [mode, setMode] = useState<"create" | "edit" | "view">("create");
-  const [formData, setFormData] = useState<ProcessStep>({
-    step_number: 0,
-    title: "",
-    description: "",
+  const [formData, setFormData] = useState<Testimonial>({
+    client_name: "",
+    company_name: "",
+    testimonial_text: "",
+    rating: 0,
     is_active: true,
   });
   const [alert, setAlert] = useState<{
@@ -44,24 +45,24 @@ const ProcessStepsTableOne: React.FC = () => {
   const itemsPerPage = 4;
   const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchSteps = useCallback(async () => {
+  const fetchTestimonials = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await getAllProcessSteps();
+      const data = await getAllTestimonials();
       const safeData = Array.isArray(data) ? data : [];
-      setSteps(safeData);
+      setTestimonials(safeData);
     } catch (error) {
-      console.error("Error fetching steps:", error);
-      showAlert({ type: "error", message: "Failed to load process steps" });
-      setSteps([]);
+      console.error("Error fetching testimonials:", error);
+      showAlert({ type: "error", message: "Failed to load testimonials" });
+      setTestimonials([]);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchSteps();
-  }, [fetchSteps]);
+    fetchTestimonials();
+  }, [fetchTestimonials]);
 
   const showAlert = (alertData: {
     type: "success" | "error";
@@ -71,17 +72,18 @@ const ProcessStepsTableOne: React.FC = () => {
     setTimeout(() => setAlert(null), 3500);
   };
 
-  const openModal = (type: "create" | "edit" | "view", step?: ProcessStep) => {
+  const openModal = (type: "create" | "edit" | "view", testimonial?: Testimonial) => {
     setMode(type);
-    if (step) {
-      setCurrentStep(step);
-      setFormData({ ...step });
+    if (testimonial) {
+      setCurrentTestimonial(testimonial);
+      setFormData({ ...testimonial });
     } else {
-      setCurrentStep(null);
+      setCurrentTestimonial(null);
       setFormData({
-        step_number: 0,
-        title: "",
-        description: "",
+        client_name: "",
+        company_name: "",
+        testimonial_text: "",
+        rating: 0,
         is_active: true,
       });
     }
@@ -106,26 +108,31 @@ const ProcessStepsTableOne: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      if (formData.step_number < 1) {
-        showAlert({ type: "error", message: "Step number must be at least 1" });
+      if (!formData.client_name.trim() || !formData.company_name.trim() || !formData.testimonial_text.trim()) {
+        showAlert({ type: "error", message: "All fields are required" });
+        return;
+      }
+
+      if (formData.rating < 1 || formData.rating > 5) {
+        showAlert({ type: "error", message: "Rating must be between 1 and 5" });
         return;
       }
 
       if (mode === "create") {
-        await createProcessStep(formData);
+        await createTestimonial(formData);
         showAlert({
           type: "success",
-          message: "Process step created successfully",
+          message: "Testimonial created successfully",
         });
       }
-      if (mode === "edit" && currentStep?.id) {
-        await updateProcessStep(currentStep.id, formData);
+      if (mode === "edit" && currentTestimonial?.id) {
+        await updateTestimonial(currentTestimonial.id, formData);
         showAlert({
           type: "success",
-          message: "Process step updated successfully",
+          message: "Testimonial updated successfully",
         });
       }
-      fetchSteps();
+      fetchTestimonials();
       closeModal();
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -133,46 +140,64 @@ const ProcessStepsTableOne: React.FC = () => {
     }
   };
 
-  const openDeleteModal = (step: ProcessStep) => {
-    setCurrentStep(step);
+  const openDeleteModal = (testimonial: Testimonial) => {
+    setCurrentTestimonial(testimonial);
     setIsDeleteModalOpen(true);
   };
 
   const confirmDelete = async () => {
-    if (!currentStep?.id) return;
+    if (!currentTestimonial?.id) return;
     try {
-      await deleteProcessStep(currentStep.id);
+      await deleteTestimonial(currentTestimonial.id);
       showAlert({
         type: "success",
-        message: "Process step deleted successfully",
+        message: "Testimonial deleted successfully",
       });
-      fetchSteps();
+      fetchTestimonials();
     } catch (error) {
-      console.error("Error deleting step:", error);
+      console.error("Error deleting testimonial:", error);
       showAlert({ type: "error", message: "Delete failed" });
     } finally {
       setIsDeleteModalOpen(false);
-      setCurrentStep(null);
+      setCurrentTestimonial(null);
     }
   };
 
-  const filteredSteps = useMemo(() => {
-    const safeSteps = Array.isArray(steps) ? steps : [];
+  const renderStars = (rating: number) => {
+    return (
+      <div className="flex items-center gap-0.5">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className={`w-3 h-3 ${
+              star <= rating
+                ? "text-yellow-400 fill-yellow-400"
+                : "text-gray-300 dark:text-gray-600"
+            }`}
+          />
+        ))}
+      </div>
+    );
+  };
+
+  const filteredTestimonials = useMemo(() => {
+    const safeTestimonials = Array.isArray(testimonials) ? testimonials : [];
     if (!searchTerm.trim()) {
-      return safeSteps;
+      return safeTestimonials;
     }
     const term = searchTerm.toLowerCase();
-    return safeSteps.filter(
-      (step) =>
-        step.title.toLowerCase().includes(term) ||
-        step.description.toLowerCase().includes(term) ||
-        step.step_number.toString().includes(term),
+    return safeTestimonials.filter(
+      (testimonial) =>
+        testimonial.client_name.toLowerCase().includes(term) ||
+        testimonial.company_name.toLowerCase().includes(term) ||
+        testimonial.testimonial_text.toLowerCase().includes(term) ||
+        testimonial.rating.toString().includes(term),
     );
-  }, [steps, searchTerm]);
+  }, [testimonials, searchTerm]);
 
   const totalPages = useMemo(() => {
-    return Math.max(1, Math.ceil(filteredSteps.length / itemsPerPage));
-  }, [filteredSteps.length, itemsPerPage]);
+    return Math.max(1, Math.ceil(filteredTestimonials.length / itemsPerPage));
+  }, [filteredTestimonials.length, itemsPerPage]);
 
   useEffect(() => {
     if (searchTerm.trim() && currentPage > totalPages) {
@@ -184,13 +209,13 @@ const ProcessStepsTableOne: React.FC = () => {
     ) {
       setCurrentPage(totalPages);
     }
-  }, [filteredSteps, currentPage, totalPages, searchTerm]);
+  }, [filteredTestimonials, currentPage, totalPages, searchTerm]);
 
-  const paginatedSteps = useMemo(() => {
+  const paginatedTestimonials = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return filteredSteps.slice(startIndex, endIndex);
-  }, [filteredSteps, currentPage, itemsPerPage]);
+    return filteredTestimonials.slice(startIndex, endIndex);
+  }, [filteredTestimonials, currentPage, itemsPerPage]);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
@@ -204,7 +229,7 @@ const ProcessStepsTableOne: React.FC = () => {
   if (loading) {
     return (
       <div className="py-10 text-center text-gray-900 dark:text-white">
-        Loading...
+        Loading testimonials...
       </div>
     );
   }
@@ -216,20 +241,21 @@ const ProcessStepsTableOne: React.FC = () => {
           <button
             onClick={() => openModal("create")}
             className="inline-flex items-center justify-center rounded-lg bg-white p-2 text-blue-600 hover:bg-blue-50 dark:bg-gray-800 dark:hover:bg-gray-700"
-            aria-label="Add new process step"
+            aria-label="Add new testimonial"
           >
             <Plus size={20} />
           </button>
           <SearchBar value={searchTerm} onChange={handleSearchChange} />
         </div>
         <div className="max-w-full overflow-x-auto">
-          <Table className="min-w-175">
+          <Table className="min-w-200">
             <TableHeader className="border-b border-gray-100 dark:border-white/5">
               <TableRow>
                 {[
-                  "Step Number",
-                  "Title",
-                  "Description",
+                  "Client Name",
+                  "Company",
+                  "Testimonial",
+                  "Rating",
                   "Status",
                   "Actions",
                 ].map((head) => (
@@ -244,57 +270,65 @@ const ProcessStepsTableOne: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-gray-100 dark:divide-white/5">
-              {paginatedSteps.length > 0 ? (
-                paginatedSteps.map((step) => (
-                  <TableRow key={step.id}>
+              {paginatedTestimonials.length > 0 ? (
+                paginatedTestimonials.map((testimonial) => (
+                  <TableRow key={testimonial.id}>
                     <TableCell className="px-5 py-4 sm:px-6 text-start whitespace-nowrap">
                       <span className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                        {step.step_number}
+                        {testimonial.client_name}
                       </span>
                     </TableCell>
                     <TableCell className="px-4 py-3 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">
                       <span className="text-gray-700 dark:text-gray-300">
-                        {step.title}
+                        {testimonial.company_name}
+                      </span>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-start">
+                      <span className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 italic">
+                        "{testimonial.testimonial_text.length > 40
+                          ? `${testimonial.testimonial_text.slice(0, 40)}...`
+                          : testimonial.testimonial_text}"
                       </span>
                     </TableCell>
                     <TableCell className="px-4 py-3 text-start whitespace-nowrap">
-                      <span className="text-gray-600 dark:text-gray-400 text-sm">
-                        {step.description && step.description.length > 25
-                          ? `${step.description.slice(0, 25)}...`
-                          : step.description || "No description"}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {renderStars(testimonial.rating)}
+                        <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                          ({testimonial.rating}/5)
+                        </span>
+                      </div>
                     </TableCell>
                     <TableCell className="px-4 py-3 text-start whitespace-nowrap">
                       <Badge
                         size="sm"
-                        color={step.is_active ? "success" : "error"}
+                        color={testimonial.is_active ? "success" : "error"}
                       >
-                        {step.is_active ? "Active" : "Inactive"}
+                        {testimonial.is_active ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => openModal("view", step)}
+                          onClick={() => openModal("view", testimonial)}
                           className="p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400"
                           title="View"
-                          aria-label={`View ${step.title}`}
+                          aria-label={`View ${testimonial.client_name}`}
                         >
                           <Eye size={16} />
                         </button>
                         <button
-                          onClick={() => openModal("edit", step)}
+                          onClick={() => openModal("edit", testimonial)}
                           className="p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400"
                           title="Edit"
-                          aria-label={`Edit ${step.title}`}
+                          aria-label={`Edit ${testimonial.client_name}`}
                         >
                           <Edit size={16} />
                         </button>
                         <button
-                          onClick={() => openDeleteModal(step)}
+                          onClick={() => openDeleteModal(testimonial)}
                           className="p-2 text-red-500 hover:text-red-600 dark:text-red-400"
                           title="Delete"
-                          aria-label={`Delete ${step.title}`}
+                          aria-label={`Delete ${testimonial.client_name}`}
                         >
                           <Trash2 size={16} />
                         </button>
@@ -306,10 +340,10 @@ const ProcessStepsTableOne: React.FC = () => {
                 <TableRow>
                   <TableCell
                     className="px-4 py-8 text-center text-gray-500 dark:text-gray-400"
-      
+                    
                   >
                     <div>
-                      No process steps found{" "}
+                      No testimonials found{" "}
                       {searchTerm ? `for "${searchTerm}"` : ""}
                     </div>
                   </TableCell>
@@ -328,12 +362,12 @@ const ProcessStepsTableOne: React.FC = () => {
       </div>
 
       {isModalOpen && (
-        <Modal isOpen onClose={closeModal} className="max-w-lg p-6">
-          {mode === "view" && currentStep && (
-            <ProcessStepDetails step={currentStep} onClose={closeModal} />
+        <Modal isOpen onClose={closeModal} className="max-w-2xl p-9">
+          {mode === "view" && currentTestimonial && (
+            <TestimonialDetails testimonial={currentTestimonial} onClose={closeModal} />
           )}
           {(mode === "create" || mode === "edit") && (
-            <ProcessStepForm
+            <TestimonialForm
               mode={mode}
               formData={formData}
               onChange={handleChange}
@@ -352,11 +386,11 @@ const ProcessStepsTableOne: React.FC = () => {
           className="max-w-md p-6"
         >
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Delete Process Step
+            Delete Testimonial
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-            Are you sure you want to delete{" "}
-            <span className="font-medium">{currentStep?.title}</span>? This
+            Are you sure you want to delete testimonial from{" "}
+            <span className="font-medium">{currentTestimonial?.client_name}</span>? This
             action cannot be undone.
           </p>
           <div className="flex justify-end gap-3">
@@ -391,4 +425,4 @@ const ProcessStepsTableOne: React.FC = () => {
   );
 };
 
-export default ProcessStepsTableOne;
+export default TestimonialTableOne;
