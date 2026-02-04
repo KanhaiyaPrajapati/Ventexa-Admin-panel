@@ -13,11 +13,7 @@ import Alerts from "./pages/UiElements/Alerts";
 import Badges from "./pages/UiElements/Badges";
 import Avatars from "./pages/UiElements/Avatars";
 import Buttons from "./pages/UiElements/Buttons";
-
 import ServiceFeatures from "./pages/Tables/Service-Features/ServiceFeatures";
-
-
-import ServiceFeatures from "./pages/Tables/Service-Features/ServiceFeatures"; 
 import LineChart from "./pages/Charts/LineChart";
 import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
@@ -32,6 +28,7 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import AboutCompany from "./pages/Tables/about-company/AboutCompany";
 import ProcessSteps from "./pages/Tables/ProcessSteps/ProcessSteps";
+import ProcessStepsTableOne from "./components/tables/Process-Steps-Table/form/ProcessStepTableOne";
 
 export default function App() {
   return (
@@ -54,7 +51,7 @@ export default function App() {
             <Route path="/basic-tables" element={<BasicTables />} />
             <Route path="/contact-leads" element={<ContactLeads />} />
 
-            <Route path="/process-steps" element={<ProcessStepsTable />} /> 
+            <Route path="/process-steps" element={<ProcessStepsTableOne />} /> 
 
             {/* Ui Elements */}
          
