@@ -33,17 +33,12 @@ const navItems: NavItem[] = [
     name: "Service Features",
     path: "/service-features",
   },
-  {
-    name: "Contact Leads",
-    icon: <TableIcon />,
-    subItems: [
-      {
-        name: "Contact Leads",
-        path: "/contact-leads",
-        pro: false,
-      },
-    ],
-  },
+  
+{
+  icon: <TableIcon className="w-5 h-5" />,
+  name: "Contact Leads",
+  path: "/contact-leads",
+},
   {
     icon: <Layers className="w-5 h-5" />,
     name: "Process Steps",
