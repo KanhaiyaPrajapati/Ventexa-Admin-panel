@@ -3,10 +3,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import { ChevronDownIcon, GridIcon, HorizontaLDots, TableIcon } from "../icons";
+import { ChevronDownIcon, GridIcon, HorizontaLDots, } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { Info, Layers, MessageSquare } from "lucide-react";
+import { HelpCircle, Info, Layers, MessageSquare, UserPlus } from "lucide-react";
 
 /* ---------------- TYPES ---------------- */
 
@@ -41,14 +41,14 @@ const navItems: NavItem[] = [
     path: "/service-features",
   },
   {
+    icon: <UserPlus className="w-5 h-5" />,
     name: "Contact Leads",
-    icon: <TableIcon />,
-    subItems: [
-      {
-        name: "Contact Leads",
-        path: "/contact-leads",
-      },
-    ],
+    path: "/contact-leads",
+  },
+    {
+    icon: <HelpCircle className="w-5 h-5" />,
+    name: "FAQs",
+    path: "/faqs",
   },
   {
     icon: <Layers className="w-5 h-5" />,
