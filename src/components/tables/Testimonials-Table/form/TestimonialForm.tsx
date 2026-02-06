@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import Button from "../../../ui/button/Button";
-import { CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle, XCircle, Star } from "lucide-react";
 
-interface ProcessStep {
+interface Testimonial {
   id?: string;
-  step_number: number | string;
-  title: string;
-  description: string;
+  client_name: string;
+  company_name: string;
+  testimonial_text: string;
+  rating: number | string;
   is_active: boolean;
 }
 
-interface ProcessStepFormProps {
+interface TestimonialFormProps {
   mode: "create" | "edit";
-  formData: ProcessStep;
+  formData: Testimonial;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
@@ -21,7 +22,7 @@ interface ProcessStepFormProps {
   onCancel: () => void;
 }
 
-const ProcessStepForm: React.FC<ProcessStepFormProps> = ({
+const TestimonialForm: React.FC<TestimonialFormProps> = ({
   mode,
   formData,
   onChange,
@@ -29,15 +30,15 @@ const ProcessStepForm: React.FC<ProcessStepFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
-  const [localData, setLocalData] = useState<ProcessStep>({
+  const [localData, setLocalData] = useState<Testimonial>({
     ...formData,
-    step_number: formData.step_number === 0 ? "" : formData.step_number,
+    rating: formData.rating === 0 ? "" : formData.rating,
   });
 
   useEffect(() => {
     setLocalData({
       ...formData,
-      step_number: formData.step_number === 0 ? "" : formData.step_number,
+      rating: formData.rating === 0 ? "" : formData.rating,
     });
   }, [formData]);
 
@@ -46,8 +47,8 @@ const ProcessStepForm: React.FC<ProcessStepFormProps> = ({
   ) => {
     const { name, value } = e.target;
 
-    if (name === "step_number") {
-      if (value === "" || /^\d+$/.test(value)) {
+    if (name === "rating") {
+      if (value === "" || /^[1-5]$/.test(value)) {
         setLocalData((prev) => ({
           ...prev,
           [name]: value === "" ? "" : parseInt(value, 10),
@@ -63,7 +64,7 @@ const ProcessStepForm: React.FC<ProcessStepFormProps> = ({
         ...e.target,
         name,
         value:
-          name === "step_number"
+          name === "rating"
             ? value === ""
               ? 0
               : parseInt(value, 10)
@@ -74,41 +75,62 @@ const ProcessStepForm: React.FC<ProcessStepFormProps> = ({
     onChange(syntheticEvent);
   };
 
+  const handleStarClick = (value: number) => {
+    const syntheticEvent = {
+        target: {
+            name: "rating",
+            value: value,
+        },
+    } as unknown as React.ChangeEvent<HTMLInputElement>;
+    onChange(syntheticEvent);
+    setLocalData((prev) => ({ ...prev, rating: value }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit();
   };
 
+  const renderStars = (value: number) => {
+    return (
+      <div className="flex items-center gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            type="button"
+            onClick={() => handleStarClick(star)}
+            className="focus:outline-none"
+            aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
+          >
+            <Star
+              className={`w-6 h-6 ${
+                star <= value
+                  ? "text-yellow-400 fill-yellow-400"
+                  : "text-gray-300 dark:text-gray-600"
+              }`}
+            />
+          </button>
+        ))}
+        <span className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+          ({value}/5)
+        </span>
+      </div>
+    );
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-2">
       <div className="space-y-4 sm:space-y-5">
         <div className="w-full">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-            Step Number <span className="text-red-500">*</span>
+            Client Name <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            name="step_number"
-            value={localData.step_number}
+            name="client_name"
+            value={localData.client_name}
             onChange={handleInputChange}
-            placeholder="Enter step number"
-            className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-            required
-          />
-        </div>
-
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-            Title <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            name="title"
-            value={localData.title}
-            onChange={handleInputChange}
-            placeholder="Enter step title"
+            placeholder="Enter client name"
             className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
             required
           />
@@ -116,17 +138,48 @@ const ProcessStepForm: React.FC<ProcessStepFormProps> = ({
 
         <div className="w-full">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-            Description <span className="text-red-500">*</span>
+            Company Name <span className="text-red-500">*</span>
           </label>
-          <textarea
-            name="description"
-            value={localData.description}
+          <input
+            type="text"
+            name="company_name"
+            value={localData.company_name}
             onChange={handleInputChange}
-            placeholder="Enter step description"
-            rows={3}
-            className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500 resize-none min-h-20"
+            placeholder="Enter company name"
+            className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
             required
           />
+        </div>
+
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+            Testimonial Text <span className="text-red-500">*</span>
+          </label>
+          <textarea
+            name="testimonial_text"
+            value={localData.testimonial_text}
+            onChange={handleInputChange}
+            placeholder="Enter testimonial text"
+            rows={1}
+            className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500 resize-none min-h-[100px]"
+            required
+          />
+        </div>
+
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+            Rating <span className="text-red-500">*</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+              (1-5 stars)
+            </span>
+          </label>
+          <div className="space-y-3">
+            {renderStars(typeof localData.rating === "number" ? localData.rating : 0)}
+            <div className="flex items-center">
+        
+             
+            </div>
+          </div>
         </div>
 
         <div className="flex items-center justify-between p-3 sm:p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800/50">
@@ -146,8 +199,8 @@ const ProcessStepForm: React.FC<ProcessStepFormProps> = ({
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 {localData.is_active
-                  ? "Step is active and visible"
-                  : "Step is inactive and hidden"}
+                  ? "Testimonial is active and visible"
+                  : "Testimonial is inactive and hidden"}
               </p>
             </div>
           </div>
@@ -156,7 +209,7 @@ const ProcessStepForm: React.FC<ProcessStepFormProps> = ({
             onClick={onToggleActive}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${localData.is_active ? "bg-green-500" : "bg-gray-300 dark:bg-gray-700"}`}
             aria-label={
-              localData.is_active ? "Deactivate step" : "Activate step"
+              localData.is_active ? "Deactivate testimonial" : "Activate testimonial"
             }
           >
             <span
@@ -182,11 +235,11 @@ const ProcessStepForm: React.FC<ProcessStepFormProps> = ({
           color="primary"
           className="w-full sm:w-auto px-4 py-2.5 text-sm sm:text-base"
         >
-          {mode === "create" ? "Create Step" : "Update Step"}
+          {mode === "create" ? "Create Testimonial" : "Update Testimonial"}
         </Button>
       </div>
     </form>
   );
 };
 
-export default ProcessStepForm;
+export default TestimonialForm;
