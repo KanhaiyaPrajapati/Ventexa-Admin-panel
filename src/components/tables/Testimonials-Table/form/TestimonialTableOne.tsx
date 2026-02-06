@@ -119,11 +119,22 @@ const TestimonialTableOne: React.FC = () => {
       }
 
       if (mode === "create") {
-        await createTestimonial(formData);
+        const createdTestimonial = await createTestimonial(formData);
         showAlert({
           type: "success",
           message: "Testimonial created successfully",
         });
+        // Add new testimonial at the END of the list
+        if (createdTestimonial) {
+          setTestimonials(prev => [...prev, createdTestimonial]);
+        } else {
+          const newTestimonial = { 
+            ...formData, 
+            id: Date.now().toString(),
+            created_at: new Date().toISOString()
+          };
+          setTestimonials(prev => [...prev, newTestimonial]);
+        }
       }
       if (mode === "edit" && currentTestimonial?.id) {
         await updateTestimonial(currentTestimonial.id, formData);
@@ -131,8 +142,13 @@ const TestimonialTableOne: React.FC = () => {
           type: "success",
           message: "Testimonial updated successfully",
         });
+        // Update the testimonial in state - stays on same page
+        setTestimonials(prev => prev.map(testimonial => 
+          testimonial.id === currentTestimonial.id 
+            ? { ...formData, id: currentTestimonial.id } 
+            : testimonial
+        ));
       }
-      fetchTestimonials();
       closeModal();
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -153,7 +169,19 @@ const TestimonialTableOne: React.FC = () => {
         type: "success",
         message: "Testimonial deleted successfully",
       });
-      fetchTestimonials();
+      
+      // Remove testimonial from state instead of fetching all
+      setTestimonials(prev => prev.filter(testimonial => testimonial.id !== currentTestimonial.id));
+      
+      // Check if we need to adjust current page after deletion
+      const safeTestimonials = testimonials.filter(t => t.id !== currentTestimonial.id);
+      const filtered = filterTestimonials(safeTestimonials);
+      const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
+      
+      // If current page would be empty after deletion and we're not on page 1, go back one page
+      if (currentPage > totalPages && currentPage > 1) {
+        setCurrentPage(totalPages);
+      }
     } catch (error) {
       console.error("Error deleting testimonial:", error);
       showAlert({ type: "error", message: "Delete failed" });
@@ -180,36 +208,34 @@ const TestimonialTableOne: React.FC = () => {
     );
   };
 
-  const filteredTestimonials = useMemo(() => {
-    const safeTestimonials = Array.isArray(testimonials) ? testimonials : [];
+  const filterTestimonials = useCallback((testimonialsArray: Testimonial[]) => {
     if (!searchTerm.trim()) {
-      return safeTestimonials;
+      return testimonialsArray;
     }
     const term = searchTerm.toLowerCase();
-    return safeTestimonials.filter(
+    return testimonialsArray.filter(
       (testimonial) =>
         testimonial.client_name.toLowerCase().includes(term) ||
         testimonial.company_name.toLowerCase().includes(term) ||
         testimonial.testimonial_text.toLowerCase().includes(term) ||
         testimonial.rating.toString().includes(term),
     );
-  }, [testimonials, searchTerm]);
+  }, [searchTerm]);
+
+  const filteredTestimonials = useMemo(() => {
+    const safeTestimonials = Array.isArray(testimonials) ? testimonials : [];
+    return filterTestimonials(safeTestimonials);
+  }, [testimonials, filterTestimonials]);
 
   const totalPages = useMemo(() => {
     return Math.max(1, Math.ceil(filteredTestimonials.length / itemsPerPage));
   }, [filteredTestimonials.length, itemsPerPage]);
 
   useEffect(() => {
-    if (searchTerm.trim() && currentPage > totalPages) {
-      setCurrentPage(1);
-    } else if (
-      !searchTerm.trim() &&
-      currentPage > totalPages &&
-      totalPages > 0
-    ) {
+    if (currentPage > totalPages && totalPages > 0) {
       setCurrentPage(totalPages);
     }
-  }, [filteredTestimonials, currentPage, totalPages, searchTerm]);
+  }, [totalPages, currentPage]);
 
   const paginatedTestimonials = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -340,7 +366,7 @@ const TestimonialTableOne: React.FC = () => {
                 <TableRow>
                   <TableCell
                     className="px-4 py-8 text-center text-gray-500 dark:text-gray-400"
-                    
+                   
                   >
                     <div>
                       No testimonials found{" "}
@@ -362,58 +388,74 @@ const TestimonialTableOne: React.FC = () => {
       </div>
 
       {isModalOpen && (
-        <Modal isOpen onClose={closeModal} className="max-w-2xl p-9">
-          {mode === "view" && currentTestimonial && (
-            <TestimonialDetails testimonial={currentTestimonial} onClose={closeModal} />
-          )}
-          {(mode === "create" || mode === "edit") && (
-            <TestimonialForm
-              mode={mode}
-              formData={formData}
-              onChange={handleChange}
-              onToggleActive={toggleActive}
-              onSubmit={handleSubmit}
-              onCancel={closeModal}
-            />
-          )}
-        </Modal>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <Modal 
+            isOpen 
+            onClose={closeModal} 
+            className="max-w-md w-full mx-auto my-auto"
+          >
+            {mode === "view" && currentTestimonial && (
+              <div className="p-10">
+                <TestimonialDetails testimonial={currentTestimonial} />
+           
+              </div>
+            )}
+            {(mode === "create" || mode === "edit") && (
+              <div className="p-4">
+                <TestimonialForm
+                  mode={mode}
+                  formData={formData}
+                  onChange={handleChange}
+                  onToggleActive={toggleActive}
+                  onSubmit={handleSubmit}
+                  onCancel={closeModal}
+                
+                />
+              </div>
+            )}
+          </Modal>
+        </div>
       )}
 
       {isDeleteModalOpen && (
-        <Modal
-          isOpen
-          onClose={() => setIsDeleteModalOpen(false)}
-          className="max-w-md p-6"
-        >
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Delete Testimonial
-          </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-            Are you sure you want to delete testimonial from{" "}
-            <span className="font-medium">{currentTestimonial?.client_name}</span>? This
-            action cannot be undone.
-          </p>
-          <div className="flex justify-end gap-3">
-            <Button
-              variant="outline"
-              color="primary"
-              onClick={() => setIsDeleteModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              color="destructive"
-              onClick={confirmDelete}
-            >
-              Delete
-            </Button>
-          </div>
-        </Modal>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <Modal
+            isOpen
+            onClose={() => setIsDeleteModalOpen(false)}
+            className="max-w-sm w-full mx-auto my-auto"
+          >
+            <div className="p-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                Delete Testimonial
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                Are you sure you want to delete testimonial from{" "}
+                <span className="font-medium">{currentTestimonial?.client_name}</span>? This
+                action cannot be undone.
+              </p>
+              <div className="flex justify-end gap-3">
+                <Button
+                  variant="outline"
+                  color="primary"
+                  onClick={() => setIsDeleteModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  color="destructive"
+                  onClick={confirmDelete}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          </Modal>
+        </div>
       )}
 
       {alert && (
-        <div className="fixed bottom-5 right-2 z-50 w-70">
+        <div className="fixed bottom-5 right-2 z-50 w-70"> 
           <Alert
             variant={alert.type}
             title={alert.type === "success" ? "Success" : "Error"}

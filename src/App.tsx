@@ -16,11 +16,12 @@ import LineChart from "./pages/Charts/LineChart";
 import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
 import BasicTables from "./pages/Tables/BasicTables";
+import ContactLeads from "../src/pages/Tables/ContactLeads/ContactLeads";
 import ProcessSteps from "./pages/Tables/ProcessSteps/ProcessSteps";
-import Testimonials from "../src/pages/Tables/testimonials/Testimonials";
+import Testimonials from "./pages/Tables/testimonials/Testimonials";
 import TeamSection from "./pages/Tables/Team-Section/TeamSection";
 import AboutCompany from "./pages/Tables/about-company/AboutCompany";
-
+import FaqTable from "./pages/Tables/FaqTable/FaqTable";
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
@@ -46,10 +47,13 @@ export default function App() {
             <Route path="/process-steps" element={<ProcessSteps />} />
             <Route path="/testimonials" element={<Testimonials />} />
             <Route path="/basic-tables" element={<BasicTables />} />
+            <Route path="/contact-leads" element={<ContactLeads />} />
             <Route path="/service-features" element={<ServiceFeatures />} />
             <Route path="/team-section" element={<TeamSection />} />
             <Route path="/about-company" element={<AboutCompany />} />
 
+            <Route path="/faqs" element={<FaqTable />} />
+            <Route path="/process-steps" element={<ProcessSteps />} /> 
             {/* Ui Elements */}
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/avatars" element={<Avatars />} />
