@@ -33,7 +33,7 @@ const FaqsTable: React.FC = () => {
   const [formData, setFormData] = useState<FAQ>({
     question: "",
     answer: "",
-    display_order: 1,
+    display_order: "",
     is_active: true,
     created_at: new Date().toISOString(),
   });
@@ -49,7 +49,10 @@ const FaqsTable: React.FC = () => {
     try {
       const data = await getAllFAQs();
 
-      const sortedData = data.sort((a, b) => a.display_order - b.display_order);
+      const sortedData = data.sort(
+        (a, b) => Number(a.display_order) - Number(b.display_order),
+      );
+
       setFaqs(sortedData);
     } catch {
       showAlert({ type: "error", message: "Failed to load FAQs" });
@@ -72,22 +75,22 @@ const FaqsTable: React.FC = () => {
 
   const openModal = (type: "create" | "view" | "edit", faq?: FAQ) => {
     setMode(type);
+
     if (faq) {
       setCurrentFaq(faq);
       setFormData({ ...faq });
     } else {
       setCurrentFaq(null);
+
       setFormData({
         question: "",
         answer: "",
-        display_order:
-          faqs.length > 0
-            ? Math.max(...faqs.map((f) => f.display_order)) + 1
-            : 1,
+        display_order:"",   
         is_active: true,
         created_at: new Date().toISOString(),
       });
     }
+
     setIsModalOpen(true);
   };
 
@@ -102,7 +105,7 @@ const FaqsTable: React.FC = () => {
     let finalValue: string | number | boolean = value;
 
     if (name === "display_order") {
-      finalValue = parseInt(value) || 1;
+      finalValue = value === "" ? "" : parseInt(value, 10);
     } else if (name === "is_active") {
       finalValue = value === "true";
     }

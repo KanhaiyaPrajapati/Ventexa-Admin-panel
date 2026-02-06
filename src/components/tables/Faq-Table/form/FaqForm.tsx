@@ -100,12 +100,12 @@ const FaqForm: React.FC<FaqFormProps> = ({
           </div>
         ) : (
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
             name="display_order"
             value={formData.display_order}
             onChange={onChange}
             required
-            min="1"
             className="mt-1 block w-full rounded-md p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         )}
