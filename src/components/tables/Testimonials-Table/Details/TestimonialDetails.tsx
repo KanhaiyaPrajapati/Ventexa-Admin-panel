@@ -1,4 +1,4 @@
-import Button from "../../../ui/button/Button";
+import React from "react";
 import Badge from "../../../ui/badge/Badge";
 import { User, Building, MessageSquare, Star, CheckCircle, XCircle } from "lucide-react";
 
@@ -11,12 +11,10 @@ interface TestimonialDetailsProps {
     rating: number;
     is_active: boolean;
   };
-  onClose?: () => void;
 }
 
 const TestimonialDetails: React.FC<TestimonialDetailsProps> = ({
   testimonial,
-  onClose,
 }) => {
   const renderStars = (rating: number) => {
     return (
@@ -24,14 +22,14 @@ const TestimonialDetails: React.FC<TestimonialDetailsProps> = ({
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`w-5 h-5 sm:w-6 sm:h-6 ${
+            className={`w-4 h-4 sm:w-5 sm:h-5 ${
               star <= rating
                 ? "text-yellow-400 fill-yellow-400"
                 : "text-gray-300 dark:text-gray-600"
             }`}
           />
         ))}
-        <span className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+        <span className="ml-2 text-xs font-medium text-gray-700 dark:text-gray-300">
           ({rating}/5)
         </span>
       </div>
@@ -39,95 +37,107 @@ const TestimonialDetails: React.FC<TestimonialDetailsProps> = ({
   };
 
   return (
-    <div className="space-y-4 sm:space-y-15">
-      <div className="space-y-3 sm:space-y-4">
-        <div className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50">
-          <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100/10 dark:bg-blue-400/20 flex items-center justify-center">
-            <User className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
+    <div className="p-4 sm:p-5 bg-white dark:bg-[#1F2937]">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-[#4FE7C0] mb-3">
+        Testimonial Details
+      </h2>
+      
+      <div className="space-y-3">
+        {/* Client Name */}
+        <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#374151]">
+          <div className="shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+            <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">CLIENT NAME</p>
-            <p className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white wrap-break-word">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5">
+              CLIENT NAME
+            </p>
+            <p className="text-base font-semibold text-gray-900 dark:text-white wrap-break-word">
               {testimonial?.client_name || "N/A"}
             </p>
           </div>
         </div>
 
-        <div className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50">
-          <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-100/10 dark:bg-green-400/20 flex items-center justify-center">
-            <Building className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
+        {/* Company Name */}
+        <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#374151]">
+          <div className="shrink-0 w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+            <Building className="w-4 h-4 text-green-600 dark:text-green-400" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">COMPANY NAME</p>
-            <p className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white wrap-break-word">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5">
+              COMPANY NAME
+            </p>
+            <p className="text-base font-semibold text-gray-900 dark:text-white wrap-break-word">
               {testimonial?.company_name || "N/A"}
             </p>
           </div>
         </div>
 
-        <div className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50">
-          <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-purple-100/10 dark:bg-purple-400/20 flex items-center justify-center">
-            <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
+        {/* Testimonial Text */}
+        <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#374151]">
+          <div className="shrink-0 w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+            <MessageSquare className="w-4 h-4 text-purple-600 dark:text-purple-400" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">TESTIMONIAL TEXT</p>
-            <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 wrap-break-word leading-relaxed italic">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5">
+              TESTIMONIAL TEXT
+            </p>
+            <p className="text-sm text-gray-700 dark:text-gray-300 wrap-break-word leading-relaxed italic">
               "{testimonial?.testimonial_text || "No testimonial text provided"}"
             </p>
           </div>
         </div>
 
-        <div className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50">
-          <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-yellow-100/10 dark:bg-yellow-400/20 flex items-center justify-center">
-            <Star className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600 dark:text-yellow-400" />
+        {/* Rating */}
+        <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#374151]">
+          <div className="shrink-0 w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+            <Star className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">RATING</p>
-            <div className="mt-1">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5">
+              RATING
+            </p>
+            <div className="mt-0.5">
               {renderStars(testimonial?.rating || 0)}
             </div>
           </div>
         </div>
 
-        <div className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50">
-          <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-linear-to-br from-gray-100/20 to-gray-200/20 dark:from-gray-800/50 dark:to-gray-900/50">
-            <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center ${testimonial?.is_active ? 'bg-green-100 dark:bg-green-900/40' : 'bg-red-100 dark:bg-red-900/40'}`}>
+        {/* Status */}
+        <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#374151]">
+          <div className="shrink-0 w-8 h-8 rounded-full bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
+              testimonial?.is_active 
+                ? 'bg-green-100 dark:bg-green-900/40' 
+                : 'bg-red-100 dark:bg-red-900/40'
+            }`}>
               {testimonial?.is_active ? (
-                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" />
+                <CheckCircle className="w-3 h-3 text-green-600 dark:text-green-400" />
               ) : (
-                <XCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 dark:text-red-400" />
+                <XCircle className="w-3 h-3 text-red-600 dark:text-red-400" />
               )}
             </div>
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">STATUS</p>
-            <div className="flex items-center gap-2">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5">
+              STATUS
+            </p>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
               <Badge 
-                size="md" 
+                size="sm" 
                 color={testimonial?.is_active ? "success" : "error"}
-                className="text-sm sm:text-base"
               >
                 {testimonial?.is_active ? "Active" : "Inactive"}
               </Badge>
-              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                {testimonial?.is_active ? '• This testimonial is currently visible' : '• This testimonial is currently hidden'}
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {testimonial?.is_active 
+                  ? '• Currently visible' 
+                  : '• Currently hidden'}
               </span>
             </div>
           </div>
         </div>
       </div>
-
-      {onClose && (
-        <div className="flex justify-end pt- sm:pt-3 border-t border-gray-200 dark:border-gray-700">
-          <Button 
-            variant="outline" 
-            onClick={onClose} 
-            className="w-full sm:w-auto px-2 py-2.5 text-sm sm:text-base"
-          >
-            Close Details
-          </Button>
-        </div>
-      )}
     </div>
   );
 };

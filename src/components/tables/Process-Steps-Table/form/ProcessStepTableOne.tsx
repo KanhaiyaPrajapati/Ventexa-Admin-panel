@@ -125,7 +125,20 @@ const ProcessStepsTableOne: React.FC = () => {
           message: "Process step updated successfully",
         });
       }
-      fetchSteps();
+
+      if (mode === "create") {
+        const newStep = { ...formData, id: Date.now().toString() };
+        setSteps((prev) => [newStep, ...prev]);
+      } else if (mode === "edit" && currentStep?.id) {
+        setSteps((prev) =>
+          prev.map((step) =>
+            step.id === currentStep.id
+              ? { ...formData, id: currentStep.id }
+              : step,
+          ),
+        );
+      }
+
       closeModal();
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -146,7 +159,16 @@ const ProcessStepsTableOne: React.FC = () => {
         type: "success",
         message: "Process step deleted successfully",
       });
-      fetchSteps();
+
+      setSteps((prev) => prev.filter((step) => step.id !== currentStep.id));
+
+      const safeSteps = steps.filter((step) => step.id !== currentStep.id);
+      const filtered = filterSteps(safeSteps);
+      const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
+
+      if (currentPage > totalPages && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
     } catch (error) {
       console.error("Error deleting step:", error);
       showAlert({ type: "error", message: "Delete failed" });
@@ -156,35 +178,30 @@ const ProcessStepsTableOne: React.FC = () => {
     }
   };
 
+  const filterSteps = useCallback(
+    (stepsArray: ProcessStep[]) => {
+      if (!searchTerm.trim()) {
+        return stepsArray;
+      }
+      const term = searchTerm.toLowerCase();
+      return stepsArray.filter(
+        (step) =>
+          step.title.toLowerCase().includes(term) ||
+          step.description.toLowerCase().includes(term) ||
+          step.step_number.toString().includes(term),
+      );
+    },
+    [searchTerm],
+  );
+
   const filteredSteps = useMemo(() => {
     const safeSteps = Array.isArray(steps) ? steps : [];
-    if (!searchTerm.trim()) {
-      return safeSteps;
-    }
-    const term = searchTerm.toLowerCase();
-    return safeSteps.filter(
-      (step) =>
-        step.title.toLowerCase().includes(term) ||
-        step.description.toLowerCase().includes(term) ||
-        step.step_number.toString().includes(term),
-    );
-  }, [steps, searchTerm]);
+    return filterSteps(safeSteps);
+  }, [steps, filterSteps]);
 
   const totalPages = useMemo(() => {
     return Math.max(1, Math.ceil(filteredSteps.length / itemsPerPage));
   }, [filteredSteps.length, itemsPerPage]);
-
-  useEffect(() => {
-    if (searchTerm.trim() && currentPage > totalPages) {
-      setCurrentPage(1);
-    } else if (
-      !searchTerm.trim() &&
-      currentPage > totalPages &&
-      totalPages > 0
-    ) {
-      setCurrentPage(totalPages);
-    }
-  }, [filteredSteps, currentPage, totalPages, searchTerm]);
 
   const paginatedSteps = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -201,6 +218,12 @@ const ProcessStepsTableOne: React.FC = () => {
     setCurrentPage(page);
   }, []);
 
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages]);
+
   if (loading) {
     return (
       <div className="py-10 text-center text-gray-900 dark:text-white">
@@ -211,175 +234,208 @@ const ProcessStepsTableOne: React.FC = () => {
 
   return (
     <>
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
-        <div className="flex flex-col sm:flex-row justify-between items-center px-5 py-4 gap-3">
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+        <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-5 py-4 gap-3">
           <button
             onClick={() => openModal("create")}
-            className="inline-flex items-center justify-center rounded-lg bg-white p-2 text-blue-600 hover:bg-blue-50 dark:bg-gray-800 dark:hover:bg-gray-700"
+            className="inline-flex items-center justify-center rounded-lg bg-white dark:bg-gray-800 p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 w-full sm:w-auto border border-gray-200 dark:border-gray-700 transition-colors"
             aria-label="Add new process step"
           >
-            <Plus size={20} />
+            <Plus size={20} className="mr-2 sm:mr-0" />
+            <span className="sm:sr-only">Add New</span>
           </button>
-          <SearchBar value={searchTerm} onChange={handleSearchChange} />
+          <div className="w-full sm:w-auto">
+            <SearchBar value={searchTerm} onChange={handleSearchChange} />
+          </div>
         </div>
-        <div className="max-w-full overflow-x-auto">
-          <Table className="min-w-175">
-            <TableHeader className="border-b border-gray-100 dark:border-white/5">
-              <TableRow>
-                {[
-                  "Step Number",
-                  "Title",
-                  "Description",
-                  "Status",
-                  "Actions",
-                ].map((head) => (
+        <div className="w-full overflow-x-auto">
+          <div className="min-w-0">
+            <Table className="w-full">
+              <TableHeader className="border-b border-gray-100 dark:border-gray-800">
+                <TableRow>
                   <TableCell
-                    key={head}
                     isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 whitespace-nowrap"
+                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 min-w-25"
                   >
-                    {head}
+                    Step Number
                   </TableCell>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody className="divide-y divide-gray-100 dark:divide-white/5">
-              {paginatedSteps.length > 0 ? (
-                paginatedSteps.map((step) => (
-                  <TableRow key={step.id}>
-                    <TableCell className="px-5 py-4 sm:px-6 text-start whitespace-nowrap">
-                      <span className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                        {step.step_number}
-                      </span>
-                    </TableCell>
-                    <TableCell className="px-4 py-3 text-start text-theme-sm dark:text-gray-400 whitespace-nowrap">
-                      <span className="text-gray-700 dark:text-gray-300">
-                        {step.title}
-                      </span>
-                    </TableCell>
-                    <TableCell className="px-4 py-3 text-start whitespace-nowrap">
-                      <span className="text-gray-600 dark:text-gray-400 text-sm">
-                        {step.description && step.description.length > 25
-                          ? `${step.description.slice(0, 25)}...`
-                          : step.description || "No description"}
-                      </span>
-                    </TableCell>
-                    <TableCell className="px-4 py-3 text-start whitespace-nowrap">
-                      <Badge
-                        size="sm"
-                        color={step.is_active ? "success" : "error"}
-                      >
-                        {step.is_active ? "Active" : "Inactive"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="px-4 py-3 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => openModal("view", step)}
-                          className="p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400"
-                          title="View"
-                          aria-label={`View ${step.title}`}
+                  <TableCell
+                    isHeader
+                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 min-w-30"
+                  >
+                    Title
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 min-w-37.5"
+                  >
+                    Description
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 min-w-25"
+                  >
+                    Status
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 min-w-30"
+                  >
+                    Actions
+                  </TableCell>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+                {paginatedSteps.length > 0 ? (
+                  paginatedSteps.map((step) => (
+                    <TableRow key={step.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                      <TableCell className="px-3 sm:px-4 py-3 sm:py-4 text-start whitespace-nowrap">
+                        <span className="font-medium text-gray-800 text-sm sm:text-theme-sm dark:text-gray-200">
+                          {step.step_number}
+                        </span>
+                      </TableCell>
+                      <TableCell className="px-3 sm:px-4 py-3 text-start text-sm sm:text-theme-sm">
+                        <span className="text-gray-700 dark:text-gray-300 wrap-break-word">
+                          {step.title}
+                        </span>
+                      </TableCell>
+                      <TableCell className="px-3 sm:px-4 py-3 text-start">
+                        <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm wrap-break-word">
+                          {step.description && step.description.length > 50
+                            ? `${step.description.slice(0, 50)}...`
+                            : step.description || "No description"}
+                        </span>
+                      </TableCell>
+                      <TableCell className="px-3 sm:px-4 py-3 text-start whitespace-nowrap">
+                        <Badge
+                          size="sm"
+                          color={step.is_active ? "success" : "error"}
                         >
-                          <Eye size={16} />
-                        </button>
-                        <button
-                          onClick={() => openModal("edit", step)}
-                          className="p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400"
-                          title="Edit"
-                          aria-label={`Edit ${step.title}`}
-                        >
-                          <Edit size={16} />
-                        </button>
-                        <button
-                          onClick={() => openDeleteModal(step)}
-                          className="p-2 text-red-500 hover:text-red-600 dark:text-red-400"
-                          title="Delete"
-                          aria-label={`Delete ${step.title}`}
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                          {step.is_active ? "Active" : "Inactive"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="px-3 sm:px-4 py-3">
+                        <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
+                          <button
+                            onClick={() => openModal("view", step)}
+                            className="p-1 sm:p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors rounded-full hover:bg-blue-50 dark:hover:bg-blue-500/10"
+                            title="View"
+                            aria-label={`View ${step.title}`}
+                          >
+                            <Eye size={14} className="sm:size-4" />
+                          </button>
+                          <button
+                            onClick={() => openModal("edit", step)}
+                            className="p-1 sm:p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 transition-colors rounded-full hover:bg-amber-50 dark:hover:bg-amber-500/10"
+                            title="Edit"
+                            aria-label={`Edit ${step.title}`}
+                          >
+                            <Edit size={14} className="sm:size-4" />
+                          </button>
+                          <button
+                            onClick={() => openDeleteModal(step)}
+                            className="p-1 sm:p-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors rounded-full hover:bg-red-50 dark:hover:bg-red-500/10"
+                            title="Delete"
+                            aria-label={`Delete ${step.title}`}
+                          >
+                            <Trash2 size={14} className="sm:size-4" />
+                          </button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                      <div className="text-sm sm:text-base">
+                        No process steps found{" "}
+                        {searchTerm ? `for "${searchTerm}"` : ""}
                       </div>
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    className="px-4 py-8 text-center text-gray-500 dark:text-gray-400"
-      
-                  >
-                    <div>
-                      No process steps found{" "}
-                      {searchTerm ? `for "${searchTerm}"` : ""}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
         {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
+          <div className="px-3 sm:px-4 py-3 border-t border-gray-100 dark:border-gray-800">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
         )}
       </div>
 
-      {isModalOpen && (
-        <Modal isOpen onClose={closeModal} className="max-w-lg p-6">
-          {mode === "view" && currentStep && (
-            <ProcessStepDetails step={currentStep} onClose={closeModal} />
-          )}
-          {(mode === "create" || mode === "edit") && (
-            <ProcessStepForm
-              mode={mode}
-              formData={formData}
-              onChange={handleChange}
-              onToggleActive={toggleActive}
-              onSubmit={handleSubmit}
-              onCancel={closeModal}
-            />
-          )}
-        </Modal>
+{isModalOpen && (
+  <Modal
+    isOpen
+    onClose={closeModal}
+    className="max-w-lg w-[95vw] mx-auto"
+    showCloseButton={true}
+  >
+    <div className="bg-white dark:bg-[#1F2937] rounded-3xl">
+      {mode === "view" && currentStep && (
+        <ProcessStepDetails step={currentStep} />
       )}
+      {(mode === "create" || mode === "edit") && (
+        <div className="overflow-y-auto max-h-[80vh]">
+          <ProcessStepForm
+            mode={mode}
+            formData={formData}
+            onChange={handleChange}
+            onToggleActive={toggleActive}
+            onSubmit={handleSubmit}
+            onCancel={closeModal}
+          />
+        </div>
+      )}
+    </div>
+  </Modal>
+)}
 
-      {isDeleteModalOpen && (
+         {isDeleteModalOpen && (
         <Modal
           isOpen
           onClose={() => setIsDeleteModalOpen(false)}
-          className="max-w-md p-6"
+          className="max-w-md w-[95vw] mx-auto"
+          showCloseButton={true}
         >
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Delete Process Step
-          </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-            Are you sure you want to delete{" "}
-            <span className="font-medium">{currentStep?.title}</span>? This
-            action cannot be undone.
-          </p>
-          <div className="flex justify-end gap-3">
-            <Button
-              variant="outline"
-              color="primary"
-              onClick={() => setIsDeleteModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              color="destructive"
-              onClick={confirmDelete}
-            >
-              Delete
-            </Button>
+          <div className="bg-white dark:bg-[#1F2937] rounded-3xl p-6 overflow-y-auto max-h-[80vh]">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-[#4FE7C0] mb-2">
+              Delete Process Step
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
+              Are you sure you want to delete{" "}
+              <span className="font-medium text-gray-900 dark:text-white">{currentStep?.title}</span>? This
+              action cannot be undone.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-end gap-3">
+              <Button
+                variant="outline"
+                color="primary"
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="w-full sm:w-auto dark:border-gray-600 dark:text-gray-300 dark:hover:bg-[#374151] dark:bg-transparent"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                color="destructive"
+                onClick={confirmDelete}
+                className="w-full sm:w-auto"
+              >
+                Delete
+              </Button>
+            </div>
           </div>
         </Modal>
       )}
 
       {alert && (
-        <div className="fixed bottom-5 right-2 z-50 w-70">
+        <div className="fixed bottom-5 right-2 z-50 w-[calc(100vw-1rem)] sm:w-72 max-w-sm">
           <Alert
             variant={alert.type}
             title={alert.type === "success" ? "Success" : "Error"}
