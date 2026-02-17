@@ -6,7 +6,7 @@ import { Link, useLocation } from "react-router-dom";
 import { ChevronDownIcon, GridIcon, HorizontaLDots, } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { HelpCircle, Info, Layers, MessageSquare, UserPlus } from "lucide-react";
+import { HelpCircle, Info, Layers, LayoutGrid, MessageSquare, UserPlus } from "lucide-react";
 
 /* ---------------- TYPES ---------------- */
 
@@ -26,7 +26,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    icon: <GridIcon />,
+    icon: <LayoutGrid />,
     name: "Dashboard",
     path: "/",
   },

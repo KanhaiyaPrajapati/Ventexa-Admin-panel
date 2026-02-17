@@ -1,160 +1,163 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Button from "../../../ui/button/Button";
+import { CheckCircle, XCircle } from "lucide-react";
 import { ServiceFeature } from "../../../../store/types/types";
-import { Step } from "../../ProcessSteps/ProcessStepsForm";
-
-interface ServiceFeatureFormProps {
-  mode: "create" | "edit";
-  formData: ServiceFeature;
-  onChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
-  onSubmit: () => void;
-  onCancel: () => void;
-  onToggleActive: () => void;
-}
 
 interface Props {
-  initialData: Step | null;
-  onSubmit: (step: Step) => void;
+  mode: "create" | "edit";
+  initialData?: ServiceFeature;
+  onSubmit: (data: ServiceFeature) => void;
   onCancel: () => void;
-  readOnly?: boolean;
 }
 
-const ProcessStepsForm: React.FC<Props> = ({
-  initialData,
-  onSubmit,
-  onCancel,
-  readOnly = false,
-}) => {
-  const [stepNumber, setStepNumber] = useState<number>(
-    initialData?.step_number || 1
-  );
-  const [title, setTitle] = useState<string>(initialData?.title || "");
-  const [description, setDescription] = useState<string>(
-    initialData?.description || ""
-  );
-  const [isActive, setIsActive] = useState<boolean>(
-    initialData?.is_active ?? true
-  );
+const ServiceFeatureForm: React.FC<Props> = ({ mode, initialData, onSubmit, onCancel }) => {
+  const [formData, setFormData] = useState<ServiceFeature>({
+    service_id: "",
+    feature_title: "",
+    feature_description: "",
+    is_active: true,
+  });
 
   useEffect(() => {
     if (initialData) {
-      setStepNumber(initialData.step_number);
-      setTitle(initialData.title);
-      setDescription(initialData.description);
-      setIsActive(initialData.is_active);
-    } else {
-      setStepNumber(1);
-      setTitle("");
-      setDescription("");
-      setIsActive(true);
+      setFormData(initialData);
     }
   }, [initialData]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit();
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  function onChange(event: ChangeEvent<HTMLTextAreaElement>): void {
-    throw new Error("Function not implemented.");
-  }
+  const toggleActive = () => {
+    setFormData((prev) => ({ ...prev, is_active: !prev.is_active }));
+  };
 
-  function onToggleActive(event: MouseEvent<HTMLDivElement, MouseEvent>): void {
-    throw new Error("Function not implemented.");
-  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
 
   return (
-    <div className="relative rounded-sm p-2 bg-white dark:bg-gray-900">
-      <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="p-5 bg-white dark:bg-[#1F2937] w-full">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-[#4FE7C0] mb-3">
+        {mode === "create" ? "Create Service Feature" : "Edit Service Feature"}
+      </h2>
+      
+      <div className="space-y-3">
         <div>
-          <label className="block text-sm font-medium text-gray-800 dark:text-white">
-            Service ID
+          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Service ID <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             name="service_id"
-            value={FormData.service_id}
-            onChange={onChange}
+            value={formData.service_id}
+            onChange={handleChange}
+            placeholder="Enter service ID"
+            className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1F2937] text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
             required
-            className="mt-1 block w-full rounded-md p-2 bg-white dark:bg-transparent
-              text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600
-              focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
+
         <div>
-          <label className="block text-sm font-medium text-gray-800 dark:text-white">
-            Feature Title
+          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Feature Title <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             name="feature_title"
-            value={FormData.feature_title}
-            onChange={onChange}
+            value={formData.feature_title}
+            onChange={handleChange}
+            placeholder="Enter feature title"
+            className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1F2937] text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
             required
-            className="mt-1 block w-full rounded-md p-2 bg-white dark:bg-transparent
-              text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600
-              focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
+
         <div>
-          <label className="block text-sm font-medium text-gray-800 dark:text-white">
-            Description
+          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Description <span className="text-red-500">*</span>
           </label>
           <textarea
             name="feature_description"
-            value={FormData.feature_description}
-            onChange={onChange}
-            rows={3}
+            value={formData.feature_description}
+            onChange={handleChange}
+            placeholder="Enter feature description"
+            rows={2}
+            className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1F2937] text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500 resize-none"
             required
-            className="mt-1 block w-full rounded-md p-2 bg-white dark:bg-transparent
-              text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600
-              focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-gray-800 dark:text-white">
-            Status
-          </label>
-          <div
-            onClick={onToggleActive}
-            className={`w-12 h-6 flex items-center rounded-full p-0.5 cursor-pointer transition-colors
-      ${FormData.is_active ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"}`}
-          >
-            <div
-              className={`w-4 h-4 rounded-full bg-white shadow-md transform transition-transform
-        ${FormData.is_active ? "translate-x-6" : "translate-x-0"}`}
-            />
-          </div>
-          <span
-            className={`text-sm font-medium ${
-              FormData.is_active
-                ? "text-green-600 dark:text-green-400"
-                : "text-gray-500 dark:text-gray-300"
-            }`}
-          >
-            {FormData.is_active ? "Active" : "Inactive"}
-          </span>
-        </div>
-        <div className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex gap-5">
-            <Button type="submit">
-              {mode === "create" ? "Create" : "Update"}
-            </Button>
 
-            <button
-              type="button"
-              onClick={onCancel}
-              className="text-sm text-gray-600 dark:text-gray-300 hover:text-red-500"
+        <div className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-[#374151]">
+          <div className="flex items-center gap-3">
+            <div
+              className={`p-1.5 rounded-full ${
+                formData.is_active 
+                  ? "bg-green-100 dark:bg-green-900/30" 
+                  : "bg-gray-100 dark:bg-gray-700"
+              }`}
             >
-              Cancel
-            </button>
+              {formData.is_active ? (
+                <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+              ) : (
+                <XCircle className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+              )}
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Status
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {formData.is_active
+                  ? "Feature is active and visible"
+                  : "Feature is inactive and hidden"}
+              </p>
+            </div>
           </div>
+          <button
+            type="button"
+            onClick={toggleActive}
+            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 ${
+              formData.is_active 
+                ? "bg-green-500" 
+                : "bg-gray-300 dark:bg-gray-600"
+            }`}
+            aria-label={
+              formData.is_active ? "Deactivate feature" : "Activate feature"
+            }
+          >
+            <span
+              className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform duration-200 ${
+                formData.is_active ? "translate-x-5" : "translate-x-1"
+              }`}
+            />
+          </button>
         </div>
-      </form>
-    </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row justify-end gap-2 pt-3 mt-3 border-t border-gray-200 dark:border-gray-700">
+        <Button
+          type="button"
+          variant="outline"
+          color="primary"
+          onClick={onCancel}
+          className="w-full sm:w-auto px-3 py-1.5 text-sm dark:border-gray-600 dark:text-gray-300 dark:hover:bg-[#374151] dark:bg-transparent"
+        >
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          variant="primary"
+          color="primary"
+          className="w-full sm:w-auto px-3 py-1.5 text-sm"
+        >
+          {mode === "create" ? "Create Feature" : "Update Feature"}
+        </Button>
+      </div>
+    </form>
   );
 };
 
-export default ProcessStepsForm;
+export default ServiceFeatureForm;
