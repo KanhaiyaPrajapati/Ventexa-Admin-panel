@@ -35,9 +35,14 @@ const AboutCompanyTable: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [currentCompany, setCurrentCompany] = useState<AboutCompany | null>(null);
+  const [currentCompany, setCurrentCompany] = useState<AboutCompany | null>(
+    null,
+  );
   const [mode, setMode] = useState<"create" | "edit" | "view">("create");
-  const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [alert, setAlert] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
   const [searchTerm, setSearchTerm] = useState("");
@@ -59,12 +64,18 @@ const AboutCompanyTable: React.FC = () => {
     fetchCompanies();
   }, []);
 
-  const showAlert = (alertData: { type: "success" | "error"; message: string }) => {
+  const showAlert = (alertData: {
+    type: "success" | "error";
+    message: string;
+  }) => {
     setAlert(alertData);
     setTimeout(() => setAlert(null), 3500);
   };
 
-  const openModal = (type: "create" | "edit" | "view", company?: AboutCompany) => {
+  const openModal = (
+    type: "create" | "edit" | "view",
+    company?: AboutCompany,
+  ) => {
     setMode(type);
     setCurrentCompany(company || null);
     setIsModalOpen(true);
@@ -89,7 +100,9 @@ const AboutCompanyTable: React.FC = () => {
       } else if (mode === "edit" && targetId) {
         const updatedCompany = await updateCompany(targetId, data);
         setCompanies((prev) =>
-          prev.map((c) => ((c.id === targetId || c._id === targetId) ? updatedCompany : c))
+          prev.map((c) =>
+            c.id === targetId || c._id === targetId ? updatedCompany : c,
+          ),
         );
         showAlert({ type: "success", message: "Company updated successfully" });
       }
@@ -110,7 +123,9 @@ const AboutCompanyTable: React.FC = () => {
 
     try {
       await deleteCompany(targetId);
-      setCompanies((prev) => prev.filter((c) => c.id !== targetId && c._id !== targetId));
+      setCompanies((prev) =>
+        prev.filter((c) => c.id !== targetId && c._id !== targetId),
+      );
       showAlert({ type: "success", message: "Company deleted successfully" });
     } catch {
       showAlert({ type: "error", message: "Delete failed" });
@@ -129,13 +144,16 @@ const AboutCompanyTable: React.FC = () => {
       (c.headquarters || "")
     )
       .toLowerCase()
-      .includes(searchTerm.toLowerCase())
+      .includes(searchTerm.toLowerCase()),
   );
 
-  const totalPages = Math.max(1, Math.ceil(filteredCompanies.length / itemsPerPage));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredCompanies.length / itemsPerPage),
+  );
   const paginatedCompanies = filteredCompanies.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   if (loading) {
@@ -152,21 +170,23 @@ const AboutCompanyTable: React.FC = () => {
         <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-5 py-4 gap-3">
           <button
             onClick={() => openModal("create")}
-            className="inline-flex items-center justify-center rounded-lg bg-white dark:bg-gray-800 p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 w-full sm:w-auto border border-gray-200 dark:border-gray-700 transition-colors"
+            className="inline-flex items-center justify-center p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 w-full sm:w-auto transition-colors"
           >
             <Plus size={20} className="mr-2 sm:mr-0" />
-            <span className="sm:sr-only">Add New</span>
           </button>
           <div className="w-full sm:w-auto">
-            <SearchBar value={searchTerm} onChange={(value) => {
-              setSearchTerm(value);
-              setCurrentPage(1);
-            }} />
+            <SearchBar
+              value={searchTerm}
+              onChange={(value) => {
+                setSearchTerm(value);
+                setCurrentPage(1);
+              }}
+            />
           </div>
         </div>
 
         <div className="w-full overflow-x-auto">
-          <div className="min-w-0">
+          <div className="min-w-[800px]"> 
             <Table className="w-full table-fixed">
               <TableHeader className="border-b border-gray-100 dark:border-gray-800">
                 <TableRow>
@@ -183,7 +203,10 @@ const AboutCompanyTable: React.FC = () => {
               <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
                 {paginatedCompanies.length > 0 ? (
                   paginatedCompanies.map((c) => (
-                    <TableRow key={c.id || c._id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <TableRow
+                      key={c.id || c._id}
+                      className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                    >
                       <TableCell className="px-3 py-4 text-start">
                         <span className="line-clamp-2 text-sm font-medium text-gray-800 dark:text-gray-200">
                           {truncateText(c.company_overview, 15)}
@@ -204,8 +227,8 @@ const AboutCompanyTable: React.FC = () => {
                           {truncateText(c.core_values, 15)}
                         </span>
                       </TableCell>
-                      <TableCell className="whitespace-nowrap px-3 py-3 text-start">
-                        <span className="text-sm text-gray-700 dark:text-gray-300">{c.founded_year || "N/A"}</span>
+                      <TableCell className="whitespace-nowrap px-3 py-3 text-start text-sm text-gray-700 dark:text-gray-300">
+                        {c.founded_year || "N/A"}
                       </TableCell>
                       <TableCell className="px-2 py-3 text-start">
                         <span className="line-clamp-1 text-sm text-gray-700 dark:text-gray-300">
@@ -214,9 +237,24 @@ const AboutCompanyTable: React.FC = () => {
                       </TableCell>
                       <TableCell className="px-2 py-3">
                         <div className="flex items-center justify-start gap-1">
-                          <button onClick={() => openModal("view", c)} className="rounded-full p-1.5 text-blue-500 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-500/10"><Eye size={16} /></button>
-                          <button onClick={() => openModal("edit", c)} className="rounded-full p-1.5 text-amber-500 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-500/10"><Edit size={16} /></button>
-                          <button onClick={() => openDeleteModal(c)} className="rounded-full p-1.5 text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"><Trash2 size={16} /></button>
+                          <button
+                            onClick={() => openModal("view", c)}
+                            className="rounded-full p-1.5 text-blue-500 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-500/10"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          <button
+                            onClick={() => openModal("edit", c)}
+                            className="rounded-full p-1.5 text-amber-500 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-500/10"
+                          >
+                            <Edit size={16} />
+                          </button>
+                          <button
+                            onClick={() => openDeleteModal(c)}
+                            className="rounded-full p-1.5 text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -235,25 +273,45 @@ const AboutCompanyTable: React.FC = () => {
 
         {totalPages > 1 && (
           <div className="border-t border-gray-100 px-3 py-3 dark:border-gray-800">
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
           </div>
         )}
       </div>
 
       {isModalOpen && mode === "view" && (
-        <Modal isOpen={isModalOpen} onClose={closeModal} className="max-w-lg w-[90vw] mx-auto" showCloseButton={false}>
+        <Modal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          className="max-w-lg w-[90vw] mx-auto"
+          showCloseButton={false}
+        >
           <div className="overflow-hidden rounded-3xl bg-white dark:bg-[#1F2937]">
-            {currentCompany && <AboutCompanyProfileView data={currentCompany} onClose={closeModal} />}
+            {currentCompany && (
+              <AboutCompanyProfileView
+                data={currentCompany}
+                onClose={closeModal}
+              />
+            )}
           </div>
         </Modal>
       )}
-
       {isModalOpen && (mode === "create" || mode === "edit") && (
-        <Modal isOpen={isModalOpen} onClose={closeModal} className="max-w-2xl w-[90vw] mx-auto" showCloseButton={true}>
-          <div className="overflow-visible rounded-3xl bg-white dark:bg-[#1F2937]">
+        <Modal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          className="w-[90vw] md:w-[50vw] max-w-2xl max-h-[75vh] overflow-hidden"
+          showCloseButton={true}
+        >
+          <div className="h-full flex flex-col rounded-xl bg-white dark:bg-[#1F2937]">
             <AboutCompanyForm
               mode={mode}
-              initialData={mode === "edit" ? (currentCompany || undefined) : undefined}
+              initialData={
+                mode === "edit" ? currentCompany || undefined : undefined
+              }
               onSubmit={handleSubmit}
               onClose={closeModal}
             />
@@ -262,15 +320,39 @@ const AboutCompanyTable: React.FC = () => {
       )}
 
       {isDeleteModalOpen && currentCompany && (
-        <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} className="max-w-md w-[95vw] mx-auto" showCloseButton={true}>
+        <Modal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          className="max-w-md w-[95vw] mx-auto"
+          showCloseButton={true}
+        >
           <div className="rounded-3xl bg-white p-6 dark:bg-[#1F2937]">
-            <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-[#4FE7C0]">Delete Company</h3>
+            <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-[#4FE7C0]">
+              Delete Company
+            </h3>
             <p className="mb-6 text-sm text-gray-600 dark:text-gray-300">
-              Are you sure you want to delete <span className="font-medium text-gray-900 dark:text-white">{currentCompany.headquarters || "this company"}</span>?
+              Are you sure you want to delete{" "}
+              <span className="font-medium text-gray-900 dark:text-white">
+                {currentCompany.headquarters || "this company"}
+              </span>
+              ?
             </p>
             <div className="flex flex-col gap-3 sm:flex-row justify-end">
-              <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)} className="w-full sm:w-auto dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:bg-transparent">Cancel</Button>
-              <Button variant="primary" color="destructive" onClick={confirmDelete} className="w-full sm:w-auto">Delete</Button>
+              <Button
+                variant="outline"
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="w-full sm:w-auto dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:bg-transparent"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                color="destructive"
+                onClick={confirmDelete}
+                className="w-full sm:w-auto"
+              >
+                Delete
+              </Button>
             </div>
           </div>
         </Modal>
@@ -278,7 +360,11 @@ const AboutCompanyTable: React.FC = () => {
 
       {alert && (
         <div className="fixed bottom-5 right-2 z-50 w-[calc(100vw-1rem)] max-w-sm sm:w-72">
-          <Alert variant={alert.type} title={alert.type === "success" ? "Success" : "Error"} message={alert.message} />
+          <Alert
+            variant={alert.type}
+            title={alert.type === "success" ? "Success" : "Error"}
+            message={alert.message}
+          />
         </div>
       )}
     </>

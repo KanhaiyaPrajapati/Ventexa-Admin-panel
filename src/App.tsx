@@ -73,7 +73,6 @@ export default function App() {
         </Routes>
       </Router>
 
-      <Toaster position="top-right" />
     </>
   );
 }

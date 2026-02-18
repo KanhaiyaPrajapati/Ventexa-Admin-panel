@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Button from "../../../ui/button/Button";
+import Input from "../../../form/input/InputField";
 
 interface AboutCompany {
   id?: string;
@@ -34,6 +35,8 @@ const AboutCompanyForm: React.FC<AboutCompanyFormProps> = ({
     headquarters: "",
   });
 
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -43,159 +46,166 @@ const AboutCompanyForm: React.FC<AboutCompanyFormProps> = ({
     }
   }, [initialData]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    
+  const handleChange = (name: string, value: any) => {
+    const actualValue =
+      typeof value === "string"
+        ? value
+        : value?.target?.value ?? "";
+
     if (name === "founded_year") {
-      if (value === "" || /^\d+$/.test(value)) {
+      if (actualValue === "" || /^\d+$/.test(actualValue)) {
         setFormData((prev) => ({
           ...prev,
-          [name]: value === "" ? "" : value,
+          [name]: actualValue,
         }));
       }
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({
+        ...prev,
+        [name]: actualValue,
+      }));
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const submissionData = {
+
+    if (
+      !formData.company_overview ||
+      !formData.mission ||
+      !formData.vision ||
+      !formData.core_values ||
+      !formData.founded_year ||
+      !formData.headquarters
+    ) {
+      setError("Please fill all required fields.");
+      return;
+    }
+
+    const submissionData: AboutCompany = {
       ...formData,
-      founded_year: formData.founded_year ? parseInt(formData.founded_year.toString(), 10) : ""
+      founded_year: Number(formData.founded_year),
     };
-    onSubmit(submissionData as AboutCompany);
+
+    setError(null);
+    onSubmit(submissionData);
   };
 
-  const inputClasses = "w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-[#111827] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500 transition-all";
+  const labelClasses =
+    "block text-[11px] font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1";
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 bg-white dark:bg-[#1F2937] border border-gray-200 dark:border-gray-800 rounded-3xl shadow-sm">
-      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-5">
-        {mode === "create" ? "Create Company Profile" : "Edit Company Profile"}
-      </h2>
-      
-      <div className="space-y-4">
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1.5">
-            Company Overview <span className="text-red-500">*</span>
-          </label>
-          <textarea
-            name="company_overview"
-            value={formData.company_overview}
-            onChange={handleChange}
-            placeholder="Describe what your company does..."
-            rows={3}
-            className={`${inputClasses} resize-none`}
-            required
-          />
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-black/40 p-4 z-50"
+      onClick={() => onClose?.()}
+    >
+      <form
+        onSubmit={handleSubmit}
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-2xl bg-white dark:bg-[#1F2937] border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg flex flex-col max-h-[85vh]"
+      >
+        <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800">
+          <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+            {mode === "create"
+              ? "Create Company Profile"
+              : "Edit Company Profile"}
+          </h2>
         </div>
+        <div className="p-4 overflow-y-auto flex-1">
+          {error && (
+            <p className="text-red-500 text-xs mb-3">{error}</p>
+          )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1.5">
-              Mission <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              name="mission"
-              value={formData.mission}
-              onChange={handleChange}
-              placeholder="Our purpose is..."
-              rows={2}
-              className={`${inputClasses} resize-none`}
-              required
-            />
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-3">
+              <div>
+                <label className={labelClasses}>Company Overview *</label>
+                <Input
+                  name="company_overview"
+                  value={formData.company_overview}
+                  onChange={(v: any) =>
+                    handleChange("company_overview", v)
+                  }
+                />
+              </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1.5">
-              Vision <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              name="vision"
-              value={formData.vision}
-              onChange={handleChange}
-              placeholder="We aim to become..."
-              rows={2}
-              className={`${inputClasses} resize-none`}
-              required
-            />
-          </div>
-        </div>
+              <div>
+                <label className={labelClasses}>Mission *</label>
+                <Input
+                  name="mission"
+                  value={formData.mission}
+                  onChange={(v: any) =>
+                    handleChange("mission", v)
+                  }
+                />
+              </div>
 
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1.5">
-            Core Values <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            name="core_values"
-            value={formData.core_values}
-            onChange={handleChange}
-            placeholder="Integrity, Innovation, Inclusion..."
-            className={inputClasses}
-            required
-          />
-        </div>
+              <div>
+                <label className={labelClasses}>Vision *</label>
+                <Input
+                  name="vision"
+                  value={formData.vision}
+                  onChange={(v: any) =>
+                    handleChange("vision", v)
+                  }
+                />
+              </div>
+            </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1.5">
-              Founded Year <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              name="founded_year"
-              value={formData.founded_year}
-              onChange={handleChange}
-              placeholder="e.g. 2005"
-              className={inputClasses}
-              required
-            />
-          </div>
+            <div className="space-y-3">
+              <div>
+                <label className={labelClasses}>Core Values *</label>
+                <Input
+                  name="core_values"
+                  value={formData.core_values}
+                  onChange={(v: any) =>
+                    handleChange("core_values", v)
+                  }
+                />
+              </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1.5">
-              Headquarters <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="headquarters"
-              value={formData.headquarters}
-              onChange={handleChange}
-              placeholder="e.g. New York, USA"
-              className={inputClasses}
-              required
-            />
+              <div>
+                <label className={labelClasses}>Founded Year *</label>
+                <Input
+                  name="founded_year"
+                  value={formData.founded_year}
+                  onChange={(v: any) =>
+                    handleChange("founded_year", v)
+                  }
+                  inputMode="numeric"
+                  maxLength={4}
+                />
+              </div>
+
+              <div>
+                <label className={labelClasses}>Headquarters *</label>
+                <Input
+                  name="headquarters"
+                  value={formData.headquarters}
+                  onChange={(v: any) =>
+                    handleChange("headquarters", v)
+                  }
+                />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-gray-800">
-        {onClose && (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            className="w-full sm:w-auto dark:border-gray-700 dark:text-gray-300"
-          >
-            Cancel
+        <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-800 flex justify-end gap-2 bg-gray-50 dark:bg-gray-800">
+          {onClose && (
+            <Button type="button" variant="outline">
+              Cancel
+            </Button>
+          )}
+
+          <Button type="submit" variant="primary">
+            {mode === "create" ? "Create" : "Update"}
           </Button>
-        )}
-        <Button
-          type="submit"
-          variant="primary"
-          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
-        >
-          {mode === "create" ? "Create Profile" : "Update Profile"}
-        </Button>
-      </div>
-    </form>
+        </div>
+      </form>
+    </div>
   );
 };
 
 export default AboutCompanyForm;
+ 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import ComponentCard from "../../common/ComponentCard";
 import Input from "../input/InputField";
 import Label from "../Label";
+
 export default function InputStates() {
   const [email, setEmail] = useState("");
   const [emailTwo, setEmailTwo] = useState("");
@@ -14,16 +15,18 @@ export default function InputStates() {
     return isValidEmail;
   };
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+  // FIX: Change 'e: React.ChangeEvent<HTMLInputElement>' to 'value: string'
+  // and remove 'e.target.value' because the component already provides the value.
+  const handleEmailChange = (value: string) => {
     setEmail(value);
     validateEmail(value);
   };
-  const handleEmailTwoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+
+  const handleEmailTwoChange = (value: string) => {
     setEmailTwo(value);
     validateEmail(value);
   };
+
   return (
     <ComponentCard
       title="Input States"
@@ -36,7 +39,7 @@ export default function InputStates() {
             type="email"
             value={email}
             error={error}
-            onChange={handleEmailChange}
+            onChange={handleEmailChange} // Now types match perfectly
             placeholder="Enter your email"
             hint={error ? "This is an invalid email address." : ""}
           />
@@ -47,9 +50,9 @@ export default function InputStates() {
             type="email"
             value={emailTwo}
             success={!error}
-            onChange={handleEmailTwoChange}
+            onChange={handleEmailTwoChange} // Now types match perfectly
             placeholder="Enter your email"
-            hint={!error ? "This is an success message." : ""}
+            hint={!error ? "This is a success message." : ""}
           />
         </div>
 
