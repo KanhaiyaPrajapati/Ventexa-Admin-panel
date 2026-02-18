@@ -51,13 +51,13 @@ export const Modal: React.FC<ModalProps> = ({
 
   const contentClasses = isFullscreen
     ? "w-full h-full"
-    : "relative w-full rounded-3xl bg-white  dark:bg-gray-900";
+    : "relative w-full bg-white dark:bg-gray-900";
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center overflow-y-auto modal z-99999">
+    <div className="w-full h-full fixed inset-0 flex items-center justify-center overflow-y-auto modal z-99999">
       {!isFullscreen && (
         <div
-          className="fixed inset-0 h-full w-full bg-gray-100"
+          className="fixed inset-0 h-full w-full bg-white dark:bg-gray-900 "
           onClick={onClose}
         ></div>
       )}
@@ -68,10 +68,10 @@ export const Modal: React.FC<ModalProps> = ({
       >
         {showCloseButton && (
           <button
-            onClick={onClose}
-            className="absolute right-5 top-3 z-50 text-gray-400 hover:text-red-500 transition-colors"
-            aria-label="Close"
-          >
+              onClick={onClose}
+              className="absolute right-2 top-4 p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
+              aria-label="Close"
+            >
             <svg
               width="18"
               height="18"

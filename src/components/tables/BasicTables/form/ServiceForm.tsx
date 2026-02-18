@@ -6,7 +6,7 @@ interface ServiceFormProps {
   mode: "create" | "edit";
   formData: ServiceFeature;
   onChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
   onSubmit: () => void;
   onCancel: () => void;
@@ -115,4 +115,3 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
 };
 
 export default ServiceForm;
-
