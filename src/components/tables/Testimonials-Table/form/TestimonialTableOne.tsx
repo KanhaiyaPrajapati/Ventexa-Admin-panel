@@ -316,7 +316,7 @@ const TestimonialTableOne: React.FC = () => {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 min-w-25"
+                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 w-32"
                   >
                     Actions
                   </TableCell>
@@ -327,12 +327,12 @@ const TestimonialTableOne: React.FC = () => {
                   paginatedTestimonials.map((testimonial) => (
                     <TableRow key={testimonial.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                       <TableCell className="px-3 sm:px-4 py-3 text-start">
-                        <span className="font-medium text-gray-800 text-sm sm:text-theme-sm dark:text-gray-200 wrap-break-word">
+                        <span className="font-medium text-gray-800 text-sm sm:text-theme-sm dark:text-gray-200 wrap-break-word line-clamp-2">
                           {testimonial.client_name}
                         </span>
                       </TableCell>
                       <TableCell className="px-3 sm:px-4 py-3 text-start">
-                        <span className="text-gray-700 dark:text-gray-300 text-sm sm:text-theme-sm wrap-break-word">
+                        <span className="text-gray-700 dark:text-gray-300 text-sm sm:text-theme-sm wrap-break-word line-clamp-2">
                           {testimonial.company_name}
                         </span>
                       </TableCell>
@@ -344,7 +344,7 @@ const TestimonialTableOne: React.FC = () => {
                         </span>
                       </TableCell>
                       <TableCell className="px-3 sm:px-4 py-3 text-start">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-2">
+                        <div className="flex items-center gap-1">
                           <div className="flex items-center gap-0.5">
                             {[1, 2, 3, 4, 5].map((star) => (
                               <Star
@@ -357,7 +357,7 @@ const TestimonialTableOne: React.FC = () => {
                               />
                             ))}
                           </div>
-                          <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                          <span className="text-xs font-medium text-gray-600 dark:text-gray-400 ml-1">
                             ({testimonial.rating}/5)
                           </span>
                         </div>
@@ -371,30 +371,30 @@ const TestimonialTableOne: React.FC = () => {
                         </Badge>
                       </TableCell>
                       <TableCell className="px-3 sm:px-4 py-3">
-                        <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
+                        <div className="flex items-center justify-start gap-2">
                           <button
                             onClick={() => openModal("view", testimonial)}
-                            className="p-1 sm:p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors rounded-full hover:bg-blue-50 dark:hover:bg-blue-500/10"
+                            className="p-1.5 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors rounded-full hover:bg-blue-50 dark:hover:bg-blue-500/10"
                             title="View"
                             aria-label={`View ${testimonial.client_name}`}
                           >
-                            <Eye size={14} className="sm:size-4" />
+                            <Eye size={16} />
                           </button>
                           <button
                             onClick={() => openModal("edit", testimonial)}
-                            className="p-1 sm:p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 transition-colors rounded-full hover:bg-amber-50 dark:hover:bg-amber-500/10"
+                            className="p-1.5 text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 transition-colors rounded-full hover:bg-amber-50 dark:hover:bg-amber-500/10"
                             title="Edit"
                             aria-label={`Edit ${testimonial.client_name}`}
                           >
-                            <Edit size={14} className="sm:size-4" />
+                            <Edit size={16} />
                           </button>
                           <button
                             onClick={() => openDeleteModal(testimonial)}
-                            className="p-1 sm:p-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors rounded-full hover:bg-red-50 dark:hover:bg-red-500/10"
+                            className="p-1.5 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors rounded-full hover:bg-red-50 dark:hover:bg-red-500/10"
                             title="Delete"
                             aria-label={`Delete ${testimonial.client_name}`}
                           >
-                            <Trash2 size={14} className="sm:size-4" />
+                            <Trash2 size={16} />
                           </button>
                         </div>
                       </TableCell>
@@ -425,33 +425,33 @@ const TestimonialTableOne: React.FC = () => {
         )}
       </div>
 
-
-{isModalOpen && (
-  <Modal 
-    isOpen 
-    onClose={closeModal} 
-    className="max-w-lg w-[95vw] mx-auto"
-    showCloseButton={true}
-  >
-    <div className="bg-white dark:bg-[#1F2937] rounded-3xl">
-      {mode === "view" && currentTestimonial && (
-        <TestimonialDetails testimonial={currentTestimonial} />
+      {/* Create/Edit/View Modal */}
+      {isModalOpen && (
+        <Modal 
+          isOpen 
+          onClose={closeModal} 
+          className="max-w-lg w-[95vw] mx-auto"
+          showCloseButton={true}
+        >
+          <div className="bg-white dark:bg-[#1F2937] rounded-3xl">
+            {mode === "view" && currentTestimonial && (
+              <TestimonialDetails testimonial={currentTestimonial} />
+            )}
+            {(mode === "create" || mode === "edit") && (
+              <TestimonialForm
+                mode={mode}
+                formData={formData}
+                onChange={handleChange}
+                onToggleActive={toggleActive}
+                onSubmit={handleSubmit}
+                onCancel={closeModal}
+              />
+            )}
+          </div>
+        </Modal>
       )}
-      {(mode === "create" || mode === "edit") && (
-        <TestimonialForm
-          mode={mode}
-          formData={formData}
-          onChange={handleChange}
-          onToggleActive={toggleActive}
-          onSubmit={handleSubmit}
-          onCancel={closeModal}
-        />
-      )}
-    </div>
-  </Modal>
-)}
 
-      {/* Delete Modal - Background matches input fields (#1F2937) */}
+      {/* Delete Modal */}
       {isDeleteModalOpen && (
         <Modal
           isOpen

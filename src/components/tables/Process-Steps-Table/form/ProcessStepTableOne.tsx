@@ -255,31 +255,31 @@ const ProcessStepsTableOne: React.FC = () => {
                 <TableRow>
                   <TableCell
                     isHeader
-                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 min-w-25"
+                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 w-24"
                   >
                     Step Number
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 min-w-30"
+                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 w-1/4"
                   >
                     Title
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 min-w-37.5"
+                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 w-2/5"
                   >
                     Description
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 min-w-25"
+                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 w-20"
                   >
                     Status
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 min-w-30"
+                    className="px-3 sm:px-4 py-3 font-medium text-gray-500 text-start text-xs sm:text-theme-xs dark:text-gray-400 w-32"
                   >
                     Actions
                   </TableCell>
@@ -289,24 +289,22 @@ const ProcessStepsTableOne: React.FC = () => {
                 {paginatedSteps.length > 0 ? (
                   paginatedSteps.map((step) => (
                     <TableRow key={step.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                      <TableCell className="px-3 sm:px-4 py-3 sm:py-4 text-start whitespace-nowrap">
+                      <TableCell className="px-3 sm:px-4 py-3 text-start align-top whitespace-nowrap">
                         <span className="font-medium text-gray-800 text-sm sm:text-theme-sm dark:text-gray-200">
                           {step.step_number}
                         </span>
                       </TableCell>
-                      <TableCell className="px-3 sm:px-4 py-3 text-start text-sm sm:text-theme-sm">
-                        <span className="text-gray-700 dark:text-gray-300 wrap-break-word">
+                      <TableCell className="px-3 sm:px-4 py-3 text-start align-top">
+                        <span className="text-gray-700 dark:text-gray-300 text-sm sm:text-theme-sm wrap-break-word whitespace-normal">
                           {step.title}
                         </span>
                       </TableCell>
-                      <TableCell className="px-3 sm:px-4 py-3 text-start">
-                        <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm wrap-break-word">
-                          {step.description && step.description.length > 50
-                            ? `${step.description.slice(0, 50)}...`
-                            : step.description || "No description"}
+                      <TableCell className="px-3 sm:px-4 py-3 text-start align-top">
+                        <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm wrap-break-word whitespace-normal">
+                          {step.description || "No description"}
                         </span>
                       </TableCell>
-                      <TableCell className="px-3 sm:px-4 py-3 text-start whitespace-nowrap">
+                      <TableCell className="px-3 sm:px-4 py-3 text-start align-top whitespace-nowrap">
                         <Badge
                           size="sm"
                           color={step.is_active ? "success" : "error"}
@@ -314,31 +312,31 @@ const ProcessStepsTableOne: React.FC = () => {
                           {step.is_active ? "Active" : "Inactive"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="px-3 sm:px-4 py-3">
-                        <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
+                      <TableCell className="px-3 sm:px-4 py-3 align-top">
+                        <div className="flex items-center justify-start gap-2">
                           <button
                             onClick={() => openModal("view", step)}
-                            className="p-1 sm:p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors rounded-full hover:bg-blue-50 dark:hover:bg-blue-500/10"
+                            className="p-1.5 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors rounded-full hover:bg-blue-50 dark:hover:bg-blue-500/10"
                             title="View"
                             aria-label={`View ${step.title}`}
                           >
-                            <Eye size={14} className="sm:size-4" />
+                            <Eye size={16} />
                           </button>
                           <button
                             onClick={() => openModal("edit", step)}
-                            className="p-1 sm:p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 transition-colors rounded-full hover:bg-amber-50 dark:hover:bg-amber-500/10"
+                            className="p-1.5 text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 transition-colors rounded-full hover:bg-amber-50 dark:hover:bg-amber-500/10"
                             title="Edit"
                             aria-label={`Edit ${step.title}`}
                           >
-                            <Edit size={14} className="sm:size-4" />
+                            <Edit size={16} />
                           </button>
                           <button
                             onClick={() => openDeleteModal(step)}
-                            className="p-1 sm:p-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors rounded-full hover:bg-red-50 dark:hover:bg-red-500/10"
+                            className="p-1.5 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors rounded-full hover:bg-red-50 dark:hover:bg-red-500/10"
                             title="Delete"
                             aria-label={`Delete ${step.title}`}
                           >
-                            <Trash2 size={14} className="sm:size-4" />
+                            <Trash2 size={16} />
                           </button>
                         </div>
                       </TableCell>
@@ -369,41 +367,41 @@ const ProcessStepsTableOne: React.FC = () => {
         )}
       </div>
 
-{isModalOpen && (
-  <Modal
-    isOpen
-    onClose={closeModal}
-    className="max-w-lg w-[95vw] mx-auto"
-    showCloseButton={true}
-  >
-    <div className="bg-white dark:bg-[#1F2937] rounded-3xl">
-      {mode === "view" && currentStep && (
-        <ProcessStepDetails step={currentStep} />
+      {/* Create/Edit/View Modal */}
+      {isModalOpen && (
+        <Modal
+          isOpen
+          onClose={closeModal}
+          className="max-w-lg w-[95vw] mx-auto"
+          showCloseButton={true}
+        >
+          <div className="bg-white dark:bg-[#1F2937] rounded-3xl">
+            {mode === "view" && currentStep && (
+              <ProcessStepDetails step={currentStep} />
+            )}
+            {(mode === "create" || mode === "edit") && (
+              <ProcessStepForm
+                mode={mode}
+                formData={formData}
+                onChange={handleChange}
+                onToggleActive={toggleActive}
+                onSubmit={handleSubmit}
+                onCancel={closeModal}
+              />
+            )}
+          </div>
+        </Modal>
       )}
-      {(mode === "create" || mode === "edit") && (
-        <div className="overflow-y-auto max-h-[80vh]">
-          <ProcessStepForm
-            mode={mode}
-            formData={formData}
-            onChange={handleChange}
-            onToggleActive={toggleActive}
-            onSubmit={handleSubmit}
-            onCancel={closeModal}
-          />
-        </div>
-      )}
-    </div>
-  </Modal>
-)}
 
-         {isDeleteModalOpen && (
+      {/* Delete Modal */}
+      {isDeleteModalOpen && (
         <Modal
           isOpen
           onClose={() => setIsDeleteModalOpen(false)}
           className="max-w-md w-[95vw] mx-auto"
           showCloseButton={true}
         >
-          <div className="bg-white dark:bg-[#1F2937] rounded-3xl p-6 overflow-y-auto max-h-[80vh]">
+          <div className="bg-white dark:bg-[#1F2937] rounded-3xl p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-[#4FE7C0] mb-2">
               Delete Process Step
             </h3>
