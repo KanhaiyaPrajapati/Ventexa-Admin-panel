@@ -49,7 +49,8 @@ const ProcessStepsTableOne: React.FC = () => {
       setLoading(true);
       const data = await getAllProcessSteps();
       const safeData = Array.isArray(data) ? data : [];
-      setSteps(safeData);
+      const sortedData = [...safeData].sort((a, b) => a.step_number - b.step_number);
+      setSteps(sortedData);
     } catch (error) {
       console.error("Error fetching steps:", error);
       showAlert({ type: "error", message: "Failed to load process steps" });
@@ -117,6 +118,9 @@ const ProcessStepsTableOne: React.FC = () => {
           type: "success",
           message: "Process step created successfully",
         });
+        const newStep = { ...formData, id: Date.now().toString() };
+        const updatedSteps = [newStep, ...steps].sort((a, b) => a.step_number - b.step_number);
+        setSteps(updatedSteps);
       }
       if (mode === "edit" && currentStep?.id) {
         await updateProcessStep(currentStep.id, formData);
@@ -124,6 +128,12 @@ const ProcessStepsTableOne: React.FC = () => {
           type: "success",
           message: "Process step updated successfully",
         });
+        const updatedSteps = steps.map((step) =>
+          step.id === currentStep.id
+            ? { ...formData, id: currentStep.id }
+            : step,
+        ).sort((a, b) => a.step_number - b.step_number);
+        setSteps(updatedSteps);
       }
 
       if (mode === "create") {

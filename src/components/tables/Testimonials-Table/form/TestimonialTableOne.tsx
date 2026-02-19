@@ -19,9 +19,9 @@ import {
   updateTestimonial,
   deleteTestimonial,
   Testimonial,
-} from "../../../../store/api/testimonials-api";
-import TestimonialForm from "./TestimonialForm";
-import TestimonialDetails from "../Details/TestimonialDetails";
+} from "../../../../store/api/testimonials-api.ts";
+import TestimonialForm from "../../../../components/tables/Testimonials-Table/form/TestimonialForm.tsx";
+import TestimonialDetails from "../../../../components/tables/Testimonials-Table/Details/TestimonialDetails.tsx";
 
 type TestimonialFormData = {
   client_name: string;
