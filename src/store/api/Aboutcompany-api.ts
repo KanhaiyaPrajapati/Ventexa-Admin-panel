@@ -9,9 +9,9 @@ const api = axios.create({
   },
 });
 
-export interface AboutCompany {
-  id?: string; // MockAPI uses 'id'
-  _id?: string; // Kept for compatibility if needed
+  export interface AboutCompany {
+  id?: string; 
+  _id?: string; 
   company_overview: string;
   mission: string;
   vision: string;
