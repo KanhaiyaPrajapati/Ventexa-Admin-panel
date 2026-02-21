@@ -5,8 +5,7 @@ interface ModalProps {
   onClose: () => void;
   className?: string;
   children: React.ReactNode;
-  showCloseButton?: boolean;
-  isFullscreen?: boolean; 
+  isFullscreen?: boolean;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -14,7 +13,6 @@ export const Modal: React.FC<ModalProps> = ({
   onClose,
   children,
   className,
-  showCloseButton = true, 
   isFullscreen = false,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
