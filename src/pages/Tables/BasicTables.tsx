@@ -1,7 +1,7 @@
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import ComponentCard from "../../components/common/ComponentCard";
 import PageMeta from "../../components/common/PageMeta";
-import BasicTableOne from "../../components/tables/BasicTables/BasicTableOne";
+import BasicTableTwo from "../../components/tables/BasicTables/BasicTableTwo";
 
 export default function BasicTables() {
   return (
@@ -10,10 +10,10 @@ export default function BasicTables() {
         title="VenTexa Admin Panel"
         description="This is React.js Basic Tables Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
-      <PageBreadcrumb pageTitle="Basic Tables" />
+      <PageBreadcrumb pageTitle="Service Form" />
       <div className="space-y-6">
-        <ComponentCard title="Basic Table 1">
-          <BasicTableOne />
+        <ComponentCard title="Service Form Table">
+          <BasicTableTwo />
         </ComponentCard>
       </div>
     </>

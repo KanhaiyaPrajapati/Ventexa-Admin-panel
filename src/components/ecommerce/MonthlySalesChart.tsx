@@ -1,140 +1,111 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import { Dropdown } from "../ui/dropdown/Dropdown";
-import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import { MoreDotIcon } from "../../icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function MonthlySalesChart() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const checkTheme = () => {
+      setIsDarkMode(document.documentElement.classList.contains("dark"));
+    };
+    checkTheme();
+    
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
+
   const options: ApexOptions = {
-    colors: ["#465fff"],
+    colors: [isDarkMode ? "#4FE7C0" : "#3b82f6"],
     chart: {
-      fontFamily: "Outfit, sans-serif",
+      fontFamily: "'JetBrains Mono', 'Inter', monospace",
       type: "bar",
       height: 180,
-      toolbar: {
-        show: false,
-      },
+      toolbar: { show: false },
+      sparkline: { enabled: false },
     },
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: "39%",
-        borderRadius: 5,
+        columnWidth: "40%",
+        borderRadius: 4,
         borderRadiusApplication: "end",
       },
     },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 4,
-      colors: ["transparent"],
+    dataLabels: { enabled: false },
+    grid: {
+      borderColor: isDarkMode ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.05)",
+      strokeDashArray: 3,
     },
     xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
-      axisBorder: {
-        show: false,
+      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+      labels: {
+        style: { colors: "#64748b", fontSize: "10px", fontWeight: 500 },
       },
-      axisTicks: {
-        show: false,
-      },
-    },
-    legend: {
-      show: true,
-      position: "top",
-      horizontalAlign: "left",
-      fontFamily: "Outfit",
     },
     yaxis: {
-      title: {
-        text: undefined,
-      },
-    },
-    grid: {
-      yaxis: {
-        lines: {
-          show: true,
-        },
+      labels: {
+        style: { colors: "#64748b", fontSize: "10px" },
+        formatter: (val) => `${val}ms`,
       },
     },
     fill: {
-      opacity: 1,
+      type: "gradient",
+      gradient: {
+        shade: isDarkMode ? "dark" : "light",
+        type: "vertical",
+        shadeIntensity: 0.5,
+        gradientToColors: [isDarkMode ? "#2DD4BF" : "#60a5fa"], 
+        opacityFrom: 0.9,
+        opacityTo: 0.3,
+      },
     },
-
     tooltip: {
-      x: {
-        show: false,
-      },
-      y: {
-        formatter: (val: number) => `${val}`,
-      },
+      theme: isDarkMode ? "dark" : "light",
+      x: { show: false },
     },
   };
-  const series = [
-    {
-      name: "Sales",
-      data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
-    },
-  ];
-  const [isOpen, setIsOpen] = useState(false);
 
-  function toggleDropdown() {
-    setIsOpen(!isOpen);
-  }
+  const series = [{ name: "System Load", data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112] }];
 
-  function closeDropdown() {
-    setIsOpen(false);
-  }
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-          Monthly Sales
-        </h3>
-        <div className="relative inline-block">
-          <button className="dropdown-toggle" onClick={toggleDropdown}>
-            <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 size-6" />
-          </button>
-          <Dropdown
-            isOpen={isOpen}
-            onClose={closeDropdown}
-            className="w-40 p-2"
-          >
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-            >
-              View More
-            </DropdownItem>
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-            >
-              Delete
-            </DropdownItem>
-          </Dropdown>
+    <div className="relative overflow-hidden rounded-2xl mb-10 border border-gray-200 bg-white p-1 dark:border-white/10 dark:bg-[#0f172a] transition-all hover:shadow-lg dark:hover:shadow-[#4FE7C0]/5">
+      <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-2 w-2 items-center justify-center">
+            <span className="absolute inline-flex h-2 w-2 animate-ping rounded-full bg-blue-400 dark:bg-[#4FE7C0] opacity-75"></span>
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500 dark:bg-[#4FE7C0]"></span>
+          </div>
+          <div>
+            <h3 className="text-[10px] font-black uppercase tracking-[0.15em] text-gray-500 dark:text-gray-400">
+              Network throughput
+            </h3>
+            <div className="flex items-baseline gap-2">
+              <span className="text-xl font-mono font-semibold text-gray-900 dark:text-white">
+                248.54 <span className="text-[10px] text-gray-400">MB/s</span>
+              </span>
+              <span className="text-[10px] font-bold text-emerald-600 dark:text-[#4FE7C0]">+12.5%</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="max-w-full overflow-x-auto custom-scrollbar">
-        <div className="-ml-5 min-w-[650px] xl:min-w-full pl-2">
-          <Chart options={options} series={series} type="bar" height={180} />
+      <div className="max-w-full overflow-x-auto overflow-y-hidden px-2 pb-2">
+        <div className="min-w-[500px] xl:min-w-full">
+          <Chart options={options} series={series} type="bar" height={160} />
         </div>
+      </div>
+
+      <div className="flex items-center justify-between border-t border-gray-100 bg-gray-50/30 px-4 py-2.5 dark:border-white/5 dark:bg-white/[0.02]">
+        <div className="flex gap-4">
+           <span className="text-[9px] font-mono font-bold text-gray-400 uppercase tracking-tighter">Node-ID: <span className="text-gray-600 dark:text-gray-300">0x4f22</span></span>
+           <span className="text-[9px] font-mono font-bold text-gray-400 uppercase tracking-tighter">Uptime: <span className="text-slate-600 dark:text-[#4FE7C0]">99.9%</span></span>
+        </div>
+        <span className="text-[9px] font-mono text-gray-400 uppercase">Live Metrics</span>
       </div>
     </div>
   );

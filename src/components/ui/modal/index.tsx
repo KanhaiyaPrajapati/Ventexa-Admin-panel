@@ -5,8 +5,7 @@ interface ModalProps {
   onClose: () => void;
   className?: string;
   children: React.ReactNode;
-  showCloseButton?: boolean; // New prop to control close button visibility
-  isFullscreen?: boolean; // Default to false for backwards compatibility
+  isFullscreen?: boolean;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -14,7 +13,6 @@ export const Modal: React.FC<ModalProps> = ({
   onClose,
   children,
   className,
-  showCloseButton = true, // Default to true for backwards compatibility
   isFullscreen = false,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -28,48 +26,39 @@ export const Modal: React.FC<ModalProps> = ({
 
     if (isOpen) {
       document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
       document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
     };
   }, [isOpen, onClose]);
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const contentClasses = isFullscreen
     ? "w-full h-full"
-    : "relative w-full rounded-3xl bg-white  dark:bg-gray-900";
+    : "relative w-full rounded-3xl bg-white dark:bg-[#1F2937] shadow-xl";
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center overflow-y-auto modal z-99999">
-      {!isFullscreen && (
-        <div
-          className="fixed inset-0 h-full w-full bg-gray-100"
-          onClick={onClose}
-        ></div>
-      )}
+    <div className="fixed inset-0 flex items-start sm:items-center justify-center z-99999 p-2 sm:p-4 overflow-y-auto">
+
+      <div
+        className="fixed inset-0 bg-gray-50 backdrop-blur-sm dark:bg-black dark:backdrop-blur-0"
+        onClick={onClose}
+      />
+      
+
       <div
         ref={modalRef}
-        className={`${contentClasses}  ${className}`}
+        className={`${contentClasses} ${className} relative z-10 my-4 sm:my-0`}
         onClick={(e) => e.stopPropagation()}
       >
         {showCloseButton && (
           <button
             onClick={onClose}
-            className="absolute right-2 top-2 z-50 text-gray-400 hover:text-red-500 transition-colors"
+            className="absolute right-3 sm:right-4 top-3 sm:top-4 z-20 text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 transition-colors bg-white dark:bg-[#1F2937] rounded-full p-1"
             aria-label="Close"
           >
             <svg
@@ -89,7 +78,9 @@ export const Modal: React.FC<ModalProps> = ({
           </button>
         )}
 
-        <div>{children}</div>
+        <div>
+          {children}
+        </div>
       </div>
     </div>
   );

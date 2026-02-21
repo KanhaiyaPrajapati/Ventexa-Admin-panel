@@ -15,4 +15,11 @@ export default defineConfig({
       },
     }),
   ],
+    server: {
+    watch: {
+      ignored: ['**/categories-api.ts'],
+    },
+  },
 });
+
+

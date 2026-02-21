@@ -12,7 +12,7 @@ export const SearchBar = ({
   value,
   onChange,
   placeholder = "Search by ID or Name",
-  delay = 2000,
+  delay = 1000,
 }: SearchBarProps) => {
   const [localValue, setLocalValue] = useState(value);
 

@@ -9,11 +9,17 @@ import Alerts from "./pages/UiElements/Alerts";
 import Badges from "./pages/UiElements/Badges";
 import Avatars from "./pages/UiElements/Avatars";
 import Buttons from "./pages/UiElements/Buttons";
-import ServiceFeatures from "./pages/Tables/Service-Features/ServiceFeatures"; 
+import ServiceFeatures from "./pages/Tables/Service-Features/ServiceFeatures";
 import LineChart from "./pages/Charts/LineChart";
 import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
 import BasicTables from "./pages/Tables/BasicTables";
+import ContactLeads from "../src/pages/Tables/ContactLeads/ContactLeads";
+import ProcessSteps from "./pages/Tables/ProcessSteps/ProcessSteps";
+import Testimonials from "./pages/Tables/testimonials/Testimonials";
+import TeamSection from "./pages/Tables/Team-Section/TeamSection";
+import AboutCompany from "./pages/Tables/about-company/AboutCompany";
+import FaqTable from "./pages/Tables/FaqTable/FaqTable";
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
@@ -25,6 +31,7 @@ export default function App() {
     <>
       <Router>
         <ScrollToTop />
+
         <Routes>
           <Route element={<AppLayout />}>
             <Route index path="/" element={<Home />} />
@@ -33,24 +40,39 @@ export default function App() {
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
             <Route path="/form-elements" element={<FormElements />} />
+
+            {/* Tables */}
+            <Route path="/process-steps" element={<ProcessSteps />} />
+            <Route path="/testimonials" element={<Testimonials />} />
             <Route path="/basic-tables" element={<BasicTables />} />
+            <Route path="/contact-leads" element={<ContactLeads />} />
+            <Route path="/service-features" element={<ServiceFeatures />} />
+            <Route path="/team-section" element={<TeamSection />} />
+            <Route path="/about-company" element={<AboutCompany />} />
+
+            <Route path="/faqs" element={<FaqTable />} />
+            <Route path="/process-steps" element={<ProcessSteps />} /> 
+            {/* Ui Elements */}
+            {/* <Route path="/basic-tables" element={<BasicTables />} /> */}
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/avatars" element={<Avatars />} />
             <Route path="/badge" element={<Badges />} />
             <Route path="/buttons" element={<Buttons />} />
             <Route path="/images" element={<Images />} />
             <Route path="/videos" element={<Videos />} />
-            <Route path="/service-features" element={<ServiceFeatures />} />
 
+            {/* Charts */}
             <Route path="/line-chart" element={<LineChart />} />
             <Route path="/bar-chart" element={<BarChart />} />
           </Route>
 
+          {/* Auth Pages */}
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
+
     </>
   );
 }
