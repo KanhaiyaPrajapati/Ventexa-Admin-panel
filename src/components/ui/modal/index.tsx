@@ -6,6 +6,7 @@ interface ModalProps {
   className?: string;
   children: React.ReactNode;
   isFullscreen?: boolean;
+  showCloseButton?: boolean;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -14,6 +15,7 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   className,
   isFullscreen = false,
+  showCloseButton = true,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
