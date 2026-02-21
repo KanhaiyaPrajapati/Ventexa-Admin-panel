@@ -4,6 +4,7 @@ const BASE_URL = "https://68df8fea898434f413581df6.mockapi.io/service_features";
 
 export interface ServiceFeature {
   id?: string;
+  _id?: string | number; // Add this line
   service_id: string;
   feature_title: string;
   feature_description: string;
