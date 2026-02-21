@@ -1,6 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
-import { Toaster } from "react-hot-toast"; 
-
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
@@ -55,6 +53,7 @@ export default function App() {
             <Route path="/faqs" element={<FaqTable />} />
             <Route path="/process-steps" element={<ProcessSteps />} /> 
             {/* Ui Elements */}
+            {/* <Route path="/basic-tables" element={<BasicTables />} /> */}
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/avatars" element={<Avatars />} />
             <Route path="/badge" element={<Badges />} />
@@ -74,7 +73,6 @@ export default function App() {
         </Routes>
       </Router>
 
-      <Toaster position="top-right" />
     </>
   );
 }

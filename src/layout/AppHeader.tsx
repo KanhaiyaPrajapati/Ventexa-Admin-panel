@@ -135,7 +135,7 @@ const AppHeader: React.FC = () => {
           </Link>
         </div>
 
-        <div className="hidden lg:flex flex-1 max-w-107.5">
+        <div className="hidden lg:flex flex-1 max-w-[430px]">
           <form
             onSubmit={(e) => {
               e.preventDefault();

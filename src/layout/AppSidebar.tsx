@@ -5,9 +5,15 @@ import { Link, useLocation } from "react-router-dom";
 import { ChevronDownIcon, GridIcon, HorizontaLDots } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { HelpCircle, Info, Layers, MessageSquare, UserPlus } from "lucide-react";
+import {
+  HelpCircle,
+  Info,
+  Layers,
+  LayoutGrid,
+  MessageSquare,
+  UserPlus,
+} from "lucide-react";
 
-/* ---------------- TYPES ---------------- */
 
 type NavItem = {
   name: string;
@@ -21,70 +27,27 @@ type NavItem = {
   }[];
 };
 
-/* ---------------- NAV DATA ---------------- */
 
 const navItems: NavItem[] = [
-  {
-    icon: <GridIcon />,
-    name: "Dashboard",
-    path: "/",
-  },
-  {
-    icon: <Layers className="w-5 h-5" />,
-    name: "Basic Tables",
-    path: "/basic-tables",
-  },
-  {
-    icon: <Layers className="w-5 h-5" />,
-    name: "Service Features",
-    path: "/service-features",
-  },
-  {
-    icon: <UserPlus className="w-5 h-5" />,
-    name: "Contact Leads",
-    path: "/contact-leads",
-  },
-    {
-    icon: <HelpCircle className="w-5 h-5" />,
-    name: "FAQs",
-    path: "/faqs",
-  },
-  {
-    icon: <Layers className="w-5 h-5" />,
-    name: "Process Steps",
-    path: "/process-steps",
-  },
-  {
-    icon: <Layers className="w-5 h-5" />,
-    name: "Team Members",
-    path: "/team-section",
-  },
-  {
-    icon: <Info className="w-5 h-5" />,
-    name: "About Company",
-    path: "/about-company",
-  },
-  {
-    icon: <MessageSquare className="w-5 h-5" />,
-    name: "Testimonials",
-    path: "/testimonials",
-  },
+  { icon: <LayoutGrid />, name: "Dashboard", path: "/" },
+  // { icon: <Layers className="w-5 h-5" />, name: "Basic Tables", path: "/basic-tables" },
+  { icon: <Layers className="w-5 h-5" />, name: "Service Features", path: "/service-features" },
+  { icon: <UserPlus className="w-5 h-5" />, name: "Contact Leads", path: "/contact-leads" },
+  { icon: <HelpCircle className="w-5 h-5" />, name: "FAQs", path: "/faqs" },
+  { icon: <Layers className="w-5 h-5" />, name: "Process Steps", path: "/process-steps" },
+  { icon: <Layers className="w-5 h-5" />, name: "Team Members", path: "/team-section" },
+  { icon: <Info className="w-5 h-5" />, name: "About Company", path: "/about-company" },
+  { icon: <MessageSquare className="w-5 h-5" />, name: "Testimonials", path: "/testimonials" },
 ];
 
 const othersItems: NavItem[] = [
-  {
-    icon: <Layers className="w-5 h-5" />,
-    name: "Authentication",
-    subItems: [
-      {
-        name: "Basic Tables",
-        path: "/basic-tables",
-      },
-    ],
-  },
+  // {
+  //   icon: <Layers className="w-5 h-5" />,
+  //   name: "Authentication",
+  //   subItems: [{ name: "Basic Tables", path: "/basic-tables" }],
+  // },
 ];
 
-/* ---------------- COMPONENT ---------------- */
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
@@ -103,7 +66,6 @@ const AppSidebar: React.FC = () => {
     [location.pathname]
   );
 
-  /* -------- Auto open submenu on route change -------- */
 
   useEffect(() => {
     let matched = false;
@@ -124,7 +86,6 @@ const AppSidebar: React.FC = () => {
     if (!matched) setOpenSubmenu(null);
   }, [location.pathname, isActive]);
 
-  /* -------- Calculate submenu height -------- */
 
   useEffect(() => {
     if (!openSubmenu) return;
@@ -140,7 +101,6 @@ const AppSidebar: React.FC = () => {
     }
   }, [openSubmenu]);
 
-  /* -------- Handlers -------- */
 
   const handleSubmenuToggle = (index: number, type: "main" | "others") => {
     setOpenSubmenu((prev) =>
@@ -148,7 +108,6 @@ const AppSidebar: React.FC = () => {
     );
   };
 
-  /* -------- Render Menu -------- */
 
   const renderMenuItems = (items: NavItem[], type: "main" | "others") => (
     <ul className="flex flex-col gap-4">
@@ -265,7 +224,6 @@ const AppSidebar: React.FC = () => {
     </ul>
   );
 
-  /* ---------------- JSX ---------------- */
 
   return (
     <aside
@@ -321,7 +279,7 @@ const AppSidebar: React.FC = () => {
 
         <nav className="mb-6">
           <h2 className="mb-4 text-xs uppercase text-gray-400">
-            {isExpanded || isHovered ? "Others" : <HorizontaLDots />}
+            {isExpanded || isHovered ? "" : <HorizontaLDots />}
           </h2>
           {renderMenuItems(othersItems, "others")}
         </nav>

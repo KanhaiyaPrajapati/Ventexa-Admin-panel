@@ -6,8 +6,8 @@ import {
   BoxIconLine,
   GridIcon,
 } from "../../icons";
-import Badge from "../ui/badge/Badge";
 import Loader from "../ui/Loader/Loader";
+import { Badge } from "lucide-react";
 
 export default function BusinessMetrics() {
   const [loading, setLoading] = useState(true);
@@ -19,7 +19,6 @@ export default function BusinessMetrics() {
       growth: "12.5%",
       isUp: true,
       icon: <GridIcon className="size-6" />,
-      color: "from-blue-500/20 to-cyan-500/20",
     },
     {
       title: "Active Projects",
@@ -27,7 +26,6 @@ export default function BusinessMetrics() {
       growth: "4.2%",
       isUp: true,
       icon: <BoxIconLine className="size-6" />,
-      color: "from-purple-500/20 to-pink-500/20",
     },
     {
       title: "Total Clients",
@@ -35,7 +33,6 @@ export default function BusinessMetrics() {
       growth: "8.1%",
       isUp: true,
       icon: <GroupIcon className="size-6" />,
-      color: "from-orange-500/20 to-yellow-500/20",
     },
     {
       title: "Total Profit",
@@ -43,7 +40,6 @@ export default function BusinessMetrics() {
       growth: "2.4%",
       isUp: false,
       icon: <GridIcon className="size-6" />,
-      color: "from-emerald-500/20 to-teal-500/20",
     },
   ];
 
@@ -59,77 +55,60 @@ export default function BusinessMetrics() {
           <div
             key={index}
             className="
-              group relative overflow-hidden rounded-3xl
+              group relative overflow-hidden rounded-[32px]
               border border-gray-200 dark:border-white/10
-              bg-white dark:bg-[#111827]
-              p-1 transition-all duration-300
+              bg-white dark:bg-[#0B1120]
+              p-1 transition-all duration-500 hover:scale-[1.02]
             "
           >
             <div
-              className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+              className="absolute inset-0 bg-gradient-to-br from-[#4FE7C0]/20 via-transparent to-transparent opacity-0 dark:group-hover:opacity-100 transition-opacity duration-500"
             />
 
-            <div className="relative flex flex-col h-full bg-white/90 dark:bg-[#111827]/80 backdrop-blur-xl rounded-[22px] p-6">
-              <div className="flex items-start justify-between mb-6">
-                <div className="flex items-center justify-center size-12 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white">
+            <div className="relative flex flex-col h-full bg-white dark:bg-[#0B1120]/90 backdrop-blur-xl rounded-[28px] p-6">
+              <div className="flex items-start justify-between mb-8">
+                <div className="flex items-center justify-center size-12 rounded-2xl bg-slate-100 dark:bg-[#4FE7C0]/10 border border-slate-200 dark:border-[#4FE7C0]/20 text-slate-600 dark:text-[#4FE7C0]">
                   {item.icon}
                 </div>
 
-                <Badge color={item.isUp ? "success" : "error"}>
-                  <span className="flex items-center gap-1 font-semibold text-xs">
-                    {item.isUp ? (
-                      <ArrowUpIcon className="size-3" />
-                    ) : (
-                      <ArrowDownIcon className="size-3" />
-                    )}
-                    {item.growth}
-                  </span>
-                </Badge>
+                <div className={`
+                  flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold tracking-tighter
+                  ${item.isUp 
+                    ? "bg-emerald-50 text-emerald-600 dark:bg-[#4FE7C0]/10 dark:text-[#4FE7C0]" 
+                    : "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"}
+                `}>
+                  {item.isUp ? (
+                    <ArrowUpIcon className="size-3" />
+                  ) : (
+                    <ArrowDownIcon className="size-3" />
+                  )}
+                  {item.growth}
+                </div>
               </div>
 
               <div className="mt-auto">
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2 text-center">
+                <p className="text-[10px] font-bold text-slate-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-1">
                   {item.title}
                 </p>
 
-                <div className="h-[60px] flex items-center justify-center text-center">
+                <div className="flex items-baseline gap-2">
                   {loading ? (
-                    <div className="flex items-center justify-center">
+                    <div className="h-9 flex items-center">
                       <Loader />
                     </div>
                   ) : (
-                    <h4 className="text-3xl font-bold text-gray-900 dark:text-white text-center">
-                      {item.value}
-                    </h4>
+                    <>
+                      <h4 className="text-3xl font-black text-slate-900 dark:text-white">
+                        {item.value}
+                      </h4>
+                      <div className="hidden dark:block size-1.5 rounded-full bg-[#4FE7C0] animate-pulse" />
+                    </>
                   )}
                 </div>
               </div>
             </div>
           </div>
         ))}
-      </div>
-      {/* <!-- Metric Item End --> */}
-
-      {/* <!-- Metric Item Start --> */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-          <BoxIconLine className="text-gray-800 size-6 dark:text-white/90" />
-        </div>
-        <div className="flex items-end justify-between mt-5">
-          <div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Orders
-            </span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              5,359
-            </h4>
-          </div>
-
-          <Badge color="error">
-            <ArrowDownIcon />
-            9.05%
-          </Badge>
-        </div>
       </div>
     </div>
   );

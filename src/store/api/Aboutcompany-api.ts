@@ -9,14 +9,14 @@ const api = axios.create({
   },
 });
 
-export interface AboutCompany {
-  _id: string | undefined;
-  id?: string;
+  export interface AboutCompany {
+  id?: string; 
+  _id?: string; 
   company_overview: string;
   mission: string;
   vision: string;
   core_values: string;
-  founded_year: number;
+  founded_year: number | string;
   headquarters: string;
 }
 
@@ -30,17 +30,12 @@ export const getCompanyById = async (id: string): Promise<AboutCompany> => {
   return res.data;
 };
 
-export const createCompany = async (
-  data: AboutCompany,
-): Promise<AboutCompany> => {
+export const createCompany = async (data: AboutCompany): Promise<AboutCompany> => {
   const res = await api.post("/", data);
   return res.data;
 };
 
-export const updateCompany = async (
-  id: string,
-  data: AboutCompany,
-): Promise<AboutCompany> => {
+export const updateCompany = async (id: string, data: AboutCompany): Promise<AboutCompany> => {
   const res = await api.put(`/${id}`, data);
   return res.data;
 };
