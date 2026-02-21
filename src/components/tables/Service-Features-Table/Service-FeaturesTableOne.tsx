@@ -27,6 +27,11 @@ import { ServiceFeature } from "../../../store/types/types";
 import ServiceFeatureForm from "./form/ServiceFeatureForm";
 import ServiceFeatureDetails from "./Details/ServiceFeatureDetails";
 
+// Define a safe type extension to handle MongoDB-style IDs without using 'any'
+interface ServiceFeatureWithId extends ServiceFeature {
+  _id?: string | number;
+}
+
 const ServiceFeaturesTableOne: React.FC = () => {
   const [features, setFeatures] = useState<ServiceFeature[]>([]);
   const [loading, setLoading] = useState(true);
@@ -120,8 +125,15 @@ const ServiceFeaturesTableOne: React.FC = () => {
   };
 
   const confirmDelete = async () => {
-    const targetId = currentFeature?.id || (currentFeature as any)?._id;
-    if (!targetId) return;
+    // Cast to our specific extended interface instead of 'any'
+    const featureWithId = currentFeature as ServiceFeatureWithId | null;
+    const targetId = featureWithId?.id || featureWithId?._id;
+    
+    if (!targetId) {
+      showAlert({ type: "error", message: "Invalid feature ID" });
+      return;
+    }
+
     try {
       await deleteServiceFeature(String(targetId));
       showAlert({ type: "success", message: "Feature deleted successfully" });
@@ -135,7 +147,10 @@ const ServiceFeaturesTableOne: React.FC = () => {
   };
 
   const handleSubmit = async (data: ServiceFeature) => {
-    const targetId = currentFeature?.id || (currentFeature as any)?._id;
+    // Cast to our specific extended interface instead of 'any'
+    const featureWithId = currentFeature as ServiceFeatureWithId | null;
+    const targetId = featureWithId?.id || featureWithId?._id;
+
     try {
       if (mode === "create") {
         await createServiceFeature(data);
