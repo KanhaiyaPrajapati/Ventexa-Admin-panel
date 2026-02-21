@@ -99,11 +99,11 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({
             key={star}
             type="button"
             onClick={() => handleStarClick(star)}
-            className="focus:outline-none"
+            className="focus:outline-none transition-transform hover:scale-110"
             aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
           >
             <Star
-              className={`w-6 h-6 ${
+              className={`w-5 h-5 ${
                 star <= value
                   ? "text-yellow-400 fill-yellow-400"
                   : "text-gray-300 dark:text-gray-600"
@@ -111,7 +111,7 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({
             />
           </button>
         ))}
-        <span className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+        <span className="ml-2 text-xs font-medium text-gray-700 dark:text-gray-300">
           ({value}/5)
         </span>
       </div>
@@ -119,10 +119,15 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
-      <div className="space-y-4 sm:space-y-5">
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+    <form onSubmit={handleSubmit} className="p-4 sm:p-5 bg-white dark:bg-[#1F2937]">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-[#4FE7C0] mb-3">
+        {mode === "create" ? "Create New Testimonial" : "Edit Testimonial"}
+      </h2>
+      
+      <div className="space-y-3">
+        {/* Client Name */}
+        <div>
+          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
             Client Name <span className="text-red-500">*</span>
           </label>
           <input
@@ -131,13 +136,14 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({
             value={localData.client_name}
             onChange={handleInputChange}
             placeholder="Enter client name"
-            className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
+            className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1F2937] text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
             required
           />
         </div>
 
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+        {/* Company Name */}
+        <div>
+          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
             Company Name <span className="text-red-500">*</span>
           </label>
           <input
@@ -146,13 +152,14 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({
             value={localData.company_name}
             onChange={handleInputChange}
             placeholder="Enter company name"
-            className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
+            className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1F2937] text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
             required
           />
         </div>
 
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+        {/* Testimonial Text */}
+        <div>
+          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
             Testimonial Text <span className="text-red-500">*</span>
           </label>
           <textarea
@@ -160,72 +167,78 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({
             value={localData.testimonial_text}
             onChange={handleInputChange}
             placeholder="Enter testimonial text"
-            rows={1}
-            className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500 resize-none min-h-[100px]"
+            rows={2}
+            className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1F2937] text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:placeholder-gray-500 resize-none"
             required
           />
         </div>
 
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+        {/* Rating */}
+        <div>
+          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
             Rating <span className="text-red-500">*</span>
-            <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-              (1-5 stars)
-            </span>
           </label>
-          <div className="space-y-3">
+          <div className="p-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-[#374151]">
             {renderStars(typeof localData.rating === "number" ? localData.rating : 0)}
-            <div className="flex items-center">
-        
-             
-            </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-between p-3 sm:p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800/50">
-          <div className="flex items-center gap-3">
+        {/* Status Toggle */}
+        <div className="flex items-center justify-between p-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-[#374151]">
+          <div className="flex items-center gap-2">
             <div
-              className={`p-2 rounded-full ${localData.is_active ? "bg-green-100 dark:bg-green-900/30" : "bg-gray-100 dark:bg-gray-800"}`}
+              className={`p-1 rounded-full ${
+                localData.is_active 
+                  ? "bg-green-100 dark:bg-green-900/30" 
+                  : "bg-gray-100 dark:bg-gray-700"
+              }`}
             >
               {localData.is_active ? (
-                <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                <CheckCircle className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
               ) : (
-                <XCircle className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                <XCircle className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
               )}
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
                 Status
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 {localData.is_active
-                  ? "Testimonial is active and visible"
-                  : "Testimonial is inactive and hidden"}
+                  ? "Active & visible"
+                  : "Inactive & hidden"}
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onToggleActive}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${localData.is_active ? "bg-green-500" : "bg-gray-300 dark:bg-gray-700"}`}
+            className={`relative inline-flex h-4 w-8 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 dark:focus:ring-offset-gray-900 ${
+              localData.is_active 
+                ? "bg-green-500" 
+                : "bg-gray-300 dark:bg-gray-600"
+            }`}
             aria-label={
               localData.is_active ? "Deactivate testimonial" : "Activate testimonial"
             }
           >
             <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${localData.is_active ? "translate-x-6" : "translate-x-1"}`}
+              className={`inline-block h-3 w-3 transform rounded-full bg-white shadow transition-transform duration-200 ${
+                localData.is_active ? "translate-x-4" : "translate-x-1"
+              }`}
             />
           </button>
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
+      {/* Form Actions */}
+      <div className="flex flex-col sm:flex-row justify-end gap-2 pt-3 mt-3 border-t border-gray-200 dark:border-gray-700">
         <Button
           type="button"
           variant="outline"
           color="primary"
           onClick={onCancel}
-          className="w-full sm:w-auto px-4 py-2.5 text-sm sm:text-base"
+          className="w-full sm:w-auto px-3 py-1.5 text-sm dark:border-gray-600 dark:text-gray-300 dark:hover:bg-[#374151] dark:bg-transparent"
         >
           Cancel
         </Button>
@@ -233,9 +246,9 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({
           type="submit"
           variant="primary"
           color="primary"
-          className="w-full sm:w-auto px-4 py-2.5 text-sm sm:text-base"
+          className="w-full sm:w-auto px-3 py-1.5 text-sm"
         >
-          {mode === "create" ? "Create Testimonial" : "Update Testimonial"}
+          {mode === "create" ? "Create" : "Update"}
         </Button>
       </div>
     </form>
