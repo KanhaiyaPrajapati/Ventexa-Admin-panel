@@ -41,6 +41,7 @@ const ServiceFeaturesTable: React.FC = () => {
   return (
     <div className={containerStyle}>
       
+      {/* --- Service Features Section (Limited to 4) --- */}
       <div className={cardBase}>
         <div className={headerStyle}>
           <div className="flex items-center gap-3">
@@ -58,7 +59,7 @@ const ServiceFeaturesTable: React.FC = () => {
         </div>
 
         <div className="p-2 divide-y divide-gray-50 dark:divide-white/5">
-          {features.slice(0, 5).map((feature) => (
+          {features.slice(0, 4).map((feature) => (
             <div key={feature.id} className="flex items-center gap-4 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-white/[0.03] rounded-xl transition-colors">
               <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400">
                 <Briefcase size={14} />
@@ -68,9 +69,13 @@ const ServiceFeaturesTable: React.FC = () => {
               </span>
             </div>
           ))}
+          {features.length === 0 && (
+            <p className="p-6 text-center text-sm text-gray-500">No features available.</p>
+          )}
         </div>
       </div>
 
+      {/* --- Corporate Profiles Section (Limited to 4) --- */}
       <div className={cardBase}>
         <div className={headerStyle}>
           <div className="flex items-center gap-3">
@@ -88,7 +93,7 @@ const ServiceFeaturesTable: React.FC = () => {
         </div>
 
         <div className="p-2 divide-y divide-gray-50 dark:divide-white/5">
-          {companies.slice(0, 5).map((company) => (
+          {companies.slice(0, 4).map((company) => (
             <div key={company.id || company._id} className="flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-white/[0.03] rounded-xl transition-colors">
               <div className="flex flex-col">
                 <span className="text-sm font-bold text-gray-800 dark:text-white line-clamp-1">
@@ -104,6 +109,9 @@ const ServiceFeaturesTable: React.FC = () => {
               </div>
             </div>
           ))}
+          {companies.length === 0 && (
+            <p className="p-6 text-center text-sm text-gray-500">No company profiles available.</p>
+          )}
         </div>
       </div>
 
