@@ -7,6 +7,7 @@ import {
   GridIcon,
 } from "../../icons";
 import Loader from "../ui/Loader/Loader";
+import { Badge } from "lucide-react";
 
 export default function BusinessMetrics() {
   const [loading, setLoading] = useState(true);
