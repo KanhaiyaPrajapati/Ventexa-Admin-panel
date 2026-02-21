@@ -1,9 +1,8 @@
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import { ChevronDownIcon, GridIcon, HorizontaLDots, } from "../icons";
+import { ChevronDownIcon, GridIcon, HorizontaLDots } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
 import { HelpCircle, Info, Layers, MessageSquare, UserPlus } from "lucide-react";
@@ -158,24 +157,41 @@ const AppSidebar: React.FC = () => {
         const isOpen =
           openSubmenu?.type === type && openSubmenu?.index === index;
 
+        // Check if any subitem is active
+        const hasActiveSubItem = nav.subItems?.some(sub => isActive(sub.path)) || false;
+
         return (
           <li key={nav.name}>
             {nav.subItems ? (
               <button
                 onClick={() => handleSubmenuToggle(index, type)}
                 className={`menu-item ${
-                  isOpen ? "menu-item-active" : "menu-item-inactive"
+                  isOpen || hasActiveSubItem ? "menu-item-active" : "menu-item-inactive"
                 }`}
+                style={
+                  isOpen || hasActiveSubItem
+                    ? {
+                        color: "#4FE7C0",
+                        backgroundColor: "rgba(79, 231, 192, 0.1)",
+                      }
+                    : {}
+                }
               >
-                <span className="menu-item-icon-size">{nav.icon}</span>
+                <span 
+                  className="menu-item-icon-size"
+                  style={isOpen || hasActiveSubItem ? { color: "#4FE7C0" } : {}}
+                >
+                  {nav.icon}
+                </span>
 
                 {(isExpanded || isHovered || isMobileOpen) && (
                   <>
                     <span className="menu-item-text">{nav.name}</span>
                     <ChevronDownIcon
                       className={`ml-auto w-5 h-5 transition-transform ${
-                        isOpen ? "rotate-180 text-brand-500" : ""
+                        isOpen ? "rotate-180" : ""
                       }`}
+                      style={isOpen ? { color: "#4FE7C0" } : {}}
                     />
                   </>
                 )}
@@ -185,12 +201,23 @@ const AppSidebar: React.FC = () => {
                 <Link
                   to={nav.path}
                   className={`menu-item ${
-                    isActive(nav.path)
-                      ? "menu-item-active"
-                      : "menu-item-inactive"
+                    isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
                   }`}
+                  style={
+                    isActive(nav.path)
+                      ? {
+                          color: "#4FE7C0",
+                          backgroundColor: "rgba(79, 231, 192, 0.1)",
+                        }
+                      : {}
+                  }
                 >
-                  <span className="menu-item-icon-size">{nav.icon}</span>
+                  <span 
+                    className="menu-item-icon-size"
+                    style={isActive(nav.path) ? { color: "#4FE7C0" } : {}}
+                  >
+                    {nav.icon}
+                  </span>
                   {(isExpanded || isHovered || isMobileOpen) && (
                     <span className="menu-item-text">{nav.name}</span>
                   )}
@@ -216,6 +243,14 @@ const AppSidebar: React.FC = () => {
                             ? "menu-dropdown-item-active"
                             : "menu-dropdown-item-inactive"
                         }`}
+                        style={
+                          isActive(sub.path)
+                            ? {
+                                color: "#4FE7C0",
+                                backgroundColor: "rgba(79, 231, 192, 0.05)",
+                              }
+                            : {}
+                        }
                       >
                         {sub.name}
                       </Link>
@@ -234,15 +269,38 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-50 h-screen px-5 bg-white dark:bg-gray-900 border-r transition-all duration-300
+      className={`fixed top-0 left-0 z-50 h-screen px-5 bg-white dark:bg-gray-900 transition-all duration-300 overflow-y-auto
         ${isExpanded || isHovered || isMobileOpen ? "w-72.5" : "w-22.5"}
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      style={{
+        scrollbarWidth: 'none', /* Firefox */
+        msOverflowStyle: 'none', /* IE and Edge */
+      }}
     >
-      {/* Logo */}
-      <div className="py-8 flex justify-center lg:justify-start">
+      {/* Hide scrollbar for Chrome, Safari and Opera using inline style tag */}
+      <style>{`
+        .fixed.overflow-y-auto {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .fixed.overflow-y-auto::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+
+      {/* Logo - sticky at top */}
+      <div 
+        className="py-8 flex justify-center lg:justify-start sticky top-0 bg-white dark:bg-gray-900 z-10"
+        style={{
+          position: 'sticky',
+          top: 0,
+          backgroundColor: 'inherit',
+          zIndex: 10
+        }}
+      >
         <Link to="/">
           <img
             src="/ventexa_new_logo.png"
@@ -253,7 +311,7 @@ const AppSidebar: React.FC = () => {
       </div>
 
       {/* Menu */}
-      <div className="flex flex-col overflow-y-auto no-scrollbar">
+      <div className="flex flex-col pb-6">
         <nav className="mb-6">
           <h2 className="mb-4 text-xs uppercase text-gray-400">
             {isExpanded || isHovered ? "Menu" : <HorizontaLDots />}
