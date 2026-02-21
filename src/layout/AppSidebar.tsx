@@ -200,14 +200,22 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="py-8 flex justify-center lg:justify-start">
-        <Link to="/">
-          <img
-            src="/ventexa_new_logo.png"
-            alt="Logo"
-            width={isExpanded || isHovered ? 150 : 32}
-          />
-        </Link>
-      </div>
+  <Link to="/">
+    <img
+      src="logo-3 (2).png" 
+      alt="Logo Light"
+      className="dark:hidden transition-all duration-300"
+      style={{ width: isExpanded || isHovered ? "150px" : "32px" }}
+    />
+
+    <img
+      src="ventexa_new_logo.png" 
+      alt="Logo Dark"
+      className="hidden dark:block transition-all duration-300"
+      style={{ width: isExpanded || isHovered ? "150px" : "32px" }}
+    />
+  </Link>
+</div>
 
       <div className="flex flex-col h-[calc(100vh-120px)] overflow-y-auto no-scrollbar">
         <nav className="mb-6">

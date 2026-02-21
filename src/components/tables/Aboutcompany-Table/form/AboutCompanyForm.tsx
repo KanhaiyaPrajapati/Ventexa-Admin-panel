@@ -111,6 +111,7 @@ const AboutCompanyForm: React.FC<AboutCompanyFormProps> = ({
               : "Edit Company Profile"}
           </h2>
         </div>
+
         <div className="p-4 overflow-y-auto flex-1">
           {error && (
             <p className="text-red-500 text-xs mb-3">{error}</p>
@@ -193,7 +194,11 @@ const AboutCompanyForm: React.FC<AboutCompanyFormProps> = ({
 
         <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-800 flex justify-end gap-2 bg-gray-50 dark:bg-gray-800">
           {onClose && (
-            <Button type="button" variant="outline">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+            >
               Cancel
             </Button>
           )}
@@ -208,4 +213,3 @@ const AboutCompanyForm: React.FC<AboutCompanyFormProps> = ({
 };
 
 export default AboutCompanyForm;
- 

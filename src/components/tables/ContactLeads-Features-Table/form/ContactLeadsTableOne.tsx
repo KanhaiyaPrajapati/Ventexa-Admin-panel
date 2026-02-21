@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, ChangeEvent } from "react";
 import {
   Table,
   TableBody,
@@ -94,9 +94,9 @@ const ContactLeadsTableOne: React.FC = () => {
   const closeModal = () => setIsModalOpen(false);
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    e:
+      | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+      | { target: { name: string; value: any } },
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -318,7 +318,7 @@ const ContactLeadsTableOne: React.FC = () => {
       </div>
 
       {isModalOpen && (
-        <Modal isOpen onClose={closeModal} className="max-w-lg p-6">
+        <Modal isOpen onClose={closeModal} className="max-w-lg p-2">
           {mode === "view" && currentLead && (
             <ContactLeadDetails lead={currentLead} onClose={closeModal} />
           )}

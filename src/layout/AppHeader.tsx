@@ -123,12 +123,12 @@ const AppHeader: React.FC = () => {
 
           <Link to="/" className="lg:hidden">
             <img
-              className="w-32 h-auto dark:hidden"
-              src="ventexa_new_logo.png"
+              className="w-32 ml-6 h-auto dark:hidden"
+              src="logo-3 (2).png"
               alt="Logo"
             />
             <img
-              className="w-32 h-auto hidden dark:block"
+              className="w-32 ml-6 h-auto hidden dark:block"
               src="ventexa_new_logo.png"
               alt="Logo"
             />
